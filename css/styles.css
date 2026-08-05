@@ -116,6 +116,8 @@ body {
    (216.61 / 1440 ≈ 15vw). Con clamp() escala en pantallas chicas
    y no pasa de ese tamaño en pantallas grandes. */
 .hero__title {
+  position: relative;
+  z-index: 2;
   font-family: var(--font-display);
   font-weight: 900;
   text-transform: uppercase;
@@ -129,12 +131,21 @@ body {
    Misma posición y tamaño que la imagen estática original (y que el
    Figma): el personaje va cambiando de frame según la dirección del
    scroll, pero se queda en su lugar dentro del flujo normal del hero,
-   sin "secuestrar" el scroll de la página. */
+   sin "secuestrar" el scroll de la página.
+
+   El PNG (828 x 1108 nativo) tiene relleno transparente: el personaje
+   real ocupa solo de y=72 a y=732 (el resto es aire arriba y, sobre
+   todo, abajo de las botas). Por eso los márgenes negativos tienen
+   que ser grandes: primero "comen" ese aire transparente y recién
+   después generan la superposición real con el texto. */
 .hero__stage {
   position: relative;
+  z-index: 1;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin-top: clamp(-90px, -6.5vw, -20px);
+  margin-bottom: clamp(-220px, -14vw, -80px);
 }
 
 /* Tamaño real en Figma: 619 x 828px sobre un frame de 1440px de
@@ -144,11 +155,13 @@ body {
 .hero__avatar {
   width: clamp(220px, 43vw, 619px);
   height: auto;
-  margin: 8px 0;
   user-select: none;
+  display: block;
 }
 
 .hero__subtitle {
+  position: relative;
+  z-index: 0;
   font-family: var(--font-display);
   font-weight: 900;
   text-transform: capitalize;
