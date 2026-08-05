@@ -145,7 +145,7 @@ body {
   flex-direction: column;
   align-items: center;
   margin-top: clamp(-90px, -6.5vw, -20px);
-  margin-bottom: clamp(-60px, -1.7vw, -10px);
+  margin-bottom: clamp(-104px, -4.78vw, -54px);
 }
 
 /* Tamaño real en Figma: 619 x 828px sobre un frame de 1440px de
