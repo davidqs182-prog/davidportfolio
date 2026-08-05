@@ -10,7 +10,7 @@
   --color-pill-active: #d1d5db;
   --color-text: #1f2937;
 
-  --font-display: "Fredoka", sans-serif;
+  --font-display: "Work Sans", sans-serif;
   --font-body: "Inter", sans-serif;
 }
 
@@ -89,11 +89,12 @@ body {
 
 .hero__title {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 900;
   text-transform: uppercase;
   color: var(--color-purple);
   font-size: clamp(3rem, 9vw, 6.5rem);
-  line-height: 0.95;
+  line-height: 0.85;
+  letter-spacing: -0.02em;
 }
 
 .hero__avatar {
@@ -104,8 +105,10 @@ body {
 
 .hero__subtitle {
   font-family: var(--font-display);
-  font-weight: 700;
+  font-weight: 900;
   text-transform: capitalize;
   color: var(--color-purple);
   font-size: clamp(2.5rem, 7vw, 4.5rem);
+  line-height: 0.85;
+  letter-spacing: -0.02em;
 }
