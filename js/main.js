@@ -5,10 +5,9 @@
 // frame; scroll hacia arriba la reproduce en reversa hasta el frame 0.
 (function () {
   var stageImg = document.getElementById("stageImg");
-  var hint = document.getElementById("hint");
 
   // Si esta página no tiene el stage de animación, no hacemos nada.
-  if (!stageImg || !hint) return;
+  if (!stageImg) return;
 
   var FRAME_COUNT = 121;
   var FRAME_DIR = "assets/animations/hero-guitar-scroll/frames/";
@@ -28,7 +27,6 @@
   }
 
   var currentFrame = 0;
-  var hasScrolled = false;
   var direction = 0;
   var isPlaying = false;
   var lastScrollY = window.scrollY;
@@ -37,11 +35,6 @@
     nextFrame = Math.min(FRAME_COUNT - 1, Math.max(0, nextFrame));
     currentFrame = nextFrame;
     stageImg.src = framePath(currentFrame);
-
-    if (!hasScrolled) {
-      hasScrolled = true;
-      hint.style.opacity = 0;
-    }
   }
 
   function tick() {

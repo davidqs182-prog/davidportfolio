@@ -137,35 +137,15 @@ body {
   align-items: center;
 }
 
+/* Tamaño real en Figma: 619 x 828px sobre un frame de 1440px de
+   ancho (619 / 1440 ≈ 43vw). El aspect-ratio de los frames de la
+   animación (828 x 1108) ya coincide con 619 x 828, así que solo
+   fijamos el ancho y el alto se ajusta solo. */
 .hero__avatar {
-  width: min(320px, 80vw);
+  width: clamp(220px, 43vw, 619px);
   height: auto;
   margin: 8px 0;
   user-select: none;
-}
-
-.hint {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  gap: 8px;
-  margin-top: 4px;
-  transition: opacity 0.5s ease;
-  pointer-events: none;
-}
-
-.hint-label {
-  font-family: Helvetica, Arial, sans-serif;
-  font-size: 13px;
-  letter-spacing: 0.12em;
-  text-transform: uppercase;
-  color: #cbbfdd;
-}
-
-.hint-line {
-  width: 1px;
-  height: 32px;
-  background-color: #a894c2;
 }
 
 .hero__subtitle {
