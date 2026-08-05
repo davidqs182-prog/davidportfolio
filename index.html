@@ -22,14 +22,29 @@
   <main>
     <section class="hero container">
       <h1 class="hero__title">Product<br>Designer</h1>
-      <img
-        class="hero__avatar"
-        src="assets/images/avatar-hero.png"
-        alt="Ilustración de David Quirós tocando guitarra"
-      >
+
+      <div class="scroll-track" id="scrollTrack">
+        <div class="sticky-stage">
+          <img
+            id="stageImg"
+            class="stage-img"
+            src="assets/animations/hero-guitar-scroll/frames/frame_00000.png"
+            alt="Animación de David Quirós tocando guitarra"
+            draggable="false"
+            width="828"
+            height="1108"
+          >
+          <div class="hint" id="hint">
+            <div class="hint-label">Scrollea para reproducir</div>
+            <div class="hint-line"></div>
+          </div>
+        </div>
+      </div>
+
       <h2 class="hero__subtitle" id="work">Work</h2>
     </section>
   </main>
 
+  <script src="js/main.js"></script>
 </body>
 </html>

@@ -125,10 +125,61 @@ body {
   letter-spacing: -0.02em;
 }
 
-.hero__avatar {
-  width: min(320px, 80vw);
-  height: auto;
-  margin: 8px 0;
+/* ===== Animación de scroll =====
+   Especificación tomada del handoff en assets/animations/hero-guitar-scroll/README.md.
+   El "scroll-track" es un contenedor alto (300vh): mientras el usuario
+   lo atraviesa scrolleando, el "sticky-stage" queda fijo ocupando toda
+   la pantalla y la imagen va cambiando de frame en frame. */
+.scroll-track {
+  position: relative;
+  height: 300vh;
+}
+
+.sticky-stage {
+  position: sticky;
+  top: 0;
+  height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* Nota: NO usar overflow:hidden aquí. En combinación con
+     position:sticky provoca que el navegador resetee el scroll
+     a 0 constantemente (bug reproducible). La imagen ya está
+     acotada con max-height/max-width, así que no hace falta. */
+}
+
+.stage-img {
+  max-height: 92vh;
+  max-width: 92vw;
+  object-fit: contain;
+  user-select: none;
+}
+
+.hint {
+  position: fixed;
+  bottom: 24px;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  transition: opacity 0.5s ease;
+  pointer-events: none;
+}
+
+.hint-label {
+  font-family: Helvetica, Arial, sans-serif;
+  font-size: 13px;
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: #cbbfdd;
+}
+
+.hint-line {
+  width: 1px;
+  height: 32px;
+  background-color: #a894c2;
 }
 
 .hero__subtitle {
