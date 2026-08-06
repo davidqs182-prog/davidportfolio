@@ -125,3 +125,43 @@ body {
   line-height: 0.85;
   letter-spacing: -0.02em;
 }
+
+/* ===== Work / tarjetas de proyecto =====
+   Medidas tomadas a mano de la primera tarjeta del Figma (banners
+   colgando de una feria, proyecto "Leo"): la imagen ocupa el ancho
+   completo del container, sin bordes redondeados. */
+.work-list {
+  padding-block: 0 60px;
+}
+
+.project-card {
+  margin-bottom: 146px;
+}
+
+.project-card:last-child {
+  margin-bottom: 0;
+}
+
+.project-card__image {
+  display: block;
+  width: 100%;
+  aspect-ratio: 1299 / 670;
+  object-fit: cover;
+}
+
+.project-card__title {
+  margin-top: 28px;
+  font-family: var(--font-body);
+  font-size: 18px;
+  font-weight: 600;
+  color: var(--color-text-black);
+}
+
+.project-card__description {
+  margin-top: 23px;
+  max-width: 900px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--color-text-black);
+}
