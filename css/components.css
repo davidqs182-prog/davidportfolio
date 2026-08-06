@@ -75,7 +75,7 @@
   color: var(--color-text-black);
 }
 .btn--secondary:hover {
-  background-color: #e0e3eb;
+  background-color: var(--color-gray-300);
 }
 .btn--secondary:disabled,
 .btn--secondary.is-disabled {
