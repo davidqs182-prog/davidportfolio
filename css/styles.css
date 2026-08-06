@@ -145,6 +145,7 @@ body {
 .project-card__image {
   display: block;
   width: 100%;
+  height: auto;
   aspect-ratio: 1299 / 670;
   object-fit: cover;
 }
