@@ -69,3 +69,43 @@
 
   window.addEventListener("scroll", onScroll, { passive: true });
 })();
+
+// ===== Lazy-load de videos de proyecto =====
+// Los <video> de las tarjetas de "Work" no tienen atributo "src" en el
+// HTML (usan "data-src"), así que el navegador no descarga nada al
+// cargar la página. Recién cuando la tarjeta está por entrar en
+// pantalla, copiamos data-src -> src y arrancamos la reproducción.
+(function () {
+  var lazyVideos = document.querySelectorAll("video[data-src]");
+  if (!lazyVideos.length) return;
+
+  if (!("IntersectionObserver" in window)) {
+    // Navegadores muy viejos: cargamos todo de una, sin lazy-load.
+    lazyVideos.forEach(function (video) {
+      video.src = video.dataset.src;
+    });
+    return;
+  }
+
+  var observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+
+        var video = entry.target;
+        video.src = video.dataset.src;
+        video.removeAttribute("data-src");
+        video.play().catch(function () {
+          // Si el navegador bloquea el autoplay, no pasa nada: el
+          // poster se queda visible como imagen estática.
+        });
+        observer.unobserve(video);
+      });
+    },
+    { rootMargin: "200px" }
+  );
+
+  lazyVideos.forEach(function (video) {
+    observer.observe(video);
+  });
+})();

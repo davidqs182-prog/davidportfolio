@@ -150,6 +150,20 @@ body {
   object-fit: cover;
 }
 
+/* Segunda tarjeta ("Fischbach, onboarding tool"): acá la "imagen" es
+   un video corto en loop (mockup de celular animando entre pantallas).
+   Mismo patrón que .project-card__image, pero con el aspect-ratio
+   real del video (1300 x 1462 — vertical, porque es la composición
+   completa del header + bloque rojo/celular, no solo el teléfono). */
+.project-card__video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 1300 / 1462;
+  object-fit: cover;
+  background-color: #fcfcfb;
+}
+
 .project-card__title {
   margin-top: 28px;
   font-family: var(--font-body);

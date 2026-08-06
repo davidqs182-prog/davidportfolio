@@ -8,3 +8,6 @@ Thumbs.db
 
 # Configuración local de Claude Code (no se comparte)
 .claude/settings.local.json
+
+# Videos fuente sin comprimir (quedan en tu disco, no en el repo)
+assets/animations/Onboarding animation/
