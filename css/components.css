@@ -1,0 +1,155 @@
+/* =====================================================================
+   COMPONENTES
+   =====================================================================
+   Piezas de UI reutilizables. Usan los tokens de tokens.css — no
+   deberían tener ningún color o tamaño "suelto" escrito a mano acá.
+
+   Nota sobre estados: en Figma cada estado (Default/Hover/Disabled)
+   es una capa distinta. En CSS no duplicamos esas capas: usamos
+   pseudo-clases (:hover, :disabled) que el navegador aplica solo.
+   ===================================================================== */
+
+/* ---------- Button ----------
+   Fuente: componente "Button" de Figma (5 estilos x 3 tamaños x 3
+   estados). Los colores de "Secondary"/"Outline"/"Ghost" son valores
+   exactos del componente (no son parte de la escala Gray — son un
+   poco distintos, a propósito se dejan literales acá). */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  border: none;
+  border-radius: 999px;
+  font-family: var(--font-body);
+  text-decoration: none;
+  white-space: nowrap;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.btn:disabled,
+.btn.is-disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+/* Tamaños */
+.btn--lg {
+  min-height: 48px;
+  padding: 12px 20px;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.btn--md {
+  min-height: 40px;
+  padding: 8px 16px;
+  font-size: 14px;
+  font-weight: 500;
+}
+
+.btn--sm {
+  min-height: 32px;
+  padding: 6px 12px;
+  font-size: 13px;
+  font-weight: 500;
+}
+
+/* Estilo: Primary */
+.btn--primary {
+  background-color: var(--color-purple-500);
+  color: var(--color-text-white);
+}
+.btn--primary:hover {
+  background-color: var(--color-purple-700);
+}
+.btn--primary:disabled,
+.btn--primary.is-disabled {
+  background-color: var(--color-purple-200);
+}
+
+/* Estilo: Secondary */
+.btn--secondary {
+  background-color: #f2f2f7;
+  color: var(--color-text-black);
+}
+.btn--secondary:hover {
+  background-color: #e0e3eb;
+}
+.btn--secondary:disabled,
+.btn--secondary.is-disabled {
+  background-color: #f2f2f7;
+}
+
+/* Estilo: Destructive */
+.btn--destructive {
+  background-color: var(--color-red-500);
+  color: var(--color-text-white);
+}
+.btn--destructive:hover {
+  background-color: var(--color-red-700);
+}
+.btn--destructive:disabled,
+.btn--destructive.is-disabled {
+  background-color: var(--color-red-200);
+}
+
+/* Estilo: Outline */
+.btn--outline {
+  background-color: white;
+  border: 1px solid #ccccd4;
+  color: var(--color-text-black);
+}
+.btn--outline:hover {
+  background-color: #f2f2f7;
+}
+.btn--outline:disabled,
+.btn--outline.is-disabled {
+  border-color: #b2c2eb;
+}
+
+/* Estilo: Ghost */
+.btn--ghost {
+  background-color: transparent;
+  color: var(--color-text-black);
+}
+.btn--ghost:hover {
+  background-color: #f2f2f7;
+}
+
+/* ---------- Pill (nav) ----------
+   El componente de navegación "Work / About" del header. */
+.pill {
+  display: inline-block;
+  padding: 8px 18px;
+  border-radius: 999px;
+  background-color: var(--color-gray-200);
+  color: var(--color-text);
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+  transition: background-color 0.2s ease;
+}
+
+.pill:hover {
+  background-color: var(--color-gray-300);
+}
+
+.pill--active {
+  background-color: var(--color-gray-300);
+}
+
+/* ---------- Botón oscuro del header ----------
+   Ojo: este NO es ninguna de las 5 variantes del componente Button
+   de Figma (ese set no incluye una versión "dark/negra"). Es un
+   estilo aparte usado solo en el header por ahora. */
+.btn-dark {
+  padding: 10px 20px;
+  border-radius: 999px;
+  background-color: var(--color-dark);
+  color: white;
+  text-decoration: none;
+  font-size: 14px;
+  font-weight: 500;
+}

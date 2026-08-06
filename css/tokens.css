@@ -1,0 +1,100 @@
+/* =====================================================================
+   DESIGN TOKENS
+   =====================================================================
+   Estos son los "ingredientes" del sistema de diseño: colores,
+   tipografía y medidas base. No hay estilos visuales de página acá,
+   solo variables (custom properties) para que todo el sitio use los
+   mismos valores en vez de números sueltos repetidos por todos lados.
+
+   Fuente: componentes "Button", "purple-tint-palette", "Gray" (Frame
+   793) y "Typographic Scale" del archivo de Figma.
+   ===================================================================== */
+
+:root {
+  /* ---------- Color / Purple ----------
+     Escala completa tal cual está en Figma (purple-tint-palette). */
+  --color-purple-50: #f6f4fa;
+  --color-purple-100: #edeaf5;
+  --color-purple-200: #dbd5ec;
+  --color-purple-300: #c1b6e0;
+  --color-purple-400: #9a89cc;
+  --color-purple-500: #614685;
+  --color-purple-600: #523b75;
+  --color-purple-700: #422e63;
+  --color-purple-800: #31214f;
+  --color-purple-900: #1c1335;
+
+  /* ---------- Color / Gray ----------
+     Escala completa tal cual está en Figma (Frame 793 "Gray"). */
+  --color-gray-50: #f9fafb;
+  --color-gray-100: #f3f4f6;
+  --color-gray-200: #e5e7eb;
+  --color-gray-300: #d1d5db;
+  --color-gray-400: #9ca3af;
+  --color-gray-500: #6b7280;
+  --color-gray-600: #4b5563;
+  --color-gray-700: #374151;
+  --color-gray-800: #1f2937;
+  --color-gray-900: #111827;
+
+  /* ---------- Color / Red (destructive) ----------
+     Solo existen estos 3 tonos en el componente Button de Figma
+     (no hay una escala 50-900 completa como Purple/Gray). */
+  --color-red-200: #ebb2b2;
+  --color-red-500: #e53333;
+  --color-red-700: #bf2626;
+
+  /* ---------- Color / Superficie y texto ----------
+     Alias semánticos: en vez de usar "purple-500" directo en el
+     layout, usamos un nombre que dice PARA QUÉ es el color. Así, si
+     el color de marca cambia algún día, se edita en un solo lugar. */
+  --color-bg: #f3f1ed;
+  --color-text: var(--color-gray-800);
+  --color-text-black: #1a1a1a;
+  --color-text-white: #f3f1ed;
+  --color-brand: var(--color-purple-500);
+  --color-dark: var(--color-gray-900);
+
+  /* ---------- Tipografía ----------
+     Familias realmente usadas en los componentes (el "Typographic
+     Scale" de Figma está en Roboto, pero el Button usa Inter y el
+     hero usa Work Sans — priorizamos lo que los componentes reales
+     usan). */
+  --font-display: "Work Sans", sans-serif;
+  --font-body: "Inter", sans-serif;
+
+  /* Escala tipográfica (tamaño / interlineado), tomada de la pieza
+     "Typographic Scale" de Figma. Pensada para contenido futuro
+     (párrafos, tarjetas, etc.) — el título del hero ya tiene su
+     propio tamaño exacto (216.61px) y no usa esta escala. */
+  --text-h1-size: 45px;
+  --text-h1-line: 52px;
+  --text-h2-size: 36px;
+  --text-h2-line: 44px;
+  --text-h3-size: 28px;
+  --text-h3-line: 36px;
+  --text-h4-size: 22px;
+  --text-h4-line: 28px;
+  --text-h5-size: 18px;
+  --text-h5-line: 24px;
+  --text-body-lg-size: 16px;
+  --text-body-lg-line: 24px;
+  --text-body-size: 14px;
+  --text-body-line: 20px;
+  --text-body-sm-size: 12px;
+  --text-body-sm-line: 16px;
+  --text-caption-size: 11px;
+  --text-caption-line: 14px;
+  --text-overline-size: 10px;
+  --text-overline-line: 14px;
+  --text-overline-tracking: 0.15em;
+
+  /* ---------- Layout grid ----------
+     Igual al "Layout Grid" configurado en el frame de Figma: 12
+     columnas, 70px de margen lateral, 20px de espacio entre
+     columnas, sobre un frame de referencia de 1440px. */
+  --grid-columns: 12;
+  --grid-margin: 70px;
+  --grid-gutter: 20px;
+  --grid-max-width: 1440px;
+}

@@ -1,0 +1,155 @@
+/* Layout específico de design-system.html — no de la página principal. */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+body.ds {
+  background-color: white;
+  color: var(--color-text-black);
+  font-family: var(--font-body);
+  padding: 48px 40px 120px;
+  max-width: 960px;
+  margin-inline: auto;
+}
+
+.ds-page-header {
+  margin-bottom: 64px;
+}
+
+.ds-eyebrow {
+  font-size: var(--text-overline-size);
+  letter-spacing: var(--text-overline-tracking);
+  text-transform: uppercase;
+  font-weight: 600;
+  color: var(--color-purple-500);
+  margin-bottom: 8px;
+}
+
+.ds-page-header h1 {
+  font-family: var(--font-display);
+  font-weight: 900;
+  font-size: 48px;
+  margin-bottom: 12px;
+}
+
+.ds-lede {
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--color-gray-600);
+  max-width: 560px;
+}
+
+.ds-section {
+  margin-bottom: 80px;
+}
+
+.ds-section h2 {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 700;
+  margin-bottom: 8px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--color-gray-200);
+}
+
+.ds-section-desc {
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  color: var(--color-gray-600);
+  margin: 16px 0 24px;
+  max-width: 640px;
+}
+
+.ds-section h3 {
+  font-size: var(--text-h5-size);
+  font-weight: 600;
+  margin: 32px 0 12px;
+}
+
+/* Swatches de color */
+.ds-swatch-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(110px, 1fr));
+  gap: 16px;
+}
+
+.ds-swatch {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.ds-swatch__color {
+  display: block;
+  height: 64px;
+  border-radius: 8px;
+  border: 1px solid var(--color-gray-200);
+}
+
+.ds-swatch__name {
+  font-size: 12px;
+  font-weight: 600;
+}
+
+.ds-swatch__hex {
+  font-size: 11px;
+  color: var(--color-gray-500);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Tipografía */
+.ds-type-row {
+  display: flex;
+  align-items: baseline;
+  gap: 24px;
+  padding: 16px 0;
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.ds-type-label {
+  flex: 0 0 160px;
+  font-size: 12px;
+  color: var(--color-gray-500);
+  font-variant-numeric: tabular-nums;
+}
+
+.ds-type-sample {
+  margin: 0;
+  color: var(--color-text-black);
+}
+
+/* Tabla de botones */
+.ds-btn-table {
+  border-collapse: collapse;
+  width: 100%;
+}
+
+.ds-btn-table th,
+.ds-btn-table td {
+  text-align: left;
+  padding: 16px 12px;
+  border-bottom: 1px solid var(--color-gray-100);
+  vertical-align: middle;
+}
+
+.ds-btn-table th {
+  font-size: 12px;
+  color: var(--color-gray-500);
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.ds-btn-table td:first-child {
+  font-weight: 600;
+  font-size: 14px;
+}
+
+.ds-inline-row {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+}

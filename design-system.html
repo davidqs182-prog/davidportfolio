@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Design System — David Quirós</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/design-system.css">
+</head>
+<body class="ds">
+
+  <header class="ds-page-header">
+    <p class="ds-eyebrow">Portafolio de David Quirós</p>
+    <h1>Design System</h1>
+    <p class="ds-lede">
+      Catálogo vivo de los tokens y componentes del sitio. Cada vez que agregamos
+      algo nuevo al sistema, aparece acá primero.
+    </p>
+  </header>
+
+  <main>
+
+    <!-- ===== Colores ===== -->
+    <section class="ds-section" id="colors">
+      <h2>Colores</h2>
+      <p class="ds-section-desc">Escalas completas tomadas de Figma (purple-tint-palette y Frame 793 "Gray"), más los tonos de rojo que usa el componente Button.</p>
+
+      <h3>Purple</h3>
+      <div class="ds-swatch-row">
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-purple-50)"></span><span class="ds-swatch__name">Purple 50</span><span class="ds-swatch__hex">#F6F4FA</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-purple-100)"></span><span class="ds-swatch__name">Purple 100</span><span class="ds-swatch__hex">#EDEAF5</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-purple-200)"></span><span class="ds-swatch__name">Purple 200</span><span class="ds-swatch__hex">#DBD5EC</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-purple-300)"></span><span class="ds-swatch__name">Purple 300</span><span class="ds-swatch__hex">#C1B6E0</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-purple-400)"></span><span class="ds-swatch__name">Purple 400</span><span class="ds-swatch__hex">#9A89CC</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-purple-500)"></span><span class="ds-swatch__name">Purple 500 — brand</span><span class="ds-swatch__hex">#614685</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-purple-600)"></span><span class="ds-swatch__name">Purple 600</span><span class="ds-swatch__hex">#523B75</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-purple-700)"></span><span class="ds-swatch__name">Purple 700</span><span class="ds-swatch__hex">#422E63</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-purple-800)"></span><span class="ds-swatch__name">Purple 800</span><span class="ds-swatch__hex">#31214F</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-purple-900)"></span><span class="ds-swatch__name">Purple 900</span><span class="ds-swatch__hex">#1C1335</span></div>
+      </div>
+
+      <h3>Gray</h3>
+      <div class="ds-swatch-row">
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-50)"></span><span class="ds-swatch__name">Gray 50</span><span class="ds-swatch__hex">#F9FAFB</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-100)"></span><span class="ds-swatch__name">Gray 100</span><span class="ds-swatch__hex">#F3F4F6</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-200)"></span><span class="ds-swatch__name">Gray 200</span><span class="ds-swatch__hex">#E5E7EB</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-300)"></span><span class="ds-swatch__name">Gray 300</span><span class="ds-swatch__hex">#D1D5DB</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-400)"></span><span class="ds-swatch__name">Gray 400</span><span class="ds-swatch__hex">#9CA3AF</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-500)"></span><span class="ds-swatch__name">Gray 500</span><span class="ds-swatch__hex">#6B7280</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-600)"></span><span class="ds-swatch__name">Gray 600</span><span class="ds-swatch__hex">#4B5563</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-700)"></span><span class="ds-swatch__name">Gray 700</span><span class="ds-swatch__hex">#374151</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-800)"></span><span class="ds-swatch__name">Gray 800 — text</span><span class="ds-swatch__hex">#1F2937</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-900)"></span><span class="ds-swatch__name">Gray 900 — dark</span><span class="ds-swatch__hex">#111827</span></div>
+      </div>
+
+      <h3>Red (destructive)</h3>
+      <div class="ds-swatch-row">
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-red-200)"></span><span class="ds-swatch__name">Red 200</span><span class="ds-swatch__hex">#EBB2B2</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-red-500)"></span><span class="ds-swatch__name">Red 500</span><span class="ds-swatch__hex">#E53333</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-red-700)"></span><span class="ds-swatch__name">Red 700</span><span class="ds-swatch__hex">#BF2626</span></div>
+      </div>
+
+      <h3>Superficie &amp; texto (alias semánticos)</h3>
+      <div class="ds-swatch-row">
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-bg)"></span><span class="ds-swatch__name">--color-bg</span><span class="ds-swatch__hex">#F3F1ED</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-brand)"></span><span class="ds-swatch__name">--color-brand</span><span class="ds-swatch__hex">= purple-500</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-dark)"></span><span class="ds-swatch__name">--color-dark</span><span class="ds-swatch__hex">= gray-900</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-text-black)"></span><span class="ds-swatch__name">--color-text-black</span><span class="ds-swatch__hex">#1A1A1A</span></div>
+      </div>
+    </section>
+
+    <!-- ===== Tipografía ===== -->
+    <section class="ds-section" id="typography">
+      <h2>Tipografía</h2>
+      <p class="ds-section-desc">
+        Familias: <strong>Work Sans</strong> (títulos/display) e <strong>Inter</strong> (texto/UI).
+        Los tamaños vienen de la pieza "Typographic Scale" de Figma — ojo, esa pieza está
+        documentada en Roboto, así que acá se ven los mismos tamaños pero con las fuentes
+        que realmente usan los componentes. El título del hero (216.61px) es un tamaño
+        propio, fuera de esta escala.
+      </p>
+
+      <div class="ds-type-row"><span class="ds-type-label">H1 · 45 / 52</span><p class="ds-type-sample" style="font-family:var(--font-display); font-weight:700; font-size:var(--text-h1-size); line-height:var(--text-h1-line);">Product Designer</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">H2 · 36 / 44</span><p class="ds-type-sample" style="font-family:var(--font-display); font-weight:700; font-size:var(--text-h2-size); line-height:var(--text-h2-line);">Product Designer</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">H3 · 28 / 36</span><p class="ds-type-sample" style="font-family:var(--font-display); font-weight:600; font-size:var(--text-h3-size); line-height:var(--text-h3-line);">Product Designer</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">H4 · 22 / 28</span><p class="ds-type-sample" style="font-family:var(--font-display); font-weight:600; font-size:var(--text-h4-size); line-height:var(--text-h4-line);">Product Designer</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">H5 · 18 / 24</span><p class="ds-type-sample" style="font-family:var(--font-display); font-weight:600; font-size:var(--text-h5-size); line-height:var(--text-h5-line);">Product Designer</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Body Large · 16 / 24</span><p class="ds-type-sample" style="font-family:var(--font-body); font-weight:400; font-size:var(--text-body-lg-size); line-height:var(--text-body-lg-line);">Creamos experiencias digitales que conectan marcas con personas.</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Body · 14 / 20</span><p class="ds-type-sample" style="font-family:var(--font-body); font-weight:400; font-size:var(--text-body-size); line-height:var(--text-body-line);">Creamos experiencias digitales que conectan marcas con personas.</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Body Small · 12 / 16</span><p class="ds-type-sample" style="font-family:var(--font-body); font-weight:400; font-size:var(--text-body-sm-size); line-height:var(--text-body-sm-line);">Última actualización: 6 de agosto, 2026</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Caption · 11 / 14</span><p class="ds-type-sample" style="font-family:var(--font-body); font-weight:400; font-size:var(--text-caption-size); line-height:var(--text-caption-line);">Fig. 1 — Evolución del tráfico mensual en 2026</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Overline · 10 / 14</span><p class="ds-type-sample" style="font-family:var(--font-body); font-weight:600; font-size:var(--text-overline-size); line-height:var(--text-overline-line); letter-spacing:var(--text-overline-tracking); text-transform:uppercase;">Caso de estudio</p></div>
+    </section>
+
+    <!-- ===== Botones ===== -->
+    <section class="ds-section" id="buttons">
+      <h2>Botones</h2>
+      <p class="ds-section-desc">
+        5 estilos × 3 tamaños. Pasá el mouse por encima para ver el estado <em>hover</em> real
+        (con <code>:hover</code>, no una clase aparte); los de la última columna están
+        <code>disabled</code> de verdad.
+      </p>
+
+      <table class="ds-btn-table">
+        <thead>
+          <tr><th>Estilo</th><th>Sm</th><th>Md</th><th>Lg</th><th>Disabled</th></tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td>Primary</td>
+            <td><button class="btn btn--primary btn--sm">Button</button></td>
+            <td><button class="btn btn--primary btn--md">Button</button></td>
+            <td><button class="btn btn--primary btn--lg">Button</button></td>
+            <td><button class="btn btn--primary btn--md" disabled>Button</button></td>
+          </tr>
+          <tr>
+            <td>Secondary</td>
+            <td><button class="btn btn--secondary btn--sm">Button</button></td>
+            <td><button class="btn btn--secondary btn--md">Button</button></td>
+            <td><button class="btn btn--secondary btn--lg">Button</button></td>
+            <td><button class="btn btn--secondary btn--md" disabled>Button</button></td>
+          </tr>
+          <tr>
+            <td>Destructive</td>
+            <td><button class="btn btn--destructive btn--sm">Button</button></td>
+            <td><button class="btn btn--destructive btn--md">Button</button></td>
+            <td><button class="btn btn--destructive btn--lg">Button</button></td>
+            <td><button class="btn btn--destructive btn--md" disabled>Button</button></td>
+          </tr>
+          <tr>
+            <td>Outline</td>
+            <td><button class="btn btn--outline btn--sm">Button</button></td>
+            <td><button class="btn btn--outline btn--md">Button</button></td>
+            <td><button class="btn btn--outline btn--lg">Button</button></td>
+            <td><button class="btn btn--outline btn--md" disabled>Button</button></td>
+          </tr>
+          <tr>
+            <td>Ghost</td>
+            <td><button class="btn btn--ghost btn--sm">Button</button></td>
+            <td><button class="btn btn--ghost btn--md">Button</button></td>
+            <td><button class="btn btn--ghost btn--lg">Button</button></td>
+            <td><button class="btn btn--ghost btn--md" disabled>Button</button></td>
+          </tr>
+        </tbody>
+      </table>
+
+      <h3>Otros botones del sitio</h3>
+      <p class="ds-section-desc">Estos no forman parte del set "Button" de Figma — son estilos propios usados en el header.</p>
+      <div class="ds-inline-row">
+        <a href="#" class="pill pill--active" onclick="return false;">Work (pill activa)</a>
+        <a href="#" class="pill" onclick="return false;">About (pill)</a>
+        <a href="#" class="btn-dark" onclick="return false;">Get in Touch</a>
+      </div>
+    </section>
+
+  </main>
+
+</body>
+</html>

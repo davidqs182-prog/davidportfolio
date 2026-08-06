@@ -1,25 +1,10 @@
-/* ===== Variables globales =====
-   Guardamos los colores del diseño en "variables CSS" (--nombre)
-   para no repetir el mismo código de color por todo el archivo.
-   Si el diseño cambia de color, solo lo editamos aquí. */
-:root {
-  --color-bg: #f3f1ed;
-  --color-purple: #614685;
-  --color-dark: #111827;
-  --color-pill: #e5e5e0;
-  --color-pill-active: #d1d5db;
-  --color-text: #1f2937;
-
-  --font-display: "Work Sans", sans-serif;
-  --font-body: "Inter", sans-serif;
-
-  /* Layout grid (igual al de Figma): 12 columnas, 70px de margen
-     lateral, 20px de espacio entre columnas, sobre un frame de 1440px */
-  --grid-columns: 12;
-  --grid-margin: 70px;
-  --grid-gutter: 20px;
-  --grid-max-width: 1440px;
-}
+/* =====================================================================
+   ESTILOS DE PÁGINA
+   =====================================================================
+   Layout específico de esta página (portafolio). Los tokens (colores,
+   tipografía, grid) viven en tokens.css, y los componentes reutilizables
+   (botones, pills) en components.css — acá solo va la disposición de
+   las secciones de esta página en particular. */
 
 /* ===== Reset básico =====
    Los navegadores traen márgenes/paddings por defecto distintos
@@ -73,36 +58,6 @@ body {
   letter-spacing: 0.05em;
 }
 
-.pill {
-  display: inline-block;
-  padding: 8px 18px;
-  border-radius: 999px;
-  background-color: var(--color-pill);
-  color: var(--color-text);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-}
-
-.pill:hover {
-  background-color: var(--color-pill-active);
-}
-
-.pill--active {
-  background-color: var(--color-pill-active);
-}
-
-.btn-dark {
-  padding: 10px 20px;
-  border-radius: 999px;
-  background-color: var(--color-dark);
-  color: white;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-}
-
 /* ===== Hero ===== */
 .hero {
   display: flex;
@@ -121,7 +76,7 @@ body {
   font-family: var(--font-display);
   font-weight: 900;
   text-transform: uppercase;
-  color: var(--color-purple);
+  color: var(--color-brand);
   font-size: clamp(2.75rem, 15vw, 216.61px);
   line-height: 0.85;
   letter-spacing: -0.02em;
@@ -165,7 +120,7 @@ body {
   font-family: var(--font-display);
   font-weight: 900;
   text-transform: capitalize;
-  color: var(--color-purple);
+  color: var(--color-brand);
   font-size: clamp(2.75rem, 15vw, 216.61px);
   line-height: 0.85;
   letter-spacing: -0.02em;
