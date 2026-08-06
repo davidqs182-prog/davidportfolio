@@ -71,19 +71,37 @@
 })();
 
 // ===== Lazy-load de videos de proyecto =====
-// Los <video> de las tarjetas de "Work" no tienen atributo "src" en el
-// HTML (usan "data-src"), así que el navegador no descarga nada al
-// cargar la página. Recién cuando la tarjeta está por entrar en
-// pantalla, copiamos data-src -> src y arrancamos la reproducción.
+// Los <video> de las tarjetas de "Work" tienen adentro <source data-src>
+// en vez de "src" (ni en el video ni en los source), así que el navegador
+// no descarga nada al cargar la página. El navegador elige la primera
+// <source> que pueda reproducir (WebM primero, MP4 como respaldo).
+// Recién cuando la tarjeta está por entrar en pantalla, copiamos
+// data-src -> src en cada <source> y arrancamos la reproducción.
 (function () {
-  var lazyVideos = document.querySelectorAll("video[data-src]");
-  if (!lazyVideos.length) return;
+  var lazyVideos = document.querySelectorAll("video");
+  var videosToLoad = [];
+  lazyVideos.forEach(function (video) {
+    if (video.querySelector("source[data-src]")) {
+      videosToLoad.push(video);
+    }
+  });
+  if (!videosToLoad.length) return;
+
+  function loadVideo(video) {
+    video.querySelectorAll("source[data-src]").forEach(function (source) {
+      source.src = source.dataset.src;
+      source.removeAttribute("data-src");
+    });
+    video.load();
+    video.play().catch(function () {
+      // Si el navegador bloquea el autoplay, no pasa nada: el
+      // poster se queda visible como imagen estática.
+    });
+  }
 
   if (!("IntersectionObserver" in window)) {
     // Navegadores muy viejos: cargamos todo de una, sin lazy-load.
-    lazyVideos.forEach(function (video) {
-      video.src = video.dataset.src;
-    });
+    videosToLoad.forEach(loadVideo);
     return;
   }
 
@@ -91,21 +109,14 @@
     function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
-
-        var video = entry.target;
-        video.src = video.dataset.src;
-        video.removeAttribute("data-src");
-        video.play().catch(function () {
-          // Si el navegador bloquea el autoplay, no pasa nada: el
-          // poster se queda visible como imagen estática.
-        });
-        observer.unobserve(video);
+        loadVideo(entry.target);
+        observer.unobserve(entry.target);
       });
     },
     { rootMargin: "200px" }
   );
 
-  lazyVideos.forEach(function (video) {
+  videosToLoad.forEach(function (video) {
     observer.observe(video);
   });
 })();
