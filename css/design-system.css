@@ -167,3 +167,58 @@ body.ds {
   vertical-align: middle;
   margin-left: 4px;
 }
+
+/* ---------- Tooltip de tokens en los botones ----------
+   Solo existe en esta página de catálogo (no en el sitio real): al
+   pasar el mouse por un botón, un globo muestra qué variable de
+   color usa cada estado (Default/Hover/Disabled). Es puro CSS: el
+   texto vive en el atributo data-tokens del botón y se "imprime"
+   con content: attr(...) — no hace falta JavaScript. */
+.ds-btn-table td {
+  position: relative;
+}
+
+[data-tokens]::after {
+  content: attr(data-tokens);
+  position: absolute;
+  bottom: calc(100% + 10px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  background-color: var(--color-gray-900);
+  color: white;
+  font-family: var(--font-body);
+  font-size: 11px;
+  line-height: 1.5;
+  white-space: pre;
+  text-align: left;
+  padding: 8px 10px;
+  border-radius: 8px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 20;
+}
+
+[data-tokens]::before {
+  content: "";
+  position: absolute;
+  bottom: calc(100% + 4px);
+  left: 50%;
+  transform: translateX(-50%) translateY(4px);
+  border: 5px solid transparent;
+  border-top-color: var(--color-gray-900);
+  opacity: 0;
+  visibility: hidden;
+  pointer-events: none;
+  transition: opacity 0.15s ease, transform 0.15s ease;
+  z-index: 20;
+}
+
+[data-tokens]:hover::after,
+[data-tokens]:hover::before {
+  opacity: 1;
+  visibility: visible;
+  transform: translateX(-50%) translateY(0);
+}
