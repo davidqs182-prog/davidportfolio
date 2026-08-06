@@ -118,6 +118,24 @@
   background-color: #f2f2f7;
 }
 
+/* Estilo: Dark
+   No es una variante del componente "Button" original de Figma —
+   la agregamos nosotros: un "negro" que en realidad sale de la
+   misma escala púrpura (purple-900), para que combine con el resto
+   de la marca en vez de ser un gris/negro genérico. El hover se
+   aclara (purple-700) en vez de oscurecerse, al revés que Primary. */
+.btn--dark {
+  background-color: var(--color-purple-900);
+  color: var(--color-text-white);
+}
+.btn--dark:hover {
+  background-color: var(--color-purple-700);
+}
+.btn--dark:disabled,
+.btn--dark.is-disabled {
+  background-color: var(--color-purple-200);
+}
+
 /* ---------- Pill (nav) ----------
    El componente de navegación "Work / About" del header. */
 .pill {
