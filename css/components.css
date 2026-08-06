@@ -135,25 +135,3 @@
 .btn--dark.is-disabled {
   background-color: var(--color-purple-200);
 }
-
-/* ---------- Pill (nav) ----------
-   El componente de navegación "Work / About" del header. */
-.pill {
-  display: inline-block;
-  padding: 8px 18px;
-  border-radius: 999px;
-  background-color: var(--color-gray-200);
-  color: var(--color-text);
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-  transition: background-color 0.2s ease;
-}
-
-.pill:hover {
-  background-color: var(--color-gray-300);
-}
-
-.pill--active {
-  background-color: var(--color-gray-300);
-}
