@@ -139,17 +139,3 @@
 .pill--active {
   background-color: var(--color-gray-300);
 }
-
-/* ---------- Botón oscuro del header ----------
-   Ojo: este NO es ninguna de las 5 variantes del componente Button
-   de Figma (ese set no incluye una versión "dark/negra"). Es un
-   estilo aparte usado solo en el header por ahora. */
-.btn-dark {
-  padding: 10px 20px;
-  border-radius: 999px;
-  background-color: var(--color-dark);
-  color: white;
-  text-decoration: none;
-  font-size: 14px;
-  font-weight: 500;
-}
