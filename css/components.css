@@ -71,7 +71,7 @@
 
 /* Estilo: Secondary */
 .btn--secondary {
-  background-color: #f2f2f7;
+  background-color: var(--color-gray-200);
   color: var(--color-text-black);
 }
 .btn--secondary:hover {
