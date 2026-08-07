@@ -60,11 +60,16 @@
       </article>
 
       <article class="project-card">
+        <!-- data-play-at: fracción de la altura del video donde está la
+             línea blanco/rojo (medida en el archivo: y=1078 de 2160px
+             nativos = 0.499). El video empieza a reproducirse recién
+             cuando esa línea llega al borde inferior del viewport. -->
         <video
           class="project-card__video"
           poster="assets/animations/onboarding-tool/onboarding-poster.jpg"
           width="1920"
           height="2160"
+          data-play-at="0.499"
           muted
           loop
           playsinline

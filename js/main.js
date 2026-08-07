@@ -108,16 +108,25 @@
   });
   if (!videosToLoad.length) return;
 
+  function tryPlay(video) {
+    video.play().catch(function () {
+      // Si el navegador bloquea el autoplay, no pasa nada: el
+      // poster se queda visible como imagen estática.
+    });
+  }
+
   function loadVideo(video) {
     video.querySelectorAll("source[data-src]").forEach(function (source) {
       source.src = source.dataset.src;
       source.removeAttribute("data-src");
     });
     video.load();
-    video.play().catch(function () {
-      // Si el navegador bloquea el autoplay, no pasa nada: el
-      // poster se queda visible como imagen estática.
-    });
+    // Los videos con "data-play-at" arrancan la descarga acá (para que
+    // estén listos a tiempo) pero el play() lo dispara el bloque de
+    // abajo, en el punto exacto que pide ese atributo — no apenas cargan.
+    if (!video.dataset.playAt) {
+      tryPlay(video);
+    }
   }
 
   if (!("IntersectionObserver" in window)) {
@@ -140,4 +149,53 @@
   videosToLoad.forEach(function (video) {
     observer.observe(video);
   });
+})();
+
+// ===== Reproducción en un punto exacto de la pantalla =====
+// Algunos videos tienen "data-play-at" (un número entre 0 y 1): la
+// fracción de la altura del video donde hay una línea o quiebre visual
+// que nos interesa como disparador. En vez de reproducir apenas el video
+// entra en pantalla, esperamos a que esa línea puntual llegue al borde
+// inferior del viewport. Como se calcula con getBoundingClientRect() en
+// cada scroll, funciona igual sin importar el tamaño de la pantalla —
+// no son píxeles fijos, es la posición real del elemento en ese momento.
+(function () {
+  var timedVideos = document.querySelectorAll("video[data-play-at]");
+  if (!timedVideos.length) return;
+
+  var pending = Array.prototype.map.call(timedVideos, function (video) {
+    return { video: video, fraction: parseFloat(video.dataset.playAt), triggered: false };
+  });
+
+  function checkTriggers() {
+    var viewportBottom = window.innerHeight;
+
+    pending.forEach(function (entry) {
+      if (entry.triggered) return;
+
+      var rect = entry.video.getBoundingClientRect();
+      var lineY = rect.top + entry.fraction * rect.height;
+
+      if (lineY <= viewportBottom) {
+        entry.triggered = true;
+        entry.video.play().catch(function () {
+          // Autoplay bloqueado: el poster se queda como imagen estática
+          // hasta que el usuario interactúe con la página.
+        });
+      }
+    });
+
+    pending = pending.filter(function (entry) {
+      return !entry.triggered;
+    });
+
+    if (!pending.length) {
+      window.removeEventListener("scroll", checkTriggers);
+      window.removeEventListener("resize", checkTriggers);
+    }
+  }
+
+  window.addEventListener("scroll", checkTriggers, { passive: true });
+  window.addEventListener("resize", checkTriggers);
+  checkTriggers(); // por si ya arranca visible (pantallas muy altas)
 })();
