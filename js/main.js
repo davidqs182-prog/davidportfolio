@@ -3,11 +3,20 @@
 // control de posición exacta. Al detectar scroll hacia abajo, la animación
 // se reproduce hacia adelante como un video (30fps) hasta llegar al último
 // frame; scroll hacia arriba la reproduce en reversa hasta el frame 0.
+//
+// Solo reacciona mientras el personaje está visible en pantalla (usamos un
+// IntersectionObserver para saberlo). Al cargar la página el hero ya está
+// a la vista, así que el primer scroll hacia abajo la activa igual que
+// antes — lo que cambia es que si scrolleás mucho más abajo (por ejemplo
+// hasta "Work") y de ahí subís, la animación ya no salta de frame sin que
+// la estés viendo.
 (function () {
   var stageImg = document.getElementById("stageImg");
 
   // Si esta página no tiene el stage de animación, no hacemos nada.
   if (!stageImg) return;
+
+  var heroStage = document.querySelector(".hero__stage") || stageImg;
 
   var FRAME_COUNT = 121;
   var FRAME_DIR = "assets/animations/hero-guitar-scroll/frames/";
@@ -30,6 +39,17 @@
   var direction = 0;
   var isPlaying = false;
   var lastScrollY = window.scrollY;
+  // Al cargar la página el hero está a la vista, así que arrancamos
+  // asumiendo visible=true en vez de esperar al primer callback del
+  // observer (que llega un instante después del load).
+  var isStageVisible = true;
+
+  if ("IntersectionObserver" in window) {
+    var visibilityObserver = new IntersectionObserver(function (entries) {
+      isStageVisible = entries[0].isIntersecting;
+    });
+    visibilityObserver.observe(heroStage);
+  }
 
   function setFrame(nextFrame) {
     nextFrame = Math.min(FRAME_COUNT - 1, Math.max(0, nextFrame));
@@ -64,6 +84,7 @@
     lastScrollY = y;
 
     if (Math.abs(delta) < 1) return;
+    if (!isStageVisible) return;
     startPlaying(delta > 0 ? 1 : -1);
   }
 
