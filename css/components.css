@@ -157,4 +157,25 @@
   direction: ltr;
   font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
+  /* FILL 0 = variante Outlined (trazo, sin relleno) — la fuente es
+     variable y el navegador no siempre asume este eje por su cuenta,
+     así que se fija explícito en vez de confiar en el default. */
+  font-variation-settings:
+    "FILL" 0,
+    "wght" 400,
+    "GRAD" 0,
+    "opsz" 24;
+}
+
+/* Ícono "avanzar" — clase opt-in, no todos los íconos la llevan (un
+   ícono de "eliminar", por ejemplo, no debería deslizarse). Se usa en
+   botones tipo CTA ("Go to project"): al pasar el mouse por el botón,
+   el ícono se desliza suavemente hacia la derecha, reforzando la idea
+   de "seguir adelante". */
+.material-symbols-outlined.icon-forward {
+  transition: transform 0.2s ease;
+}
+
+.btn:hover .material-symbols-outlined.icon-forward {
+  transform: translateX(4px);
 }

@@ -35,6 +35,15 @@ inline dibujado a mano ni otra librería de íconos. Convención:
   (sección "Icons").
 - Cada ícono nuevo que se use se agrega a la sección "Íconos" de
   `design-system.html` — nombre del ícono, dónde se usa en el sitio.
+- Micro-animaciones de ícono (ej. deslizar en hover) van en una clase
+  opt-in aparte (ej. `.icon-forward`), nunca en `.material-symbols-outlined`
+  directo — así un ícono nuevo no hereda un movimiento que no le
+  corresponde (un ícono de "eliminar" no debería deslizarse como uno
+  de "avanzar").
+- En `design-system.html`, todas las variantes de un componente (con
+  ícono, sin ícono, tamaños, estados) van juntas en el mismo bloque/tabla,
+  en el orden ya establecido — nunca en secciones separadas por
+  "tiene X" vs "no tiene X".
 
 ## Otras convenciones ya establecidas
 

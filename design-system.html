@@ -177,18 +177,16 @@
             <td data-tokens="Default: --color-purple-900&#10;Hover: --color-purple-800&#10;Disabled: --color-purple-200"><button class="btn btn--dark btn--lg">Button</button></td>
             <td data-tokens="Default: --color-purple-900&#10;Hover: --color-purple-800&#10;Disabled: --color-purple-200"><button class="btn btn--dark btn--md" disabled>Button</button></td>
           </tr>
+          <tr>
+            <td>Primary + ícono <span class="ds-tag">extra</span></td>
+            <td data-tokens="Default: --color-purple-500&#10;Hover: --color-purple-700&#10;Disabled: --color-purple-200"><button class="btn btn--primary btn--sm">Go to project<span class="material-symbols-outlined icon-forward" aria-hidden="true">arrow_forward</span></button></td>
+            <td data-tokens="Default: --color-purple-500&#10;Hover: --color-purple-700&#10;Disabled: --color-purple-200"><button class="btn btn--primary btn--md">Go to project<span class="material-symbols-outlined icon-forward" aria-hidden="true">arrow_forward</span></button></td>
+            <td data-tokens="Default: --color-purple-500&#10;Hover: --color-purple-700&#10;Disabled: --color-purple-200"><button class="btn btn--primary btn--lg">Go to project<span class="material-symbols-outlined icon-forward" aria-hidden="true">arrow_forward</span></button></td>
+            <td data-tokens="Default: --color-purple-500&#10;Hover: --color-purple-700&#10;Disabled: --color-purple-200"><button class="btn btn--primary btn--md" disabled>Go to project<span class="material-symbols-outlined icon-forward" aria-hidden="true">arrow_forward</span></button></td>
+          </tr>
         </tbody>
       </table>
-      <p class="ds-section-desc"><span class="ds-tag">extra</span> = variante que agregamos nosotros, no viene del componente Button original de Figma. <strong>Dark</strong> usa Purple 900 (default) y Purple 800 (hover) — un "negro" que en realidad es parte de la escala de marca.</p>
-
-      <h3>Botón con ícono</h3>
-      <p class="ds-section-desc">Patrón usado en las tarjetas de "Work" (<code>Go to case study</code>): texto + ícono al final, separados por el <code>gap: 8px</code> que ya trae <code>.btn</code>.</p>
-      <div class="ds-inline-row">
-        <a href="#" class="btn btn--primary btn--lg" onclick="return false;">
-          Go to case study
-          <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
-        </a>
-      </div>
+      <p class="ds-section-desc"><span class="ds-tag">extra</span> = variante que agregamos nosotros, no viene del componente Button original de Figma. <strong>Dark</strong> usa Purple 900 (default) y Purple 800 (hover) — un "negro" que en realidad es parte de la escala de marca. <strong>Primary + ícono</strong> es el patrón usado en las tarjetas de "Work" (<code>Go to project</code>): texto + ícono al final (<code>gap: 8px</code> de <code>.btn</code>), con el ícono deslizándose a la derecha en hover — pasá el mouse por cualquiera de los tres tamaños para verlo.</p>
     </section>
 
     <!-- ===== Íconos ===== -->
@@ -207,7 +205,7 @@
         <div class="ds-icon-card">
           <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
           <span class="ds-icon-name">arrow_forward</span>
-          <span class="ds-icon-usage">Botón "Go to case study" (tarjetas de proyecto)</span>
+          <span class="ds-icon-usage">Botón "Go to project" (tarjetas de proyecto). Con la clase <code>icon-forward</code> agregada, se desliza a la derecha en hover — ver tabla de Botones.</span>
         </div>
       </div>
     </section>
