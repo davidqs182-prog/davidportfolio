@@ -121,6 +121,69 @@ body.ds {
   color: var(--color-text-black);
 }
 
+/* Escala de espaciado */
+.ds-space-row {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 10px 0;
+  border-bottom: 1px solid var(--color-gray-100);
+}
+
+.ds-space-label {
+  flex: 0 0 110px;
+  font-size: 12px;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.ds-space-bar {
+  display: block;
+  height: 12px;
+  background-color: var(--color-purple-300);
+  border-radius: 2px;
+}
+
+.ds-space-value {
+  font-size: 12px;
+  color: var(--color-gray-500);
+  font-variant-numeric: tabular-nums;
+}
+
+/* Íconos */
+.ds-icon-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+  gap: 16px;
+}
+
+.ds-icon-card {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 6px;
+  padding: 16px;
+  border: 1px solid var(--color-gray-200);
+  border-radius: 8px;
+}
+
+.ds-icon-card .material-symbols-outlined {
+  font-size: 28px;
+  color: var(--color-purple-500);
+}
+
+.ds-icon-name {
+  font-size: 12px;
+  font-weight: 600;
+  font-family: monospace;
+}
+
+.ds-icon-usage {
+  font-size: 11px;
+  color: var(--color-gray-500);
+  line-height: 1.4;
+}
+
 /* Tabla de botones */
 .ds-btn-table {
   border-collapse: collapse;

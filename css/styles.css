@@ -184,3 +184,9 @@ body {
   line-height: var(--text-body-lg-line);
   color: var(--color-text-black);
 }
+
+.project-card__cta {
+  display: flex;
+  justify-content: flex-start;
+  margin-top: var(--space-24);
+}

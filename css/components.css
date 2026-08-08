@@ -135,3 +135,26 @@
 .btn--dark.is-disabled {
   background-color: var(--color-purple-200);
 }
+
+/* ---------- Icons ----------
+   Íconos de Google Material Symbols (Outlined) — nunca SVG dibujado a
+   mano. El nombre del ícono va como texto adentro del <span> (ej.
+   "arrow_forward"); la fuente lo convierte en el glifo. El color sale
+   solo de `color` (currentColor), así que dentro de un .btn ya toma
+   el color de texto del botón sin configurar nada aparte. CSS base
+   tal cual la provee Google. */
+.material-symbols-outlined {
+  font-family: "Material Symbols Outlined";
+  font-weight: normal;
+  font-style: normal;
+  font-size: 20px;
+  line-height: 1;
+  letter-spacing: normal;
+  text-transform: none;
+  display: inline-block;
+  white-space: nowrap;
+  word-wrap: normal;
+  direction: ltr;
+  font-feature-settings: "liga";
+  -webkit-font-smoothing: antialiased;
+}

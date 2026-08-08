@@ -6,6 +6,7 @@
   <title>Design System — David Quirós</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/design-system.css">
@@ -95,6 +96,31 @@
       <div class="ds-type-row"><span class="ds-type-label">Overline · 10 / 14</span><p class="ds-type-sample" style="font-family:var(--font-body); font-weight:600; font-size:var(--text-overline-size); line-height:var(--text-overline-line); letter-spacing:var(--text-overline-tracking); text-transform:uppercase;">Caso de estudio</p></div>
     </section>
 
+    <!-- ===== Espaciado ===== -->
+    <section class="ds-section" id="spacing">
+      <h2>Espaciado</h2>
+      <p class="ds-section-desc">
+        A diferencia de los colores y la tipografía, Figma no tiene un componente
+        "Spacing Scale" de referencia — es una escala de múltiplos de 4px que armamos
+        nosotros (<code>--space-*</code> en <code>tokens.css</code>) para no repetir
+        números sueltos en el CSS. Valores puntuales medidos directo de Figma (como el
+        gap de 146px entre tarjetas, o los márgenes negativos del hero) se dejan
+        literales a propósito — no son parte de esta escala reutilizable.
+      </p>
+
+      <div class="ds-space-row"><span class="ds-space-label">--space-4</span><span class="ds-space-bar" style="width:var(--space-4)"></span><span class="ds-space-value">4px</span></div>
+      <div class="ds-space-row"><span class="ds-space-label">--space-8</span><span class="ds-space-bar" style="width:var(--space-8)"></span><span class="ds-space-value">8px</span></div>
+      <div class="ds-space-row"><span class="ds-space-label">--space-12</span><span class="ds-space-bar" style="width:var(--space-12)"></span><span class="ds-space-value">12px</span></div>
+      <div class="ds-space-row"><span class="ds-space-label">--space-16</span><span class="ds-space-bar" style="width:var(--space-16)"></span><span class="ds-space-value">16px</span></div>
+      <div class="ds-space-row"><span class="ds-space-label">--space-24</span><span class="ds-space-bar" style="width:var(--space-24)"></span><span class="ds-space-value">24px</span></div>
+      <div class="ds-space-row"><span class="ds-space-label">--space-32</span><span class="ds-space-bar" style="width:var(--space-32)"></span><span class="ds-space-value">32px</span></div>
+      <div class="ds-space-row"><span class="ds-space-label">--space-40</span><span class="ds-space-bar" style="width:var(--space-40)"></span><span class="ds-space-value">40px</span></div>
+      <div class="ds-space-row"><span class="ds-space-label">--space-48</span><span class="ds-space-bar" style="width:var(--space-48)"></span><span class="ds-space-value">48px</span></div>
+      <div class="ds-space-row"><span class="ds-space-label">--space-60</span><span class="ds-space-bar" style="width:var(--space-60)"></span><span class="ds-space-value">60px</span></div>
+      <div class="ds-space-row"><span class="ds-space-label">--space-64</span><span class="ds-space-bar" style="width:var(--space-64)"></span><span class="ds-space-value">64px</span></div>
+      <div class="ds-space-row"><span class="ds-space-label">--space-96</span><span class="ds-space-bar" style="width:var(--space-96)"></span><span class="ds-space-value">96px</span></div>
+    </section>
+
     <!-- ===== Botones ===== -->
     <section class="ds-section" id="buttons">
       <h2>Botones</h2>
@@ -154,6 +180,36 @@
         </tbody>
       </table>
       <p class="ds-section-desc"><span class="ds-tag">extra</span> = variante que agregamos nosotros, no viene del componente Button original de Figma. <strong>Dark</strong> usa Purple 900 (default) y Purple 800 (hover) — un "negro" que en realidad es parte de la escala de marca.</p>
+
+      <h3>Botón con ícono</h3>
+      <p class="ds-section-desc">Patrón usado en las tarjetas de "Work" (<code>Go to case study</code>): texto + ícono al final, separados por el <code>gap: 8px</code> que ya trae <code>.btn</code>.</p>
+      <div class="ds-inline-row">
+        <a href="#" class="btn btn--primary btn--lg" onclick="return false;">
+          Go to case study
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+        </a>
+      </div>
+    </section>
+
+    <!-- ===== Íconos ===== -->
+    <section class="ds-section" id="icons">
+      <h2>Íconos</h2>
+      <p class="ds-section-desc">
+        Siempre <a href="https://fonts.google.com/icons" target="_blank" rel="noopener">Google Material Symbols</a>
+        (variante Outlined) — nunca SVG dibujado a mano. Se cargan como fuente de íconos
+        y se marcan con <code>&lt;span class="material-symbols-outlined"&gt;nombre_del_icono&lt;/span&gt;</code>;
+        el color sale de <code>currentColor</code>, así que dentro de un botón ya toma el
+        color de texto del botón sin configurar nada aparte. Clase base en
+        <code>css/components.css</code>. Esta lista solo tiene los íconos que ya usamos
+        en el sitio — se agrega uno acá cada vez que se suma uno nuevo.
+      </p>
+      <div class="ds-icon-row">
+        <div class="ds-icon-card">
+          <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+          <span class="ds-icon-name">arrow_forward</span>
+          <span class="ds-icon-usage">Botón "Go to case study" (tarjetas de proyecto)</span>
+        </div>
+      </div>
     </section>
 
   </main>
