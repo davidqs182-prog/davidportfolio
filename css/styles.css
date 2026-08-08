@@ -165,7 +165,7 @@ body {
 }
 
 .project-card__title {
-  margin-top: 28px;
+  margin-top: 24px;
   font-family: var(--font-body);
   font-size: 18px;
   font-weight: 600;
@@ -173,7 +173,7 @@ body {
 }
 
 .project-card__description {
-  margin-top: 23px;
+  margin-top: 8px;
   max-width: 900px;
   font-family: var(--font-body);
   font-size: var(--text-body-lg-size);
