@@ -97,4 +97,23 @@
   --grid-margin: 70px;
   --grid-gutter: 20px;
   --grid-max-width: 1440px;
+
+  /* ---------- Espaciado ----------
+     A diferencia de los colores y la tipografía, Figma no tiene un
+     componente "Spacing Scale" del que copiar estos valores — es una
+     escala de múltiplos de 4px que armamos nosotros para no repetir
+     números sueltos por todo el CSS. Cubre los valores que ya se
+     usaban en el sitio (8, 24, 40, 60) más los pasos intermedios de
+     una progresión estándar, para tener de dónde elegir a futuro. */
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-60: 60px;
+  --space-64: 64px;
+  --space-96: 96px;
 }

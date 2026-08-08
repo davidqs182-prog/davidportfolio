@@ -44,12 +44,12 @@ body {
   display: flex;
   align-items: center;
   justify-content: space-between;
-  padding-block: 24px;
+  padding-block: var(--space-24);
 }
 
 .navbar__links {
   display: flex;
-  gap: 8px;
+  gap: var(--space-8);
 }
 
 .navbar__name {
@@ -64,7 +64,7 @@ body {
   flex-direction: column;
   align-items: center;
   text-align: center;
-  padding-block: 40px 60px;
+  padding-block: var(--space-40) var(--space-60);
 }
 
 /* Tamaño real en Figma: 216.61px sobre un frame de 1440px de ancho
@@ -131,9 +131,13 @@ body {
    colgando de una feria, proyecto "Leo"): la imagen ocupa el ancho
    completo del container, sin bordes redondeados. */
 .work-list {
-  padding-block: 0 60px;
+  padding-block: 0 var(--space-60);
 }
 
+/* 146px es una medida puntual del gap entre tarjetas en el Figma, no
+   un múltiplo de la escala general — se deja como valor literal en
+   vez de forzarla dentro de --space-* (mismo criterio que las medidas
+   del hero más abajo). */
 .project-card {
   margin-bottom: 146px;
 }
@@ -165,7 +169,7 @@ body {
 }
 
 .project-card__title {
-  margin-top: 24px;
+  margin-top: var(--space-24);
   font-family: var(--font-body);
   font-size: 18px;
   font-weight: 600;
@@ -173,7 +177,7 @@ body {
 }
 
 .project-card__description {
-  margin-top: 8px;
+  margin-top: var(--space-8);
   max-width: 900px;
   font-family: var(--font-body);
   font-size: var(--text-body-lg-size);
