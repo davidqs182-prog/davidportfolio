@@ -20,23 +20,23 @@ espaciado). Componentes reutilizables: `css/components.css`.
 ## Íconos: siempre Google Material Symbols
 
 Todos los íconos del sitio usan la fuente de íconos de Google
-(**Material Symbols Outlined** — `fonts.google.com/icons`), nunca SVG
+(**Material Symbols Rounded** — `fonts.google.com/icons`), nunca SVG
 inline dibujado a mano ni otra librería de íconos. Convención:
 
 - Cargar la fuente vía Google Fonts en el `<head>` de cada página que
   use íconos (ya está en `index.html` y `design-system.html`).
-- Marcado: `<span class="material-symbols-outlined" aria-hidden="true">nombre_del_icono</span>`
+- Marcado: `<span class="material-symbols-rounded" aria-hidden="true">nombre_del_icono</span>`
   (el nombre es el identificador de Google, ej. `arrow_forward`). Si el
   ícono es puramente decorativo (acompaña texto visible, como en un
   botón), lleva `aria-hidden="true"`; si es el único contenido
   significativo de un control, el control necesita su propio
   `aria-label`.
-- Clase base `.material-symbols-outlined` vive en `css/components.css`
+- Clase base `.material-symbols-rounded` vive en `css/components.css`
   (sección "Icons").
 - Cada ícono nuevo que se use se agrega a la sección "Íconos" de
   `design-system.html` — nombre del ícono, dónde se usa en el sitio.
 - Micro-animaciones de ícono (ej. deslizar en hover) van en una clase
-  opt-in aparte (ej. `.icon-forward`), nunca en `.material-symbols-outlined`
+  opt-in aparte (ej. `.icon-forward`), nunca en `.material-symbols-rounded`
   directo — así un ícono nuevo no hereda un movimiento que no le
   corresponde (un ícono de "eliminar" no debería deslizarse como uno
   de "avanzar").

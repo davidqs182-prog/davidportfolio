@@ -6,7 +6,7 @@
   <title>Design System — David Quirós</title>
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
-  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components.css">
   <link rel="stylesheet" href="css/design-system.css">
@@ -179,10 +179,10 @@
           </tr>
           <tr>
             <td>Primary + ícono <span class="ds-tag">extra</span></td>
-            <td data-tokens="Default: --color-purple-500&#10;Hover: --color-purple-700&#10;Disabled: --color-purple-200"><button class="btn btn--primary btn--sm">Go to project<span class="material-symbols-outlined icon-forward" aria-hidden="true">arrow_forward</span></button></td>
-            <td data-tokens="Default: --color-purple-500&#10;Hover: --color-purple-700&#10;Disabled: --color-purple-200"><button class="btn btn--primary btn--md">Go to project<span class="material-symbols-outlined icon-forward" aria-hidden="true">arrow_forward</span></button></td>
-            <td data-tokens="Default: --color-purple-500&#10;Hover: --color-purple-700&#10;Disabled: --color-purple-200"><button class="btn btn--primary btn--lg">Go to project<span class="material-symbols-outlined icon-forward" aria-hidden="true">arrow_forward</span></button></td>
-            <td data-tokens="Default: --color-purple-500&#10;Hover: --color-purple-700&#10;Disabled: --color-purple-200"><button class="btn btn--primary btn--md" disabled>Go to project<span class="material-symbols-outlined icon-forward" aria-hidden="true">arrow_forward</span></button></td>
+            <td data-tokens="Default: --color-purple-500&#10;Hover: --color-purple-700&#10;Disabled: --color-purple-200"><button class="btn btn--primary btn--sm">Go to project<span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span></button></td>
+            <td data-tokens="Default: --color-purple-500&#10;Hover: --color-purple-700&#10;Disabled: --color-purple-200"><button class="btn btn--primary btn--md">Go to project<span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span></button></td>
+            <td data-tokens="Default: --color-purple-500&#10;Hover: --color-purple-700&#10;Disabled: --color-purple-200"><button class="btn btn--primary btn--lg">Go to project<span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span></button></td>
+            <td data-tokens="Default: --color-purple-500&#10;Hover: --color-purple-700&#10;Disabled: --color-purple-200"><button class="btn btn--primary btn--md" disabled>Go to project<span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span></button></td>
           </tr>
         </tbody>
       </table>
@@ -194,8 +194,8 @@
       <h2>Íconos</h2>
       <p class="ds-section-desc">
         Siempre <a href="https://fonts.google.com/icons" target="_blank" rel="noopener">Google Material Symbols</a>
-        (variante Outlined) — nunca SVG dibujado a mano. Se cargan como fuente de íconos
-        y se marcan con <code>&lt;span class="material-symbols-outlined"&gt;nombre_del_icono&lt;/span&gt;</code>;
+        (variante Rounded) — nunca SVG dibujado a mano. Se cargan como fuente de íconos
+        y se marcan con <code>&lt;span class="material-symbols-rounded"&gt;nombre_del_icono&lt;/span&gt;</code>;
         el color sale de <code>currentColor</code>, así que dentro de un botón ya toma el
         color de texto del botón sin configurar nada aparte. Clase base en
         <code>css/components.css</code>. Esta lista solo tiene los íconos que ya usamos
@@ -203,7 +203,7 @@
       </p>
       <div class="ds-icon-row">
         <div class="ds-icon-card">
-          <span class="material-symbols-outlined" aria-hidden="true">arrow_forward</span>
+          <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
           <span class="ds-icon-name">arrow_forward</span>
           <span class="ds-icon-usage">Botón "Go to project" (tarjetas de proyecto). Con la clase <code>icon-forward</code> agregada, se desliza a la derecha en hover — ver tabla de Botones.</span>
         </div>

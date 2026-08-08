@@ -167,7 +167,7 @@ body.ds {
   border-radius: 8px;
 }
 
-.ds-icon-card .material-symbols-outlined {
+.ds-icon-card .material-symbols-rounded {
   font-size: 28px;
   color: var(--color-purple-500);
 }

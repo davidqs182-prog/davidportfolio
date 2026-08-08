@@ -137,14 +137,14 @@
 }
 
 /* ---------- Icons ----------
-   Íconos de Google Material Symbols (Outlined) — nunca SVG dibujado a
+   Íconos de Google Material Symbols (Rounded) — nunca SVG dibujado a
    mano. El nombre del ícono va como texto adentro del <span> (ej.
    "arrow_forward"); la fuente lo convierte en el glifo. El color sale
    solo de `color` (currentColor), así que dentro de un .btn ya toma
    el color de texto del botón sin configurar nada aparte. CSS base
    tal cual la provee Google. */
-.material-symbols-outlined {
-  font-family: "Material Symbols Outlined";
+.material-symbols-rounded {
+  font-family: "Material Symbols Rounded";
   font-weight: normal;
   font-style: normal;
   font-size: 20px;
@@ -157,9 +157,9 @@
   direction: ltr;
   font-feature-settings: "liga";
   -webkit-font-smoothing: antialiased;
-  /* FILL 0 = variante Outlined (trazo, sin relleno) — la fuente es
-     variable y el navegador no siempre asume este eje por su cuenta,
-     así que se fija explícito en vez de confiar en el default. */
+  /* FILL 0 = trazo, sin relleno — la fuente es variable y el navegador
+     no siempre asume este eje por su cuenta, así que se fija explícito
+     en vez de confiar en el default. */
   font-variation-settings:
     "FILL" 0,
     "wght" 400,
@@ -172,10 +172,10 @@
    botones tipo CTA ("Go to project"): al pasar el mouse por el botón,
    el ícono se desliza suavemente hacia la derecha, reforzando la idea
    de "seguir adelante". */
-.material-symbols-outlined.icon-forward {
+.material-symbols-rounded.icon-forward {
   transition: transform 0.2s ease;
 }
 
-.btn:hover .material-symbols-outlined.icon-forward {
+.btn:hover .material-symbols-rounded.icon-forward {
   transform: translateX(4px);
 }
