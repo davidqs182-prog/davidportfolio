@@ -47,15 +47,16 @@ body {
   padding-block: var(--space-24);
 }
 
-.navbar__links {
-  display: flex;
-  gap: var(--space-8);
+.navbar__logo {
+  display: block;
+  height: 22px;
+  width: auto;
 }
 
-.navbar__name {
-  font-size: 13px;
-  font-weight: 600;
-  letter-spacing: 0.05em;
+.navbar__links {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
 }
 
 /* ===== Hero ===== */
