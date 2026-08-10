@@ -1,5 +1,10 @@
 param([int]$Port = 8080, [string]$Root = (Get-Location).Path)
 
+# Si el harness asigna un puerto distinto (porque 8080 ya está en uso
+# por otra sesión), lo pasa por la variable de entorno PORT — la
+# preferimos sobre el default/param cuando esté presente.
+if ($env:PORT) { $Port = [int]$env:PORT }
+
 Add-Type -AssemblyName System.Net.HttpListener -ErrorAction SilentlyContinue
 $listener = New-Object System.Net.HttpListener
 $listener.Prefixes.Add("http://localhost:$Port/")
