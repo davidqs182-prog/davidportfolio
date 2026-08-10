@@ -12,7 +12,12 @@
 
 :root {
   /* ---------- Color / Purple ----------
-     Escala completa tal cual está en Figma (purple-tint-palette). */
+     50-900 tal cual está en Figma (purple-tint-palette). 950 es un
+     agregado nuestro (no está en Figma) para el botón Dark — 900 no
+     se sentía lo bastante "negro" para un estado enabled; se calculó
+     siguiendo la misma progresión de oscurecimiento que ya traía la
+     escala (~0.64x por escalón desde 900), no un negro puro, para que
+     se mantenga dentro de la familia de la marca. */
   --color-purple-50: #f6f4fa;
   --color-purple-100: #edeaf5;
   --color-purple-200: #dbd5ec;
@@ -23,6 +28,7 @@
   --color-purple-700: #422e63;
   --color-purple-800: #31214f;
   --color-purple-900: #1c1335;
+  --color-purple-950: #120c22;
 
   /* ---------- Color / Gray ----------
      Escala completa tal cual está en Figma (Frame 793 "Gray"). */
