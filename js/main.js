@@ -70,7 +70,60 @@
     setTimeout(tick, FPS_MS);
   }
 
+  // ===== Texto de presentación (máquina de escribir) =====
+  // Arranca una sola vez, junto con el primer scroll que pone a andar
+  // la animación del avatar. El texto real y completo (ya "corregido",
+  // sin el chiste del tachado) vive en el aria-label del <p> (ver
+  // index.html); acá solo llenamos los <span> visuales letra por
+  // letra — son aria-hidden, no los lee un lector de pantalla.
+  // Se tipea en 5 tramos: "David Quirós" va en medium (.hero__intro-name,
+  // el resto en regular) y "Costa Rica" va tachado (.hero__intro-strike).
+  var introSegEls = document.querySelectorAll(".hero__intro-seg");
+  var introCursorEl = document.querySelector(".hero__intro-cursor");
+  var INTRO_SEGMENTS = [
+    "Hi! I am ",
+    "David Quirós",
+    ", a product designer based in ",
+    "Costa Rica",
+    " Germany.",
+  ];
+  var INTRO_TYPE_SPEED_MS = 35;
+  var introTriggered = false;
+
+  function typeIntroText() {
+    if (!introSegEls.length) return;
+    if (introCursorEl) introCursorEl.classList.add("is-active");
+    var segIndex = 0;
+    var charIndex = 0;
+
+    function typeChar() {
+      if (segIndex >= INTRO_SEGMENTS.length) {
+        // El cursor se queda parpadeando (ver @keyframes hero-intro-blink,
+        // ya es infinite) en vez de desaparecer al terminar de tipear.
+        return;
+      }
+
+      var segText = INTRO_SEGMENTS[segIndex];
+      introSegEls[segIndex].textContent = segText.slice(0, charIndex);
+
+      if (charIndex >= segText.length) {
+        segIndex++;
+        charIndex = 0;
+      } else {
+        charIndex++;
+      }
+
+      setTimeout(typeChar, INTRO_TYPE_SPEED_MS);
+    }
+    typeChar();
+  }
+
   function startPlaying(newDirection) {
+    if (!introTriggered) {
+      introTriggered = true;
+      typeIntroText();
+    }
+
     direction = newDirection;
     if (!isPlaying) {
       isPlaying = true;

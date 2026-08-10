@@ -115,6 +115,73 @@ body {
   display: block;
 }
 
+/* ===== Intro con efecto de máquina de escribir =====
+   Aparece una sola vez, la primera vez que arranca la animación de
+   scroll del avatar (ver main.js, primer bloque). El texto completo
+   real vive en el aria-label del <p> — el <span> que se va llenando
+   letra por letra es aria-hidden, así un lector de pantalla escucha
+   la frase completa de una vez en vez del tipeo letra por letra.
+
+   El PNG del avatar (828px nativo de ancho) tiene relleno transparente
+   también a la izquierda, no solo arriba/abajo: medido con canvas +
+   getImageData en varios frames (0, 45, 120), el píxel visible más a
+   la izquierda del personaje aparece recién en ~23% del ancho del
+   frame (los frames de reposo, 0 y 120, son los que más se acercan;
+   con la mano levantada el brazo queda más adentro, no más afuera).
+   Por eso NO se ancla con right:100% (eso deja ~145px de aire
+   invisible antes de tocar al personaje) — se usa right:80% para que
+   el borde derecho del texto quede a solo unos px del punto real donde
+   empieza a verse el personaje, en vez del borde del <img>. */
+.hero__intro {
+  position: absolute;
+  top: calc(14% + 40px);
+  right: 80%;
+  width: 267px;
+  font-family: var(--font-body);
+  font-weight: 400;
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--color-text-black);
+  text-align: center;
+}
+
+/* Solo el nombre va en medium (600), como en el navbar — el resto de
+   la frase queda en regular. */
+.hero__intro-name {
+  font-weight: 600;
+}
+
+/* "Costa Rica" tachado, como corrigiéndose a "Germany" — chiste
+   visual, no informativo, por eso el aria-label del <p> ya dice
+   directamente "based in Germany" en vez de intentar leer el tachado. */
+.hero__intro-strike {
+  text-decoration: line-through;
+}
+
+/* Oculto (display:none, no opacity) hasta que arranca el tipeo — ver
+   main.js, recién ahí se le agrega .is-active. display:none en vez de
+   opacity:0 porque si no, el keyframe de blink (que anima opacity)
+   pisaría el valor base y el cursor nunca se vería. */
+.hero__intro-cursor {
+  display: none;
+  width: 2px;
+  height: 1em;
+  margin-left: 2px;
+  vertical-align: text-bottom;
+  background-color: currentColor;
+}
+
+.hero__intro-cursor.is-active {
+  display: inline-block;
+  animation: hero-intro-blink 0.8s steps(1, start) infinite;
+}
+
+@keyframes hero-intro-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
 .hero__subtitle {
   position: relative;
   z-index: 0;
