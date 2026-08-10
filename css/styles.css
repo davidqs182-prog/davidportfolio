@@ -219,8 +219,16 @@ body {
 /* 146px es una medida puntual del gap entre tarjetas en el Figma, no
    un múltiplo de la escala general — se deja como valor literal en
    vez de forzarla dentro de --space-* (mismo criterio que las medidas
-   del hero más abajo). */
+   del hero más abajo).
+
+   max-width: 1080px = 10 columnas del grid de 12 (--grid-columns),
+   calculado con la misma fórmula del grid: 10 columnas de 90px
+   (colWidth = (1300 - 11*20) / 12) + 9 gutters de --grid-gutter (20px)
+   = 900 + 180 = 1080px. Comparado en vivo contra 12 (ancho completo)
+   y 8 columnas (860px) antes de elegir esta opción. */
 .project-card {
+  max-width: 1080px;
+  margin-inline: auto;
   margin-bottom: 146px;
 }
 
