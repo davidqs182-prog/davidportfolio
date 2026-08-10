@@ -266,9 +266,14 @@ body {
   color: var(--color-text-black);
 }
 
+/* max-width bajado de 900px a 600px: a 900px las líneas llegaban a
+   113-116 caracteres en desktop (medido con Range/getBoundingClientRect
+   por carácter), muy por encima del límite citable de WCAG 2.1 SC 1.4.8
+   (~80 caracteres) y del rango tipográfico ideal (45-75). A 600px
+   quedan en ~75-78 caracteres. */
 .project-card__description {
   margin-top: var(--space-8);
-  max-width: 900px;
+  max-width: 600px;
   font-family: var(--font-body);
   font-size: var(--text-body-lg-size);
   line-height: var(--text-body-lg-line);
