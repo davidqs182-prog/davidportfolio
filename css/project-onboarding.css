@@ -28,44 +28,46 @@
   background-color: var(--color-surface-project);
 }
 
-/* height: 600px — probando este valor a pedido de David (el original
-   de Figma era 685px). El video queda con position:absolute + bottom:0
-   (ver .project-hero__media) para garantizar "pegado al borde
-   inferior" pase lo que pase con el título — mismo patrón que
-   .hero__intro en styles.css (position absoluta dentro de un
-   contenedor position:relative). */
+/* height: 512px = 600px (header + hero combinados, a pedido de David)
+   menos los 88px que ya mide el header (.navbar--project) — el header
+   no se toca, así que este es el único que se ajusta para que la
+   suma dé justo 600px.
+
+   El video queda con position:absolute + bottom:0 (ver
+   .project-hero__media) para garantizar "pegado al borde inferior"
+   pase lo que pase con el título — mismo patrón que .hero__intro en
+   styles.css (position absoluta dentro de un contenedor
+   position:relative). */
 .project-hero {
   position: relative;
-  height: 600px;
+  height: 512px;
   background-color: var(--color-surface-project);
   padding-top: 0;
   text-align: center;
 }
 
-/* Tamaño real en Figma: 79.44px sobre un frame de 1440px de ancho
-   (79.44 / 1440 ≈ 5.5vw) — misma técnica de clamp() que .hero__title
-   en styles.css, escala en pantallas chicas sin pasar el tamaño de
-   Figma en las grandes.
-
-   Fuente real: DIN Next LT Pro Bold (@font-face en components.css,
-   archivo licenciado por Fischbach) — font-weight: 700, no 900, es
-   el peso que trae ese archivo. */
+/* El título dejó de ser texto ("Onboarding Tool") — ahora es el
+   logo de Fischbach (<img> adentro del <h1>, para no perder el h1
+   semántico de la página aunque visualmente sea una imagen). Alto
+   fijo de 36px, ancho automático (conserva la proporción real del
+   SVG, 200×44). padding-top separado del <h1> en vez de estar en
+   .project-hero, para que sea fácil de ajustar si el logo cambia de
+   tamaño sin tocar el alto total del hero. */
 .project-hero__title {
-  font-family: var(--font-din-next);
-  font-weight: 700;
-  font-size: clamp(2rem, 5.5vw, 79.44px);
-  line-height: 1.12;
-  color: var(--color-text-black);
+  padding-top: var(--space-32);
 }
 
-/* width: 860px = 8 columnas del grid de 12 (--grid-columns), misma
-   fórmula ya usada en .project-card (styles.css): 8 columnas de 90px
-   (colWidth = (1300 - 11*20) / 12) + 7 gutters de --grid-gutter (20px)
-   = 720 + 140 = 860px. Coincide con lo medido en Figma (867px, ~8
-   columnas, centrado). El min() dentro del width dice "esas 8
-   columnas, pero nunca más angosto que el margen del grid" — así en
-   pantallas más chicas se va angostando en vez de desbordar (ya
-   preparado para cuando trabajemos los breakpoints).
+.project-hero__title img {
+  height: 36px;
+  width: auto;
+}
+
+/* width: 800px — bajado de las 8 columnas (860px) porque con el hero
+   a 512px (ver arriba) el video a 860px de ancho medía 449px de alto
+   y pisaba 26px el título. 800px da ~417px de alto, que ya entra
+   entero debajo del título sin superponerse (medido en vivo, no
+   calculado a ojo). Ya no es un múltiplo limpio de columnas del
+   grid — es una medida de "hace que quepa", documentada como tal.
 
    position:absolute + bottom:0 + left:50%/translateX(-50%): centrado
    horizontal y pegado al borde inferior de .project-hero,
@@ -75,11 +77,83 @@
   bottom: 0;
   left: 50%;
   transform: translateX(-50%);
-  width: min(860px, calc(100% - 2 * var(--grid-margin)));
+  width: min(800px, calc(100% - 2 * var(--grid-margin)));
 }
 
 .project-hero__video {
   display: block;
   width: 100%;
   height: auto;
+}
+
+/* ===== "About the project" =====
+   Sección nueva, pegada al patrón visual que trajo David de
+   referencia (eyebrow + titular grande + dos párrafos a la izquierda,
+   ficha de datos Role/Team/Timeline a la derecha) — pero construida
+   100% con tokens que ya existían, no se agregó ningún color/tamaño
+   nuevo:
+   - Eyebrow y las etiquetas de la ficha (.project-about__label):
+     misma escala Overline de tokens.css (10px/14px, tracking 0.15em)
+     que ya se cataloga en design-system.html.
+   - Titular: escala H1 de tokens.css (45px/52px) — en la referencia
+     el titular es más grande y en una serif, pero acá no sumamos una
+     fuente nueva para esto: se usa Work Sans (--font-display), que ya
+     es la fuente de títulos del sitio.
+   - Párrafos: mismo font-size/line-height que .project-card__description
+     en styles.css (--text-body-lg-*), con el mismo max-width:600px ya
+     validado ahí por longitud de línea (WCAG 1.4.8 / ~75 caracteres).
+   - Layout de 2 columnas: reusa .grid-12 (ya definida en styles.css)
+     en vez de armar un grid nuevo — contenido en columnas 1-8, ficha
+     en 10-12 (la 9 queda como separador visual, sin necesidad de un
+     margin-left suelto). */
+.project-about {
+  padding-block: var(--space-96);
+}
+
+.project-about__content {
+  grid-column: 1 / 9;
+}
+
+.project-about__label {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-line);
+  letter-spacing: var(--text-overline-tracking);
+  text-transform: uppercase;
+  color: var(--color-text-black);
+}
+
+.project-about__headline {
+  margin-top: var(--space-16);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-h1-size);
+  line-height: var(--text-h1-line);
+  color: var(--color-text-black);
+}
+
+.project-about__body {
+  margin-top: var(--space-24);
+  max-width: 600px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--color-text-black);
+}
+
+.project-about__meta {
+  grid-column: 10 / 13;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+}
+
+.project-about__meta-item dd {
+  margin-top: var(--space-8);
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  color: var(--color-gray-600);
 }
