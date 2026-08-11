@@ -9,6 +9,20 @@
    pseudo-clases (:hover, :disabled) que el navegador aplica solo.
    ===================================================================== */
 
+/* ---------- Fonts ----------
+   Fuentes de Google (Work Sans, Inter, Material Symbols) se cargan
+   vía <link> en el <head> de cada página. DIN Next LT Pro es una
+   fuente paga (licencia de Fischbach), self-hosted acá porque no
+   tiene un <link> externo — solo el peso Bold/700, el único que usa
+   el sitio hoy (título de las páginas de proyecto). */
+@font-face {
+  font-family: "DIN Next LT Pro";
+  src: url("../assets/fonts/din-next-lt-pro/DINNextLTPro-Bold.otf") format("opentype");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ---------- Button ----------
    Fuente: componente "Button" de Figma (5 estilos x 3 tamaños x 3
    estados). Los colores de "Secondary"/"Outline"/"Ghost" son valores

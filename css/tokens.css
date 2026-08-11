@@ -60,6 +60,12 @@
   --color-text-white: #f3f1ed;
   --color-brand: var(--color-purple-500);
   --color-dark: var(--color-gray-900);
+  /* Fondo del header + hero en las páginas de detalle de proyecto
+     (ej. Onboarding Tool) — #EBEBEB tal cual en Figma. Ahí tampoco es
+     un token de su escala Gray, es un valor literal local al frame,
+     por eso lo tratamos igual acá: alias semántico, no parte de la
+     escala --color-gray-*. */
+  --color-surface-project: #ebebeb;
 
   /* ---------- Tipografía ----------
      Familias realmente usadas en los componentes (el "Typographic
@@ -68,6 +74,14 @@
      usan). */
   --font-display: "Work Sans", sans-serif;
   --font-body: "Inter", sans-serif;
+
+  /* Fuente paga (Fischbach la tiene licenciada), usada solo en el
+     título de las páginas de detalle de proyecto (ej. "Onboarding
+     Tool") — no es parte del sistema tipográfico general del sitio,
+     por eso no reemplaza --font-display. Archivo real vía @font-face
+     más abajo; solo se trajo el peso Bold/700 (el único que se usa
+     hoy) para no cargar pesos sin usar. */
+  --font-din-next: "DIN Next LT Pro", var(--font-display);
 
   /* Escala tipográfica (tamaño / interlineado), tomada de la pieza
      "Typographic Scale" de Figma. Pensada para contenido futuro

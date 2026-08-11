@@ -1,0 +1,85 @@
+/* =====================================================================
+   PÁGINA DE PROYECTO — Onboarding Tool (Fischbach)
+   =====================================================================
+   Estilos específicos de esta página de detalle de proyecto. Reusa
+   tokens.css, components.css y las clases compartidas de styles.css
+   (.container, .navbar, .btn) — acá solo lo que es único de esta
+   página. Mismo criterio que styles.css: nada de números sueltos que
+   ya tengan variable en tokens.css.
+
+   Fuente de las medidas: frame de Figma linkeado por David (nodo
+   138-2987, "Onboarding Tool" dentro del archivo "Test") — pero es
+   una referencia general, no se copian sus valores de header/alto de
+   botón que entran en conflicto con lo que el sitio ya trae
+   establecido (ver navbar/.btn en styles.css y components.css). */
+
+/* Header de esta página: mismo .navbar de siempre (misma altura,
+   mismos botones .btn del sistema), solo cambia el fondo — acá sí es
+   un valor real de Figma, y se repite en todo .project-hero de abajo
+   porque en el diseño es un solo fondo continuo header+hero.
+
+   El fondo va en .navbar--project (el <header>, ancho completo), NO
+   en el .navbar de adentro (ese tiene .container, que limita a
+   1440px) — si el fondo fuera del elemento con .container, en
+   pantallas más anchas que 1440px se verían los bordes del
+   --color-bg de la página asomando a los costados en vez de un
+   header continuo. */
+.navbar--project {
+  background-color: var(--color-surface-project);
+}
+
+/* height: 600px — probando este valor a pedido de David (el original
+   de Figma era 685px). El video queda con position:absolute + bottom:0
+   (ver .project-hero__media) para garantizar "pegado al borde
+   inferior" pase lo que pase con el título — mismo patrón que
+   .hero__intro en styles.css (position absoluta dentro de un
+   contenedor position:relative). */
+.project-hero {
+  position: relative;
+  height: 600px;
+  background-color: var(--color-surface-project);
+  padding-top: 0;
+  text-align: center;
+}
+
+/* Tamaño real en Figma: 79.44px sobre un frame de 1440px de ancho
+   (79.44 / 1440 ≈ 5.5vw) — misma técnica de clamp() que .hero__title
+   en styles.css, escala en pantallas chicas sin pasar el tamaño de
+   Figma en las grandes.
+
+   Fuente real: DIN Next LT Pro Bold (@font-face en components.css,
+   archivo licenciado por Fischbach) — font-weight: 700, no 900, es
+   el peso que trae ese archivo. */
+.project-hero__title {
+  font-family: var(--font-din-next);
+  font-weight: 700;
+  font-size: clamp(2rem, 5.5vw, 79.44px);
+  line-height: 1.12;
+  color: var(--color-text-black);
+}
+
+/* width: 860px = 8 columnas del grid de 12 (--grid-columns), misma
+   fórmula ya usada en .project-card (styles.css): 8 columnas de 90px
+   (colWidth = (1300 - 11*20) / 12) + 7 gutters de --grid-gutter (20px)
+   = 720 + 140 = 860px. Coincide con lo medido en Figma (867px, ~8
+   columnas, centrado). El min() dentro del width dice "esas 8
+   columnas, pero nunca más angosto que el margen del grid" — así en
+   pantallas más chicas se va angostando en vez de desbordar (ya
+   preparado para cuando trabajemos los breakpoints).
+
+   position:absolute + bottom:0 + left:50%/translateX(-50%): centrado
+   horizontal y pegado al borde inferior de .project-hero,
+   independiente de la altura del título arriba. */
+.project-hero__media {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: min(860px, calc(100% - 2 * var(--grid-margin)));
+}
+
+.project-hero__video {
+  display: block;
+  width: 100%;
+  height: auto;
+}

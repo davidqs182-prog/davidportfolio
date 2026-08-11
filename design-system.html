@@ -71,7 +71,12 @@
         <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-brand)"></span><span class="ds-swatch__name">--color-brand</span><span class="ds-swatch__hex">= purple-500</span></div>
         <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-dark)"></span><span class="ds-swatch__name">--color-dark</span><span class="ds-swatch__hex">= gray-900</span></div>
         <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-text-black)"></span><span class="ds-swatch__name">--color-text-black</span><span class="ds-swatch__hex">#1A1A1A</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-surface-project)"></span><span class="ds-swatch__name">--color-surface-project <span class="ds-tag">extra</span></span><span class="ds-swatch__hex">#EBEBEB</span></div>
       </div>
+      <p class="ds-section-desc">
+        <strong>--color-surface-project</strong> es el fondo de header + hero en las páginas de detalle de proyecto
+        (ej. <code>project-onboarding.html</code>) — no viene de la escala Gray, es un valor literal tomado de Figma.
+      </p>
     </section>
 
     <!-- ===== Tipografía ===== -->
@@ -95,6 +100,14 @@
       <div class="ds-type-row"><span class="ds-type-label">Body Small · 12 / 16</span><p class="ds-type-sample" style="font-family:var(--font-body); font-weight:400; font-size:var(--text-body-sm-size); line-height:var(--text-body-sm-line);">Última actualización: 6 de agosto, 2026</p></div>
       <div class="ds-type-row"><span class="ds-type-label">Caption · 11 / 14</span><p class="ds-type-sample" style="font-family:var(--font-body); font-weight:400; font-size:var(--text-caption-size); line-height:var(--text-caption-line);">Fig. 1 — Evolución del tráfico mensual en 2026</p></div>
       <div class="ds-type-row"><span class="ds-type-label">Overline · 10 / 14</span><p class="ds-type-sample" style="font-family:var(--font-body); font-weight:600; font-size:var(--text-overline-size); line-height:var(--text-overline-line); letter-spacing:var(--text-overline-tracking); text-transform:uppercase;">Caso de estudio</p></div>
+
+      <h3>DIN Next LT Pro <span class="ds-tag">extra</span></h3>
+      <p class="ds-section-desc">
+        Fuente paga (licencia de Fischbach), self-hosted vía <code>@font-face</code> en <code>css/components.css</code> —
+        no es parte de la escala tipográfica general, solo se usa en el título de las páginas de detalle de proyecto
+        (<code>--font-din-next</code>). Únicamente está cargado el peso Bold/700, el único que usa el sitio hoy.
+      </p>
+      <div class="ds-type-row"><span class="ds-type-label">Bold · 700</span><p class="ds-type-sample" style="font-family:var(--font-din-next); font-weight:700; font-size:32px; line-height:1.12;">Onboarding Tool</p></div>
     </section>
 
     <!-- ===== Espaciado ===== -->
@@ -165,6 +178,13 @@
             <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--md" disabled>Button</button></td>
           </tr>
           <tr>
+            <td>Outline + ícono <span class="ds-tag">extra</span></td>
+            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--sm"><span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>Back to home</button></td>
+            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--md"><span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>Back to home</button></td>
+            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--lg"><span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>Back to home</button></td>
+            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--md" disabled><span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>Back to home</button></td>
+          </tr>
+          <tr>
             <td>Ghost</td>
             <td data-tokens="Default: transparent&#10;Hover: #f2f2f7"><button class="btn btn--ghost btn--sm">Button</button></td>
             <td data-tokens="Default: transparent&#10;Hover: #f2f2f7"><button class="btn btn--ghost btn--md">Button</button></td>
@@ -187,7 +207,7 @@
           </tr>
         </tbody>
       </table>
-      <p class="ds-section-desc"><span class="ds-tag">extra</span> = variante que agregamos nosotros, no viene del componente Button original de Figma. <strong>Dark</strong> usa Purple 950 (default) y Purple 900 (hover) — un "negro" que en realidad es parte de la escala de marca. <strong>Dark + ícono</strong> es el patrón usado en las tarjetas de "Work" (<code>Go to project</code>): texto + ícono al final (<code>gap: 8px</code> de <code>.btn</code>), con el ícono deslizándose a la derecha en hover — pasá el mouse por cualquiera de los tres tamaños para verlo.</p>
+      <p class="ds-section-desc"><span class="ds-tag">extra</span> = variante que agregamos nosotros, no viene del componente Button original de Figma. <strong>Dark</strong> usa Purple 950 (default) y Purple 900 (hover) — un "negro" que en realidad es parte de la escala de marca. <strong>Outline + ícono</strong> es el patrón usado en el header de las páginas de proyecto ("Back to home"): ícono al inicio + texto, sin animación (a diferencia de <strong>Dark + ícono</strong>, que es el patrón de "Go to project" en las tarjetas de "Work" — texto + ícono al final, deslizándose a la derecha en hover). Los dos usan el mismo <code>gap: 8px</code> de <code>.btn</code>, solo cambia el orden de ícono/texto en el HTML.</p>
     </section>
 
     <!-- ===== Íconos ===== -->
@@ -207,6 +227,11 @@
           <span class="material-symbols-rounded" aria-hidden="true">arrow_forward</span>
           <span class="ds-icon-name">arrow_forward</span>
           <span class="ds-icon-usage">Botón "Go to project" (tarjetas de proyecto). Con la clase <code>icon-forward</code> agregada, se desliza a la derecha en hover — ver tabla de Botones.</span>
+        </div>
+        <div class="ds-icon-card">
+          <span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>
+          <span class="ds-icon-name">arrow_back</span>
+          <span class="ds-icon-usage">Botón "Back to home" (header de páginas de proyecto). Sin animación.</span>
         </div>
       </div>
     </section>
