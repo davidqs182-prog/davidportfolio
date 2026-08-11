@@ -39,7 +39,9 @@ while ($listener.IsListening) {
       $fileLength = (Get-Item $filePath).Length
       $rangeHeader = $request.Headers["Range"]
 
-      if ($rangeHeader -and $rangeHeader -match "bytes=(\d*)-(\d*)") {
+      if ($request.HttpMethod -eq "HEAD") {
+        $response.ContentLength64 = $fileLength
+      } elseif ($rangeHeader -and $rangeHeader -match "bytes=(\d*)-(\d*)") {
         $start = if ($matches[1]) { [int64]$matches[1] } else { 0 }
         $end = if ($matches[2]) { [int64]$matches[2] } else { $fileLength - 1 }
         if ($end -ge $fileLength) { $end = $fileLength - 1 }
