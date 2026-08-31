@@ -1,0 +1,379 @@
+/* =====================================================================
+   PÁGINA DE PROYECTO — YouTube Discovery
+   =====================================================================
+   Estilos específicos de esta página de detalle de proyecto. Reusa
+   tokens.css, components.css y las clases compartidas de styles.css
+   (.container, .navbar, .btn) — acá solo lo que es único de esta
+   página. Mismo criterio que project-onboarding.css: nada de números
+   sueltos que ya tengan variable en tokens.css.
+
+   El header (.navbar--project) no necesita reglas nuevas acá — usa el
+   mismo fondo/estructura que ya trae styles.css/components.css para
+   .navbar--project/.btn, sin ninguna página-específica (a diferencia
+   de project-onboarding.css, que sí redefine tipografía ahí). David
+   pidió mantener el header/botones tal cual estaban en Onboarding, así
+   que no se toca nada de eso acá. */
+
+/* ===== Identidad visual del proyecto =====
+   A pedido de David: usar la tipografía y los colores de marca de
+   YouTube en esta página, mismo criterio que project-onboarding.css
+   con DIN Next — redefinir tokens page-scoped en vez de tocar
+   tokens.css global.
+
+   --font-body pasa a Roboto (la fuente real de cuerpo de texto que
+   usa blog.youtube, medida en vivo: 17px/24.65px — ver
+   design-system.html #youtube-discovery-ref) en vez de Inter.
+
+   --font-display pasa a YouTubeDisplay, la fuente real que usa
+   brand.youtube para sus títulos (no confundir con "YouTube Sans", la
+   de la UI de la app — esta es la de marketing/marca). Se encontró
+   inspeccionando en vivo qué carga brand.youtube (resource timing +
+   document.fonts): son 3 archivos .woff2 servidos desde el CDN propio
+   de Google (gstatic.com/marketing-cms/...), sin licencia pública de
+   reuso — self-hosted igual acá a pedido explícito de David (proyecto
+   conceptual de portafolio, no un producto real), mismo criterio que ya
+   se usó con DIN Next LT Pro en project-onboarding.css. @font-face en
+   components.css, alias general en tokens.css (--font-youtube-display).
+   Reemplaza al intento anterior con 'Arial Black'/system-ui (ese era
+   solo una aproximación de sistema, ya no hace falta con el archivo
+   real). Se redefine una sola vez acá y cascadea a .ytd-hero__title y
+   .ytd-about__headline (los dos usan var(--font-display)), mismo
+   patrón que --font-body arriba.
+
+   --ytd-black/--ytd-red: alias locales a los colores reales de marca
+   (Almost Black #212121, YouTube Red #FF0033 — brand.youtube) en vez
+   de los tokens genéricos del portafolio (--color-text-black es
+   #1A1A1A, un negro distinto, pensado para el resto del sitio). Se
+   define una vez acá y se reusa en todas las reglas de abajo, en vez
+   de repetir el hex suelto en cada una. */
+:root {
+  --font-body: "Roboto", "Inter", sans-serif;
+  --font-display: "YouTubeDisplay", "Arial Black", system-ui, sans-serif;
+  --ytd-black: #212121;
+  --ytd-red: #ff0033;
+}
+
+/* Fondo de toda la página: blanco puro ("Almost White" #FFFFFF de la
+   guía de marca de YouTube, ver design-system.html
+   #youtube-discovery-ref) — a pedido de David, en vez del
+   --color-bg crema que usa el resto del portafolio. Página-específico
+   (no se toca tokens.css ni el resto del sitio). */
+body {
+  background-color: #ffffff;
+}
+
+/* ===== Hero + header =====
+   El degradé vive en .ytd-hero-wrap (header + hero juntos), no en
+   .ytd-hero solo — un fondo nunca "sangra" hacia el elemento de al
+   lado aunque sea el vecino inmediato, así que si el degradé viviera
+   únicamente en .ytd-hero, quedaba recortado justo en el borde de
+   arriba del hero y se veía un corte duro contra el header (encontrado
+   en vivo por David). Envolviendo los dos en un mismo contenedor, el
+   degradé pinta de una sola vez detrás de ambos, sin costura.
+
+   Degradé real de blog.youtube/news-and-events (David pidió el MISMO,
+   no una versión con los colores de marca de este proyecto — eso se
+   probó antes y no era lo que pedía). Se sacó de la fuente real: el
+   fondo de esa sección es un SVG propio
+   (inside-youtube-hero-desktop.svg) con 3 elipses gigantes, borrosas
+   (feGaussianBlur) y rotadas — un blob cian #4DEEFF arriba a la
+   derecha (parcialmente fuera del marco visible), un blob blanco que
+   lo desvanece hacia el centro, y un blob rosa muy pálido #FFE6E6
+   abajo, todo sobre base blanca. Referencia inline (no da para
+   replicar la matriz de rotación exacta de cada elipse en CSS puro)
+   con radial-gradient: mismos 2 colores reales, misma posición
+   relativa (cian arriba-derecha, rosa abajo), mismo resultado leído a
+   ojo contra la página real. */
+.ytd-hero-wrap {
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(ellipse 75% 85% at 85% -15%, rgba(77, 238, 255, 0.95), transparent 65%),
+    radial-gradient(ellipse 80% 70% at 25% 130%, rgba(255, 200, 200, 0.95), transparent 60%);
+}
+
+/* padding más alto que el estándar de --space-96 — a pedido de David,
+   el hero de referencia (blog.youtube/news-and-events) es más alto
+   que una sección de contenido normal. calc() en vez de un número
+   suelto: sigue construido desde la escala (96+64px). padding-top se
+   resta 88px aparte (con el tag oculto arriba, no hacía falta tanto
+   aire) — por eso top y bottom quedan distintos, no es un
+   padding-block parejo. */
+.ytd-hero {
+  position: relative;
+  /* overflow:hidden — "recortar" al contenedor, como el Clip Content
+     de un frame en Figma. Durante el giro (rotate3d + translateZ de
+     25vw), el título pasa por posiciones intermedias más grandes/más
+     desplazadas que su tamaño final, y sin esto ese desborde
+     empujaba el ancho de la página entera, generando una barra de
+     scroll horizontal innecesaria por los ~0.75s que dura la
+     animación (encontrado en vivo por David). */
+  overflow: hidden;
+  padding-top: calc(var(--space-96) + var(--space-64) - 88px);
+  padding-bottom: calc(var(--space-96) + var(--space-64));
+  text-align: center;
+  /* perspective acá (no en .ytd-hero__flip) porque perspective solo
+     afecta a los HIJOS DIRECTOS del elemento que la define — tiene que
+     vivir en el padre de la capa que rota, igual que en brand.youtube
+     (ahí también está en la sección, no en el div que anima). */
+  perspective: 25vw;
+}
+
+/* .ytd-hero__flip / __flip-inner: animación "flyIn" calcada de
+   brand.youtube (ver comentario en el HTML) — el wrapper de afuera
+   hace el giro real (rotate3d en X, de 90° a 0°, como una tapa
+   cayendo hacia el usuario) manteniendo el mismo translateZ fijo
+   durante todo el recorrido; el de adentro compensa ese translateZ en
+   sentido inverso para que el contenido, ya asentado en 0°, quede
+   visualmente en su lugar real (sin quedar "flotando" más cerca de
+   cámara que el resto de la página). Es el mismo truco de dos capas
+   que usa el H1/P de brand.youtube dentro de su propio contenedor con
+   perspective. cubic-bezier(0.9, 0, 0.1, 1): un ease casi de "golpe
+   seco" — arranca lento, acelera fuerte al final — igual que el
+   original (no un ease-out genérico). */
+.ytd-hero__flip {
+  animation: ytd-hero-flyIn 0.75s forwards cubic-bezier(0.9, 0, 0.1, 1);
+  transform-style: preserve-3d;
+  transform-origin: center;
+}
+
+.ytd-hero__flip-inner {
+  transform: translateZ(calc(-1 * 25vw));
+}
+
+@keyframes ytd-hero-flyIn {
+  from {
+    transform: translateZ(25vw) rotate3d(1, 0, 0, 90deg);
+  }
+  to {
+    transform: translateZ(25vw) rotate3d(1, 0, 0, 0deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ytd-hero__flip {
+    animation: none;
+  }
+}
+
+/* Tag corto inspirado en la sección 1 del copy ("Proyecto conceptual
+   de UX") — mismo patrón visual que los tags de categoría de
+   blog.youtube (pill redondeada, texto uppercase, tracking ancho),
+   pero con los colores de marca de este proyecto en vez de los
+   pasteles por categoría de YouTube (esos son para SU sistema de
+   contenido, no aplican acá literalmente).
+   Oculto a pedido de David — se deja el markup/estilo tal cual (no se
+   borra) por si se vuelve a mostrar más adelante. */
+.ytd-hero__tag {
+  display: none;
+  margin: 0;
+  padding: var(--space-8) var(--space-16);
+  border-radius: 999px;
+  background-color: var(--ytd-red);
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-line);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+  color: var(--color-text-white);
+}
+
+/* .ytd-hero__title-frame: ancho fijo a 10/12 columnas del grid del
+   sitio (--grid-columns/--grid-margin/--grid-gutter/--grid-max-width en
+   tokens.css) — David pidió que el título "ocupe 10 columnas
+   proporcionalmente" en vez del clamp por vw que tenía antes (ese
+   ignoraba los márgenes de 70px del grid). Fórmula: ancho del
+   contenedor de 12 columnas = min(100vw, grid-max-width) - 2*margin;
+   ancho de 10 de esas 12 columnas = (5 × contenedor - 1 gutter) / 6
+   (álgebra: 10 columnas + 9 gutters, sobre 12 columnas + 11 gutters —
+   se simplifica a esa fracción). margin-inline:auto centra el bloque
+   dentro del hero (que ya es text-align:center).
+
+   container-type: inline-size convierte este div en "query container"
+   — el H1 de adentro puede usar unidades cqi (% del ancho de ESTE
+   contenedor, no del viewport) para su font-size, así el título
+   realmente LLENA las 10 columnas en cualquier ancho de pantalla en
+   vez de solo quedar limitado a no desbordarlas. */
+.ytd-hero__title-frame {
+  width: calc(
+    (5 * (min(100vw, var(--grid-max-width)) - (2 * var(--grid-margin))) - var(--grid-gutter)) / 6
+  );
+  margin-inline: auto;
+  container-type: inline-size;
+}
+
+/* font-size en cqi (no clamp/vw): la relación texto/font-size se midió
+   EN VIVO ("YOUTUBE ⚙ COMPASS", YouTubeDisplay ExtraBold, letter-
+   spacing -0.02em) neutralizando temporalmente la animación 3D del
+   hero (perspective/translateZ distorsiona getBoundingClientRect() de
+   lo que está adentro — David encontró que el título no llegaba a
+   ocupar las 10 columnas reales, y esa distorsión es la razón: mi
+   primera medición había capturado el fallback 'Arial Black' un
+   instante antes de que cargara la fuente real, que es bastante más
+   angosta — de ahí una relación 9.3685:1 que en los hechos era ~55%
+   más ancha de lo real). Relación correcta, re-medida ya con
+   YouTubeDisplay cargada: 247.39px de texto (sin contar el gap) a
+   41.24px de font-size = 6:1. Los 32px fijos de gap (2 × --space-16,
+   entre palabra-ícono-palabra) NO escalan con el texto, así que se
+   restan aparte del 100cqi (ancho total del frame) antes de dividir
+   por esa relación — sin restarlos, a pantallas angostas el gap fijo
+   pesaría proporcionalmente más y el título no llegaría a llenar el
+   frame. Ver .ytd-hero__title-frame arriba para de dónde sale el
+   ancho que este cqi referencia. var(--font-display) ya viene
+   redefinido más arriba (ver "Identidad visual del proyecto") a
+   YouTubeDisplay, la fuente real de brand.youtube. font-weight: 800
+   (ExtraBold), no 900 — es el peso más pesado que trae el archivo
+   real; pedir 900 haría que el navegador sintetice un bold encima de
+   ExtraBold en vez de usar el peso real diseñado para esto. */
+.ytd-hero__title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* nowrap, no wrap — el font-size de acá abajo está calculado para
+     que el contenido ocupe EXACTAMENTE el 100% del frame en una sola
+     línea; con "wrap" cualquier redondeo de subpíxel que empuje el
+     ancho real una fracción por encima del frame (inevitable, el
+     cálculo no puede ser perfecto al nivel del subpíxel) hace que
+     "Compass" salte a una segunda línea — un salto brusco de layout,
+     no un desborde imperceptible. David lo encontró en vivo (una
+     mala medición inicial mía escondía el problema). */
+  flex-wrap: nowrap;
+  gap: 0 var(--space-16);
+  margin: 0;
+  margin-top: var(--space-24);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: calc((100cqi - (2 * var(--space-16))) / 6);
+  line-height: 0.95;
+  letter-spacing: 0;
+  text-transform: uppercase;
+  color: var(--ytd-black);
+}
+
+/* Ícono 3D (Figma, brújula — "discovery") entre las dos palabras del
+   título. En em (relativo al font-size del H1) — ahora que el
+   font-size del título ya no es un clamp fijo sino que depende del
+   ancho del frame (ver arriba), atar el ícono en em es lo correcto:
+   crece y encoge junto con el texto automáticamente, sin necesitar su
+   propio cálculo de ancho de columna por separado. 1.1em — bajó en
+   varios pasos (1.412em original → 1.25em → 1.1em → 0.95em), pero
+   David pidió volver al paso anterior (1.1em): 0.95em ya se veía
+   demasiado chica.
+
+   Animación de "flote" — David pidió esto a partir de una idea pensada
+   para After Effects (expresión de Math.sin en Position + wiggle en
+   Orientation, para simular que un render 3D levita en el espacio sin
+   tener que separar la aguja del resto de la imagen). Trasladado a
+   CSS puro: un solo @keyframes combina el sube-baja (traducción del
+   Math.sin de la Posición) con una leve rotación (versión simplificada
+   del wiggle de Orientación — CSS no tiene una función wiggle nativa
+   con aleatoriedad real, así que se aproxima con un vaivén suave entre
+   dos ángulos). Amplitud/grados bajados respecto a los valores de AE
+   (20px, 8°) porque acá el ícono se ve a un tamaño mucho más chico
+   (~1.55em, unos 40-50px) — a esa escala 20px de salto sería casi la
+   mitad de su propio alto, se vería como un salto, no un flote. */
+/* animation: none — oculta temporalmente a pedido de David (el
+   @keyframes se deja definido abajo, solo se desconecta acá, para
+   activarla de nuevo fácil más adelante). */
+.ytd-hero__icon {
+  display: block;
+  width: auto;
+  height: 1.1em;
+  animation: none;
+}
+
+@keyframes ytd-compass-float {
+  0%,
+  100% {
+    transform: translateY(0) rotate(-4deg);
+  }
+  50% {
+    transform: translateY(-8px) rotate(4deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ytd-hero__icon {
+    animation: none;
+  }
+}
+
+/* ===== Overview (sección 1 del copy) =====
+   Mismo layout que .project-about en project-onboarding.html: eyebrow +
+   headline + body a la izquierda (columnas 1-8 de grid-12), ficha de
+   datos a la derecha (columnas 10-12) — David pidió esta forma
+   específicamente en vez de texto apilado/centrado dentro del hero (esa
+   fue la primera versión, revertida). Acá la "ficha" son los créditos
+   (UX/UI Designer, Visual Designer) en el lugar de Role/Team/Timeline.
+
+   .ytd-about__inner + .container: mismo motivo que .project-about__inner
+   — fondo + .container en el MISMO elemento corta a 1440px (el bug del
+   header, ya lo pisamos varias veces en este sitio).
+
+   Colores/tipografía: var(--ytd-black) y var(--font-body) (Roboto, ver
+   identidad visual del proyecto arriba) en vez de los tokens genéricos
+   del portafolio (--color-text-black/--color-gray-600) — a pedido
+   explícito de David de usar acá la identidad de marca de este proyecto,
+   igual criterio que se usó en el hero. */
+.ytd-about {
+  padding-block: var(--space-96);
+  background-color: #ffffff;
+}
+
+.ytd-about__content {
+  grid-column: 1 / 9;
+}
+
+.ytd-about__headline {
+  margin-top: var(--space-16);
+  font-family: var(--font-display);
+  /* weight 800/ExtraBold (no 700, a diferencia de
+     .project-about__headline en Onboarding) — mismo motivo que
+     .ytd-hero__title: es el peso más pesado que trae el archivo real
+     de YouTubeDisplay, y ya se ve suficientemente "black" para un
+     headline de esta jerarquía. */
+  font-weight: 800;
+  font-size: var(--text-h1-size);
+  line-height: var(--text-h1-line);
+  /* letter-spacing: 0 — este tamaño (45px/52px) coincide casi exacto
+     con el rol "Display Medium" del type scale de Material Design 3,
+     que especifica tracking: 0px para esa escala (el único rol con
+     tracking negativo en toda la guía es Display Large a 57px, y ahí
+     es apenas -0.25px/-0.004em, casi imperceptible). El -0.02em
+     original venía copiado de .ytd-hero__title (pensado para
+     UPPERCASE corto, no para esta oración en sentence-case) — David
+     lo sintió apretado, y 0 es lo que la guía recomienda para este
+     tamaño en vez de seguir ajustando a ojo. */
+  letter-spacing: 0;
+  color: var(--ytd-black);
+}
+
+.ytd-about__body {
+  margin-top: var(--space-16);
+  max-width: 600px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--ytd-black);
+}
+
+.ytd-about__meta {
+  grid-column: 10 / 13;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+}
+
+.ytd-about__meta-item dd {
+  margin-top: var(--space-8);
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  /* var(--ytd-black), no var(--color-gray-600) (a diferencia de
+     .project-about__meta-item dd en Onboarding, de donde se copió
+     esta regla) — David lo notó en vivo: el gris genérico del
+     portafolio se veía raro acá, esta página usa su propia identidad
+     de color (--ytd-black, el negro real de marca de YouTube) para
+     todo el texto, no la escala de grises del resto del sitio. */
+  color: var(--ytd-black);
+}

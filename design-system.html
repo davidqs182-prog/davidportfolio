@@ -132,6 +132,29 @@
         Bold/700, perdiendo la jerarquía frente a los headlines.
       </p>
 
+      <h3>YouTubeDisplay <span class="ds-tag">extra</span></h3>
+      <p class="ds-section-desc">
+        Fuente real de títulos de <a href="https://brand.youtube/" target="_blank" rel="noopener">brand.youtube</a>
+        (no confundir con "YouTube Sans", la de la UI de la app) — self-hosted vía <code>@font-face</code>
+        en <code>css/components.css</code>, mismo criterio que DIN Next arriba. Archivos <code>.woff2</code>
+        encontrados inspeccionando en vivo qué carga brand.youtube (resource timing +
+        <code>document.fonts</code>): sirven desde el CDN propio de Google
+        (<code>gstatic.com/marketing-cms/…</code>), sin licencia pública de reuso — se usan igual a pedido
+        explícito de David, a sabiendas de que es un asset de marca de Google (proyecto conceptual de
+        portafolio, no un producto real). Prueba acotada a <code>project-youtube-discovery.html</code>
+        únicamente: esa página redefine <code>--font-display</code> (ver comentario al inicio de
+        <code>css/project-youtube-discovery.css</code>) — <code>--font-body</code> en esa misma página sigue
+        siendo Roboto, no esta fuente.
+      </p>
+      <div class="ds-type-row"><span class="ds-type-label">Regular · 400</span><p class="ds-type-sample" style="font-family:var(--font-youtube-display); font-weight:400; font-size:16px; line-height:1.4;">A faster connection between viewers and creators.</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Bold · 700</span><p class="ds-type-sample" style="font-family:var(--font-youtube-display); font-weight:700; font-size:16px; line-height:1.4;">Conceptual UX project.</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">ExtraBold · 800</span><p class="ds-type-sample" style="font-family:var(--font-youtube-display); font-weight:800; font-size:32px; line-height:1.05; letter-spacing:-0.02em;">YouTube Compass</p></div>
+      <p class="ds-section-desc">
+        <strong>ExtraBold · 800</strong> es el peso más pesado que trae el archivo real — los títulos del
+        proyecto (<code>.ytd-hero__title</code>, <code>.ytd-about__headline</code>) piden explícitamente
+        800, no 900: esa fuente no tiene ese peso, y pedirlo haría que el navegador sintetice un bold
+        encima de ExtraBold en vez de usar el peso real diseñado para esto.
+      </p>
     </section>
 
     <!-- ===== Espaciado ===== -->
@@ -263,6 +286,74 @@
           <span class="ds-icon-usage">Secciones "Testimonial" (project-onboarding.html) — marca la cita, agrandado a 40px vía <code>.project-testimonial__quote-icon</code>.</span>
         </div>
       </div>
+    </section>
+
+    <!-- ===== YouTube Discovery — Referencia ===== -->
+    <section class="ds-section" id="youtube-discovery-ref">
+      <h2>YouTube Discovery <span class="ds-tag">research</span></h2>
+      <p class="ds-section-desc">
+        <strong>Esto no son tokens del sitio</strong> — es material de referencia extraído en vivo
+        de 6 páginas reales de YouTube (blog.youtube × 4, brand.youtube, y el artículo de
+        "Design principles"), antes de armar la página del proyecto nuevo. Valores literales
+        (hex, font-family) tal cual se midieron con <code>getComputedStyle()</code>, no variables
+        de <code>tokens.css</code> — cuando arranque la página real del proyecto, ahí sí se deciden
+        qué de esto se convierte en tokens de verdad.
+      </p>
+
+      <h3>Colores de marca (brand.youtube)</h3>
+      <div class="ds-swatch-row">
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:#FF0033"></span><span class="ds-swatch__name">YouTube Red</span><span class="ds-swatch__hex">#FF0033</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:#212121"></span><span class="ds-swatch__name">Almost Black</span><span class="ds-swatch__hex">#212121</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:#FFFFFF; border:1px solid #e5e7eb;"></span><span class="ds-swatch__name">Almost White</span><span class="ds-swatch__hex">#FFFFFF</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:#0F0F0F"></span><span class="ds-swatch__name">UI Black <span class="ds-tag">extra</span></span><span class="ds-swatch__hex">#0F0F0F</span></div>
+      </div>
+      <p class="ds-section-desc">
+        <strong>UI Black</strong> no está en la guía de marca — es el negro real que usan botones
+        de superficie como "Subscribe" en blog.youtube (<code>rgb(15,15,15)</code>), distinto del
+        "Almost Black" de texto/logo. Dos negros con roles distintos, no el mismo valor repetido.
+      </p>
+
+      <h3>Colores por categoría (blog.youtube)</h3>
+      <p class="ds-section-desc">
+        Cada categoría de contenido tiene su propio par pastel-de-fondo / texto-oscuro-saturado —
+        mismo patrón (pill redondeada, texto uppercase mono) repetido con distinto matiz. El hero
+        de cada categoría usa un degradé pastel a juego.
+      </p>
+      <div class="ds-icon-row">
+        <span style="background:#FFB0FF; color:#1A0059; border-radius:999px; padding:6px 14px; font-family:'Roboto Mono', monospace; font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;">Culture and Trends</span>
+        <span style="background:#FFE780; color:#661A00; border-radius:999px; padding:6px 14px; font-family:'Roboto Mono', monospace; font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;">Creator &amp; Artist Stories</span>
+        <span style="background:#FF8983; color:#590000; border-radius:999px; padding:6px 14px; font-family:'Roboto Mono', monospace; font-size:11px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;">News and Events</span>
+      </div>
+
+      <h3>Chips de filtro (estado activo/inactivo)</h3>
+      <div class="ds-icon-row">
+        <span style="background:#0F0F0F; color:#fff; border-radius:999px; padding:8px 18px; font-family:'Roboto Mono', monospace; font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;">Latest</span>
+        <span style="background:transparent; color:#212121; border:1px solid #d1d5db; border-radius:999px; padding:8px 18px; font-family:'Roboto Mono', monospace; font-size:12px; font-weight:600; letter-spacing:0.06em; text-transform:uppercase;">Trending</span>
+      </div>
+
+      <h3>Tipografía (YouTubeDisplay + Roboto)</h3>
+      <p class="ds-section-desc">
+        <strong>Actualizado</strong> — lo que acá se llamaba "YouTube Sans" resultó ser
+        <strong>YouTubeDisplay</strong>, la fuente real de títulos de brand.youtube (encontrada
+        inspeccionando en vivo qué carga esa página). Ya no es un fallback de sistema: está
+        self-hosted y en uso real en <code>project-youtube-discovery.html</code> — ver la sección
+        "YouTubeDisplay" en Tipografía más arriba para los detalles de licencia/pesos. Los ejemplos
+        de acá abajo se actualizan a la fuente real; el header numerado y el mono label siguen de
+        referencia sin uso todavía.
+      </p>
+      <div class="ds-type-row"><span class="ds-type-label">Display Black · 48, uppercase</span><p class="ds-type-sample" style="font-family:var(--font-youtube-display); font-weight:800; font-size:48px; line-height:1; letter-spacing:-0.02em; text-transform:uppercase;">Culture and Trends</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Título artículo · 30/28.5, ExtraBold 800</span><p class="ds-type-sample" style="font-family:var(--font-youtube-display); font-weight:800; font-size:30px; line-height:0.95; letter-spacing:-0.02em;">5 design principles we use</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Header numerado · 34/39.1, weight 500</span><p class="ds-type-sample" style="font-family:system-ui, sans-serif; font-weight:500; font-size:34px; line-height:1.15;">1. Make content the star</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Body · Roboto 17/24.65</span><p class="ds-type-sample" style="font-family:Roboto, sans-serif; font-weight:400; font-size:17px; line-height:24.65px;">The interface shouldn't compete with the video you're trying to watch.</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Mono label · 11-14, uppercase, tracking ancho</span><p class="ds-type-sample" style="font-family:'Roboto Mono', monospace; font-weight:600; font-size:12px; letter-spacing:0.08em; text-transform:uppercase;">Suggested Searches</p></div>
+
+      <p class="ds-section-desc">
+        Fuentes: <a href="https://blog.youtube/news-and-events/" target="_blank" rel="noopener">blog.youtube/news-and-events</a>,
+        <a href="https://blog.youtube/creator-and-artist-stories/" target="_blank" rel="noopener">/creator-and-artist-stories</a>,
+        <a href="https://blog.youtube/culture-and-trends/" target="_blank" rel="noopener">/culture-and-trends</a>,
+        <a href="https://blog.youtube/inside-youtube/design-principles-use-put-creators-center-stage/" target="_blank" rel="noopener">/design-principles</a>,
+        <a href="https://brand.youtube/" target="_blank" rel="noopener">brand.youtube</a>.
+      </p>
     </section>
 
   </main>

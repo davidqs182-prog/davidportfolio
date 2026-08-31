@@ -59,6 +59,49 @@
   font-display: swap;
 }
 
+/* YouTubeDisplay — la fuente real de títulos que usa brand.youtube (no
+   confundir con "YouTube Sans", que es la de la UI de la app, no esta).
+   Self-hosted acá con el mismo criterio que DIN Next arriba: David pidió
+   usar la tipografía real encontrada en el research (era un fallback de
+   sistema hasta ahora, ver design-system.html #youtube-discovery-ref) en
+   vez de quedarnos con la aproximación. Archivos sacados del propio CDN
+   de Google (gstatic.com/marketing-cms/...) inspeccionando qué carga
+   brand.youtube en vivo — no están en Google Fonts ni tienen licencia
+   pública de reuso; se usan igual a pedido explícito de David, a
+   sabiendas de que es un asset de marca de Google (proyecto conceptual
+   de portafolio, no un producto real). --font-display se redefine SOLO
+   en project-youtube-discovery.css (ver ese archivo), no reemplaza
+   Work Sans/Inter en el resto del sitio — mismo patrón que DIN Next.
+
+   3 pesos (los que trae el archivo original, no hay Medium/SemiBold
+   propio): Regular 400, Bold 700, ExtraBold 800 — los títulos de esta
+   página piden el peso más pesado disponible (ExtraBold), no 900 (esa
+   fuente no tiene ese peso; pedirlo haría que el navegador cayera en
+   sintetizar bold sobre ExtraBold, verse peor que usar 800 directo). */
+@font-face {
+  font-family: "YouTubeDisplay";
+  src: url("../assets/fonts/youtube-display/youtubedisplay-regular.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "YouTubeDisplay";
+  src: url("../assets/fonts/youtube-display/youtubedisplay-bold.woff2") format("woff2");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "YouTubeDisplay";
+  src: url("../assets/fonts/youtube-display/youtubedisplay-extrabold.woff2") format("woff2");
+  font-weight: 800;
+  font-style: normal;
+  font-display: swap;
+}
+
 /* ---------- Button ----------
    Fuente: componente "Button" de Figma (5 estilos x 3 tamaños x 3
    estados). Los colores de "Secondary"/"Outline"/"Ghost" son valores

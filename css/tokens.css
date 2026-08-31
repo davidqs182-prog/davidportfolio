@@ -93,6 +93,13 @@
      hoy) para no cargar pesos sin usar. */
   --font-din-next: "DIN Next LT Pro", var(--font-display);
 
+  /* Fuente real de brand.youtube (títulos), self-hosted desde el propio
+     CDN de Google — usada solo en project-youtube-discovery.html
+     (--font-display redefinido SOLO ahí, ver project-youtube-discovery.css),
+     mismo criterio que --font-din-next arriba: no reemplaza --font-display
+     acá. Archivo real vía @font-face en components.css. */
+  --font-youtube-display: "YouTubeDisplay", var(--font-display);
+
   /* Escala tipográfica (tamaño / interlineado), tomada de la pieza
      "Typographic Scale" de Figma. Pensada para contenido futuro
      (párrafos, tarjetas, etc.) — el título del hero ya tiene su

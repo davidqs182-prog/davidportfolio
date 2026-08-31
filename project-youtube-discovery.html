@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>YouTube Compass — David Quirós</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/project-youtube-discovery.css">
+</head>
+<body>
+
+  <!-- .ytd-hero-wrap: header + hero comparten UN solo fondo con degradé
+       (ver project-youtube-discovery.css) — si el degradé viviera en
+       .ytd-hero solo, quedaba recortado justo en el borde de arriba
+       del hero (el fondo de un elemento nunca "sangra" hacia el
+       elemento de al lado, aunque sea el header inmediatamente
+       encima), y se veía un corte duro. David lo encontró en vivo. -->
+  <div class="ytd-hero-wrap">
+    <!-- Mismo header que project-onboarding.html — David pidió mantenerlo
+         tal cual (mismos botones "Back to home"/"Get in Touch") al armar
+         esta página nueva. -->
+    <header class="navbar--project">
+      <div class="navbar container">
+        <a href="index.html" class="btn btn--outline btn--md">
+          <span class="material-symbols-rounded icon-back" aria-hidden="true">arrow_back</span>
+          Back to home
+        </a>
+        <a href="#contact" class="btn btn--dark btn--md">Get in Touch</a>
+      </div>
+    </header>
+
+    <!-- Hero inspirado en blog.youtube/news-and-events (degradé pastel +
+         título bold uppercase centrado) — no es un nodo de Figma, es
+         referencia visual que David dio como link. Copy real de la
+         sección 1 del proyecto (David lo pasó completo, verbatim en
+         inglés). El tag "Conceptual UX Project" queda oculto (David lo
+         pidió antes) — ahora es redundante con la primera frase del
+         intro ("Conceptual UX project."). -->
+    <section class="ytd-hero">
+      <!-- Animación de entrada tomada de brand.youtube (el H1 "Brand
+           Resources" de su propio hero) — la sacamos inspeccionando su
+           shadow DOM: un contenedor con perspective anima
+           rotate3d(1,0,0,90deg→0deg) + translateZ fijo (nace "de canto",
+           como una tapa que cae hacia el usuario, y termina plana) en
+           0.75s con un cubic-bezier bien cerrado. El contenido interior
+           lleva el translateZ inverso para que, ya asentado, quede
+           exactamente en su lugar (no flotando hacia adelante). Ver
+           .ytd-hero__flip/.ytd-hero__flip-inner en el CSS. -->
+      <div class="ytd-hero__flip">
+        <div class="ytd-hero__flip-inner">
+          <p class="ytd-hero__tag">Conceptual UX Project</p>
+          <!-- .ytd-hero__title-frame: ancho fijo a 10 de las 12 columnas del
+               grid (ver comentario en el CSS) + container query — el H1
+               adentro escala su font-size en cqi (% del ancho de ESTE
+               contenedor) en vez de vw, así el título llena esas 10
+               columnas en cualquier viewport, no solo se limita a no
+               desbordarlas. David pidió esto explícitamente ("que ocupe
+               10 columnas proporcionalmente"). -->
+          <div class="ytd-hero__title-frame">
+            <h1 class="ytd-hero__title">
+              <span>YouTube</span>
+              <img class="ytd-hero__icon" src="assets/images/ytd-compass-icon.png" alt="" width="556" height="686">
+              <span>Compass</span>
+            </h1>
+          </div>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <main>
+    <!-- Mismo layout que .project-about en project-onboarding.html
+         (eyebrow + headline + body a la izquierda, ficha de datos a la
+         derecha) — David pidió esta forma específicamente, no la
+         primera versión (texto apilado y centrado dentro del hero).
+         Acá la "ficha" son los créditos (UX/UI Designer, Visual
+         Designer) en vez de Role/Team/Timeline. Subtítulo del copy de
+         la sección 1 hace de headline; el párrafo intro hace de body. -->
+    <section class="ytd-about">
+      <div class="ytd-about__inner container">
+        <div class="ytd-about__grid grid-12">
+          <div class="ytd-about__content">
+            <p class="eyebrow">Overview</p>
+            <h2 class="ytd-about__headline">A faster connection between viewers and creators</h2>
+            <p class="ytd-about__body">Conceptual UX project. I redesigned the way users discover content on YouTube, using data the platform already has but doesn't use for discovery.</p>
+          </div>
+          <dl class="ytd-about__meta">
+            <div class="ytd-about__meta-item">
+              <dt class="eyebrow">UX/UI Designer</dt>
+              <dd>David Quirós Soto</dd>
+            </div>
+            <div class="ytd-about__meta-item">
+              <dt class="eyebrow">Visual Designer</dt>
+              <dd>Juan Angustia (mentor)</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- Próximas secciones (El problema, Insight clave, La solución, etc.) -->
+  </main>
+
+  <!-- Herramienta de guía (no es parte del diseño del sitio): overlay
+       de las 12 columnas del grid, igual que en project-onboarding.html. -->
+  <div id="grid-overlay" aria-hidden="true">
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+  </div>
+
+  <div id="dev-tools">
+    <button id="grid-overlay-toggle" type="button">
+      <span class="material-symbols-rounded" aria-hidden="true">grid_on</span>
+      Grid
+    </button>
+  </div>
+
+  <style>
+    #grid-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      pointer-events: none;
+      max-width: var(--grid-max-width);
+      margin-inline: auto;
+      padding-inline: var(--grid-margin);
+      grid-template-columns: repeat(var(--grid-columns), 1fr);
+      column-gap: var(--grid-gutter);
+    }
+    #grid-overlay.is-visible {
+      display: grid;
+    }
+    .grid-overlay__col {
+      background: rgba(97, 70, 133, 0.12);
+      border-left: 1px solid rgba(97, 70, 133, 0.4);
+      border-right: 1px solid rgba(97, 70, 133, 0.4);
+    }
+    #dev-tools {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 100000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    #dev-tools button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: var(--color-purple-950);
+      color: var(--color-text-white);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+      text-align: right;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #dev-tools button.is-active {
+      background: var(--color-purple-500);
+    }
+  </style>
+  <script>
+    (function () {
+      var overlay = document.getElementById("grid-overlay");
+      var toggle = document.getElementById("grid-overlay-toggle");
+
+      function toggleGrid() {
+        overlay.classList.toggle("is-visible");
+        toggle.classList.toggle("is-active");
+      }
+
+      toggle.addEventListener("click", toggleGrid);
+      document.addEventListener("keydown", function (e) {
+        if (e.key.toLowerCase() !== "g") return;
+        if (e.target.closest("input, textarea, [contenteditable]")) return;
+        toggleGrid();
+      });
+    })();
+  </script>
+
+  <script src="js/main.js"></script>
+</body>
+</html>
