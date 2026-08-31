@@ -13,6 +13,37 @@
    botón que entran en conflicto con lo que el sitio ya trae
    establecido (ver navbar/.btn en styles.css y components.css). */
 
+/* ===== Prueba: DIN Next LT Pro en toda la página =====
+   A pedido de David — redefine --font-display/--font-body SOLO en
+   esta página (project-onboarding.css no se carga en ninguna otra),
+   sin tocar sus valores globales en tokens.css. Como esta regla se
+   procesa DESPUÉS de tokens.css/components.css/styles.css en el
+   <head> de project-onboarding.html, la cascada la deja ganar — no
+   hace falta !important ni tocar cada regla que usa esos tokens una
+   por una.
+
+   Misma escala de siempre (H1 45/52, H2 36/44, Body 14/20, etc.) — el
+   pedido fue cambiar la tipografía, no los tamaños, así que ninguna
+   regla de font-size/line-height se toca acá.
+
+   Pesos registrados en components.css: 400 (Regular, body), 500
+   (Medium, .btn--md/sm), 600 (Medium otra vez — DIN no tiene un
+   archivo "600" propio, se reusa Medium para que .btn--lg/.eyebrow no
+   salten a Bold) y 700 (Bold, headlines).
+
+   OJO: el fallback va escrito literal ("Work Sans"/"Inter", no
+   var(--font-display)/var(--font-body)) — poner la variable adentro
+   de su propia redefinición es una referencia circular (mismo
+   elemento :root, misma propiedad), y CSS invalida esas cadenas por
+   completo: el navegador ignora todo el valor, no solo la parte
+   circular, y --font-display/--font-body quedan sin valor en toda la
+   página. Encontrado antes de probarlo en el navegador, no a
+   posteriori. */
+:root {
+  --font-display: "DIN Next LT Pro", "Work Sans", sans-serif;
+  --font-body: "DIN Next LT Pro", "Inter", sans-serif;
+}
+
 /* Header de esta página: mismo .navbar de siempre (misma altura,
    mismos botones .btn del sistema), solo cambia el fondo — acá sí es
    un valor real de Figma, y se repite en todo .project-hero de abajo
@@ -26,6 +57,14 @@
    header continuo. */
 .navbar--project {
   background-color: var(--color-surface-project);
+}
+
+/* Excepción a la prueba de DIN Next de arriba — David pidió
+   explícitamente que "Back to home"/"Get in Touch" se queden como
+   estaban (Inter, la fuente real de .btn en todo el resto del
+   sitio). El resto de la página sí usa DIN Next vía --font-body. */
+.navbar--project .btn {
+  font-family: "Inter", sans-serif;
 }
 
 /* height: 512px = 600px (header + hero combinados, a pedido de David)
@@ -92,9 +131,9 @@
    ficha de datos Role/Team/Timeline a la derecha) — pero construida
    100% con tokens que ya existían, no se agregó ningún color/tamaño
    nuevo:
-   - Eyebrow y las etiquetas de la ficha (.project-about__label):
-     misma escala Overline de tokens.css (10px/14px, tracking 0.15em)
-     que ya se cataloga en design-system.html.
+   - Eyebrow y las etiquetas de la ficha: clase compartida .eyebrow
+     (components.css), escala Overline de tokens.css (10px/14px,
+     tracking 0.15em) que ya se cataloga en design-system.html.
    - Titular: escala H1 de tokens.css (45px/52px) — en la referencia
      el titular es más grande y en una serif, pero acá no sumamos una
      fuente nueva para esto: se usa Work Sans (--font-display), que ya
@@ -105,24 +144,24 @@
    - Layout de 2 columnas: reusa .grid-12 (ya definida en styles.css)
      en vez de armar un grid nuevo — contenido en columnas 1-8, ficha
      en 10-12 (la 9 queda como separador visual, sin necesidad de un
-     margin-left suelto). */
+     margin-left suelto).
+
+   background-color: white — probó primero #FCFCFB, David pidió blanco
+   puro. .project-about pasó a ser sección completa + <div
+   class="project-about__inner container"> adentro (antes .container
+   estaba directo en la sección) — mismo motivo que
+   .navbar--project/.project-bento: fondo + .container en el MISMO
+   elemento corta a 1440px, y en pantallas más anchas se ven los
+   bordes de --color-bg de la página asomando a los costados en vez de
+   un fondo continuo (el bug del header, ya lo pisamos dos veces
+   antes). */
 .project-about {
   padding-block: var(--space-96);
+  background-color: white;
 }
 
 .project-about__content {
   grid-column: 1 / 9;
-}
-
-.project-about__label {
-  display: block;
-  font-family: var(--font-body);
-  font-weight: 600;
-  font-size: var(--text-overline-size);
-  line-height: var(--text-overline-line);
-  letter-spacing: var(--text-overline-tracking);
-  text-transform: uppercase;
-  color: var(--color-text-black);
 }
 
 .project-about__headline {
@@ -135,7 +174,7 @@
 }
 
 .project-about__body {
-  margin-top: var(--space-24);
+  margin-top: var(--space-16);
   max-width: 600px;
   font-family: var(--font-body);
   font-size: var(--text-body-lg-size);
@@ -156,4 +195,897 @@
   font-size: var(--text-body-size);
   line-height: var(--text-body-line);
   color: var(--color-gray-600);
+}
+
+/* ===== Banner de dispositivos (scroll infinito) =====
+   Fuente: Figma, nodo 200:68687 ("Test" file) — banner full-bleed con
+   3 columnas (computadoras/tablets/teléfonos), cada una con scroll
+   vertical infinito de abajo hacia arriba, lento y sin sincronizar
+   entre sí (a pedido de David) — el propio frame de Figma ya muestra
+   cada columna con su scroll "congelado" en un punto distinto, así
+   que la falta de sincronía viene del diseño original, no es un
+   agregado nuestro.
+
+   Assets: David proveyó los mockups completos (dispositivo + captura
+   de pantalla ya compuestos) en assets/images/onboarding-tool/
+   Red Section animation/ — ya no son los exports de Figma del banner
+   original. Redimensionados a mano con ffmpeg (filtro Lanczos, alta
+   calidad) a las medidas de cada casilla: 6 variantes para computers,
+   6 para tablets, 5 para phones — antes era una sola imagen repetida
+   en cada columna, se notaba mucho la repetición.
+
+   Cada track lista el set completo de variantes UNA VEZ y después se
+   repite exactamente igual (mismo orden) — no son imágenes al azar:
+   es la técnica de loop sin salto (ver comentario de
+   .project-devices__track más abajo) aplicada a un set de N imágenes
+   distintas en vez de 1 sola. translateY(-50%) sigue moviendo
+   exactamente "un set completo" sea cual sea N.
+
+   Historial: la primera versión usaba un export de la columna
+   completa de Figma (recortado a los 600px visibles, no a una sola
+   tarjeta) — David encontró que al repetir ese recorte, el punto de
+   unión no coincidía con el borde real de un dispositivo y se veía
+   una franja roja cortando el contenido a la mitad. Se corrigió
+   exportando cada dispositivo suelto (un mockup limpio por imagen) —
+   y esa es la estructura que ahora rellenan las variantes de David.
+
+   Fondo #E0232A — rojo real de marca Fischbach tomado del frame
+   (bg-[#e0232a] en el código exportado), no es parte de nuestra
+   escala de rojos (--color-red-* es para "destructive", un rojo
+   distinto) — se deja literal, mismo criterio que
+   --color-surface-project.
+
+   Posiciones/anchos de columna en % del ancho del frame original de
+   Figma (1920px) para mantener las proporciones relativas en
+   cualquier ancho de pantalla — computers 44.4% de ancho (el más
+   grande, como en el diseño), tablets 27.2%, phones 9.75% (el más
+   chico). */
+.project-devices {
+  position: relative;
+  height: 600px;
+  overflow: hidden;
+  background-color: #e0232a;
+}
+
+.project-devices__col {
+  position: absolute;
+  top: 0;
+  height: 100%;
+  overflow: hidden;
+}
+
+.project-devices__col--computers {
+  left: 6.04%;
+  width: 44.375%;
+}
+
+.project-devices__col--tablets {
+  left: 53.6%;
+  width: 27.2%;
+}
+
+.project-devices__col--phones {
+  left: 84.17%;
+  width: 9.75%;
+}
+
+/* El track tiene el doble de items que un "set" (2 para tablets/
+   phones, 4 para computers = 2 sets de 2) — técnica estándar de
+   marquee infinito: animar de translateY(0) a translateY(-50%) mueve
+   exactamente un "set" completo, así que cuando termina el loop, el
+   segundo set queda pixel a pixel donde arrancó el primero y no se
+   nota el corte. Por eso el espaciado entre items va como
+   padding-bottom DENTRO de .project-devices__item (no como gap del
+   track): así los 2/4 items miden todos lo mismo de alto y el -50%
+   cae exacto — con gap real, el 50% matemático no coincide con "un
+   set completo" y se ve un salto en el loop (probado, por eso el
+   cambio). */
+.project-devices__track {
+  animation: project-devices-scroll linear infinite;
+}
+
+.project-devices__item {
+  padding-bottom: 20px;
+}
+
+.project-devices__item img {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Duraciones recalculadas — David encontró que quedaron muy rápidas
+   al pasar de 2 imágenes por set (versión anterior) a 6/6/5. La
+   velocidad real (px/s) depende de cuánto contenido tiene que
+   recorrer un set completo en la duración del loop, así que al
+   triplicar/multiplicar x2.5 la cantidad de imágenes por set sin
+   tocar la duración, la animación se veía 2.5-3x más rápida que
+   antes. Se multiplicó cada duración original por esa misma
+   proporción (items nuevos / items viejos) para conservar la
+   velocidad "lenta y suave" ya validada, no un número inventado de
+   nuevo. */
+.project-devices__col--computers .project-devices__track {
+  animation-duration: 78s;
+}
+
+.project-devices__col--tablets .project-devices__track {
+  animation-duration: 102s;
+}
+
+.project-devices__col--phones .project-devices__track {
+  animation-duration: 50s;
+}
+
+@keyframes project-devices-scroll {
+  from {
+    transform: translateY(0);
+  }
+  to {
+    transform: translateY(-50%);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-devices__track {
+    animation: none;
+  }
+}
+
+/* ===== "Behind the scenes" (proceso) =====
+   Segunda sección de contenido: eyebrow + H2 (más chico que el
+   headline de About — acá es un título de sección normal, no el
+   "statement" grande del proyecto) seguido de una cuadrícula de 2x2
+   imagen+caption. Título y eyebrow reusan .eyebrow (components.css);
+   el H2 usa la escala H2 de tokens.css (36px/44px), no la H1 que usa
+   About, para diferenciar visualmente "titular del proyecto" de
+   "título de una sección interna".
+
+   Los captions siguen pendientes (texto real de David) — el resto ya
+   es contenido final: 4 capturas reales (assets/images/onboarding-tool/),
+   cada una con su relación de aspecto propia vía los atributos
+   width/height del <img> (mismo criterio que .project-hero__video),
+   sin forzar un aspect-ratio parejo entre las cuatro ni recortar con
+   object-fit — son capturas informativas, no fotos de producto, así
+   que no queremos cortar contenido para que encajen en una grilla
+   perfecta. */
+/* padding-top: ahora SÍ hace falta — cuando esta regla se escribió,
+   .project-process iba pegado directo a .project-about (que ya
+   aportaba su propio padding-bottom, de ahí el 0 original). Desde que
+   se sumó el banner .project-devices en el medio (rojo, sin padding
+   propio, corte de borde duro), el texto quedaba pegado contra ese
+   borde — encontrado por David viendo la página en vivo. padding-
+   bottom se mantiene en 0: contra .project-bento el patrón de doble
+   espaciado sigue aplicando igual que antes. */
+.project-process {
+  padding-top: var(--space-96);
+  padding-bottom: 0;
+  background-color: white;
+}
+
+.project-process__headline {
+  margin-top: var(--space-16);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-h2-size);
+  line-height: var(--text-h2-line);
+  color: var(--color-text-black);
+}
+
+.project-process__body {
+  margin-top: var(--space-16);
+  max-width: 600px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--color-text-black);
+}
+
+/* Carrusel horizontal — a pedido de David, en vez de la grilla 2x2
+   original. Las tarjetas miden 420px con 16px de espacio.
+
+   FULL-BLEED: la zona scrolleable NO se corta en la columna 12 — se
+   extiende hasta el borde real de la pantalla (David lo pidió después
+   de ver la versión limitada a 12 columnas: quería que en reposo se
+   viera la 4ta tarjeta cortada contra el borde de la ventana, no
+   contra el margen del grid). Por eso .project-process (la sección,
+   arriba) NO lleva la clase .container — así este carrusel, que es
+   hijo directo de la sección, ya es 100% del ancho de la página sin
+   necesitar ningún truco de "romper" un contenedor centrado (el
+   título/body sí necesitan quedar centrados a 1440px, por eso viven
+   aparte en .project-process__inner.container).
+   padding-left:var(--grid-margin) alinea la 1ra tarjeta con la
+   columna 1 (donde David pidió que arranque). padding-right:
+   var(--grid-margin) también — así, al llegar al final del scroll,
+   la última tarjeta queda al ras del borde derecho de la columna 12
+   (no del borde crudo de la pantalla). En reposo (scroll sin tocar)
+   la 4ta tarjeta igual se ve cortada contra el borde de la ventana
+   real, porque el ANCHO VISIBLE (clientWidth) ya es full-bleed — el
+   padding-right solo define dónde PARA el scroll, no achica lo que se
+   ve antes de scrollear.
+
+   Scroll nativo (overflow-x:auto) con scroll-snap para que cada
+   tarjeta encaje prolijo al soltar — funciona con trackpad/touch/
+   shift+rueda. No soporta click-arrastrar con mouse en desktop; si en
+   algún momento David lo pide, se agrega con un poco de JS (pointer
+   events), no es parte de este cambio.
+
+   Barra de scroll oculta a pedido de David (scrollbar-width:none para
+   Firefox, ::-webkit-scrollbar para Chrome/Safari/Edge) — el scroll
+   sigue funcionando igual, solo no se ve la barra nativa. */
+/* .project-process__carousel: el envoltorio con fondo (antes hacía
+   también de track scrolleable — se separó en dos elementos para
+   poder meter los dots como hermano del track, debajo de las
+   tarjetas, sin que el navegador los trate como una tarjeta más del
+   scroll horizontal). */
+.project-process__carousel {
+  margin-top: var(--space-48);
+  width: 100%;
+  /* Fondo --color-surface-project — David volvió a este después de
+     probar Gray 300, Gray 200 y blanco total. padding-top/bottom:40px — sin
+     esto las tarjetas y los captions quedaban pegados al borde
+     superior/inferior de la franja de color (antes no se notaba
+     porque el fondo era el mismo crema de la página; con un color
+     propio, ese contacto directo se ve como un error). 40px porque ya
+     es un valor de la escala (--space-40) que usamos en este mismo
+     archivo para "aire" alrededor de bloques de contenido (el gap de
+     la vieja grilla 2x2, el padding-block del hero) — no es un número
+     nuevo. */
+  background-color: var(--color-surface-project);
+  padding-top: var(--space-40);
+  padding-bottom: var(--space-40);
+}
+
+/* .project-process__track: el scroll horizontal en sí (antes vivía
+   directo en .project-process__carousel). */
+.project-process__track {
+  display: flex;
+  gap: var(--space-16);
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  /* --process-inset reproduce a mano la misma cuenta que hace
+     .container (max-width:1440 + margin-inline:auto + padding-inline:70px),
+     porque este carrusel YA NO vive dentro de un .container (ver
+     arriba) — necesita su propio cálculo para que la columna 1/12
+     coincidan con las del resto de la página en pantallas más anchas
+     que 1440px. Bug real que encontró David: con un padding fijo de
+     70px, a 1728px de viewport la tarjeta 1 quedaba en x=70 mientras
+     que la columna 1 de verdad (la del texto de arriba, dentro de
+     .container) estaba en x=136 — .container se centra y suma margen
+     extra en pantallas anchas, un padding fijo no lo tiene en cuenta.
+     Mismo cálculo que hace el navegador para centrar un elemento con
+     max-width: cuando el viewport (100%) es más angosto que 1440, el
+     término (100% - 1440)/2 da negativo y max() se queda con 70px
+     puros (comportamiento normal, angosto); cuando el viewport supera
+     1440, ese término se vuelve positivo y se suma al margen — igual
+     que el margin-inline:auto de .container. Verificado en vivo a
+     1440px (70px) y 1728px (136.4px), coincide exacto con
+     .project-process__inner en ambos casos. */
+  --process-inset: max(var(--grid-margin), calc((100% - var(--grid-max-width)) / 2 + var(--grid-margin)));
+  padding-left: var(--process-inset);
+  padding-right: var(--process-inset);
+  /* scroll-padding — OBLIGATORIO junto con el padding, no redundante.
+     Sin esto, scroll-snap-align:start (en .project-process__item) hace
+     que el navegador auto-scrollee para "comerse" el padding apenas
+     carga la página (la 1ra tarjeta terminaba en x≈0, no en la
+     columna 1). scroll-padding le dice al motor de snap "tratá este
+     margen como el borde de verdad", sin scrollear para taparlo.
+     Encontrado y verificado con scrollLeft en vivo, no a ojo. */
+  scroll-padding-left: var(--process-inset);
+  scroll-padding-right: var(--process-inset);
+}
+
+.project-process__track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Dots — mismo patrón visual/interactivo que .project-testimonial__dots
+   (clic navega a esa tarjeta, el dot activo cambia solo vía
+   IntersectionObserver — ver js/main.js), pero en oscuro: acá el fondo
+   es --color-surface-project (claro), no rojo, así que los dots usan
+   --color-gray-* en vez de blanco translúcido. */
+.project-process__dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-12);
+  margin-top: var(--space-24);
+}
+
+.project-process__dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: var(--color-gray-400);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.project-process__dot:hover {
+  background-color: var(--color-gray-550);
+}
+
+.project-process__dot.is-active {
+  background-color: var(--color-purple-950);
+  transform: scale(1.25);
+}
+
+/* width: 420px — el tamaño que ya tenían las tarjetas cuadradas en la
+   grilla 2x2 de 8 columnas (860px con 2 columnas y 20px de gutter);
+   se mantiene igual acá aunque el layout cambió a fila única con
+   16px de espacio, porque David pidió conservar ese tamaño puntual,
+   no recalcularlo para el carrusel. flex-shrink:0 para que no se
+   compriman al no entrar todas en el ancho visible. */
+.project-process__item {
+  flex: 0 0 420px;
+  scroll-snap-align: start;
+  margin: 0;
+}
+
+/* aspect-ratio: 1/1 — a pedido de David, tarjetas perfectamente
+   cuadradas (antes cada imagen mantenía su relación de aspecto real,
+   ver historial). object-fit:cover recorta la imagen para llenar el
+   cuadrado sin deformarla — mismo patrón que .project-bento__tile. */
+.project-process__media {
+  display: block;
+  width: 100%;
+  /* height: auto es OBLIGATORIO acá, no redundante — el <img> trae los
+     atributos HTML width/height (para reservar espacio y evitar salto
+     de layout mientras carga). Sin "height: auto" explícito, el
+     navegador usa el height del atributo como valor "definido" (no
+     "auto"), y aspect-ratio queda sin efecto porque ninguno de los dos
+     ejes queda libre para calcularse a partir de la proporción. */
+  height: auto;
+  aspect-ratio: 1 / 1;
+  object-fit: cover;
+  border-radius: 8px;
+}
+
+.project-process__caption {
+  margin-top: var(--space-12);
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  /* --color-text-black en vez de gray-600 — a pedido de David, mejor
+     contraste, igual que el resto de los textos de la página
+     (headline, body, ficha Role/Team/Timeline). */
+  color: var(--color-text-black);
+}
+
+/* ===== Bento grid (proceso de research) =====
+   Fuente: Figma, nodo 165:28874 ("Test" file). El split de columnas
+   (32.3% / 66.3%) coincide casi exacto con 4/8 columnas de nuestro
+   grid de 12 (420px / 860px sobre 1300px de ancho de contenido) —
+   por eso .project-bento__grid reusa .grid-12 en vez de porcentajes
+   sueltos, en vez de replicar el ancho fijo de 1462px del frame.
+
+   aspect-ratio: proporción real del frame (1462.3 × 919.9 en Figma) —
+   así el bloque completo escala manteniendo las proporciones del
+   diseño en cualquier ancho de pantalla, en vez de una altura fija en
+   px. Sin border-radius en las tiles (ver .project-bento__tile) —
+   Figma no lo tiene, era un agregado nuestro de más, David pidió
+   sacarlo. gap:16px (--space-16) entre tiles, a pedido de David —
+   pisa el column-gap de 20px que traía heredado de .grid-12 y el
+   row-gap que tenía antes, para que quede parejo en las dos
+   direcciones.
+
+   max-width en .project-bento__grid: ya no es el switcher de David —
+   quedó decidido en la versión de 8 columnas (860px), la misma
+   fórmula ya usada en .project-process__carousel para que la columna
+   1/8 coincidan con el resto del grid en cualquier ancho de pantalla
+   (no un porcentaje fijo del frame de Figma como se probó al
+   principio). Centrado con margin-inline:auto — a diferencia del
+   carrusel de "Behind the scenes", acá SÍ va centrado porque David no
+   pidió que arranque en la columna 1, solo que no ocupe las 12
+   columnas completas.
+
+   background-color: white — a pedido de David, después de probar
+   --color-bg y #FCFCFB.
+
+   Va en .project-bento (la sección completa, ancho de viewport) y no
+   en .project-bento__inner (que solo tiene .container, limitado a
+   1440px) por la misma razón que .navbar--project: si el fondo fuera
+   del elemento con .container, en pantallas más anchas que 1440px se
+   verían los bordes de --color-bg de la página asomando a los costados
+   en vez de un fondo continuo — mismo bug que ya tuvimos con el
+   header. */
+.project-bento {
+  padding-top: var(--space-96);
+  padding-bottom: var(--space-96);
+  background-color: white;
+}
+
+/* Prueba: alineado a la izquierda como .project-process__headline (en
+   vez de centrado con max-width:640px) — a pedido de David, para ver
+   cómo se ve la sección así. */
+.project-bento__headline {
+  margin-top: var(--space-16);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-h2-size);
+  line-height: var(--text-h2-line);
+  color: var(--color-text-black);
+}
+
+.project-bento__body {
+  margin-top: var(--space-16);
+  max-width: 600px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--color-text-black);
+}
+
+.project-bento__grid {
+  max-width: 860px;
+  margin-top: var(--space-48);
+  margin-inline: auto;
+  grid-template-rows: 1fr 1fr;
+  gap: var(--space-8);
+  aspect-ratio: 1462.3 / 919.9;
+}
+
+/* border-radius:8px — David lo había sacado del todo, después pidió
+   volver a agregarlo a 16px, y después bajarlo a 8px (no los 28px
+   originales, que eran un valor literal de Figma). Fondo Gray 300
+   (--color-gray-300) en vez de --color-surface-project, a pedido de
+   David tras ver la versión anterior en vivo. */
+.project-bento__tile {
+  overflow: hidden;
+  border-radius: 8px;
+  background-color: var(--color-gray-300);
+}
+
+.project-bento__tile img,
+.project-bento__tile video {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.project-bento__tile--tall {
+  grid-column: 1 / 5;
+  grid-row: 1 / 3;
+}
+
+.project-bento__tile--top {
+  grid-column: 5 / 13;
+  grid-row: 1 / 2;
+}
+
+.project-bento__tile--bottom-left {
+  grid-column: 5 / 9;
+  grid-row: 2 / 3;
+}
+
+.project-bento__tile--bottom-right {
+  grid-column: 9 / 13;
+  grid-row: 2 / 3;
+}
+
+/* ===== Testimonial (carrusel, cierre del case study) =====
+   Sección nueva a partir de un boceto a mano de David (sin nodo de
+   Figma): mismo fondo rojo #E0232A que .project-devices (mismo
+   literal, mismo criterio de "no es la escala --color-red-* de
+   destructive" ya documentado ahí).
+
+   Empezó como UNA sola sección con un testimonio; David pidió después
+   una segunda (fondo/tipografía iguales, split de columnas distinto)
+   y luego que las dos vivieran juntas como un carrusel deslizable en
+   vez de dos secciones apiladas. Mecanismo de scroll idéntico al ya
+   validado en .project-process__carousel: track full-bleed (fuera de
+   .container) con scroll-snap-type:x mandatory, padding-left/right
+   con la fórmula --testimonial-inset (mismo cálculo que
+   --process-inset) para que la slide 1 arranque en la columna 1 y,
+   sin overflow-x:hidden en la sección, en reposo se alcance a ver el
+   arranque de la slide 2 asomando justo después del borde derecho de
+   la columna 12 — a pedido de David. Cada __slide es un item del
+   flex (flex:0 0 100% del ancho ya inset por el track), con su propio
+   padding-block:96 y su propio .project-testimonial__grid.grid-12
+   adentro — ya no hay un .project-testimonial__inner.container por
+   slide: el padding del track ya hace ese trabajo. */
+.project-testimonial {
+  background-color: #e0232a;
+}
+
+.project-testimonial__track {
+  display: flex;
+  align-items: center;
+  overflow-x: auto;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  --testimonial-inset: max(var(--grid-margin), calc((100% - var(--grid-max-width)) / 2 + var(--grid-margin)));
+  padding-left: var(--testimonial-inset);
+  padding-right: var(--testimonial-inset);
+  scroll-padding-left: var(--testimonial-inset);
+  scroll-padding-right: var(--testimonial-inset);
+}
+
+.project-testimonial__track::-webkit-scrollbar {
+  display: none;
+}
+
+.project-testimonial__slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+  padding-block: var(--space-96);
+}
+
+.project-testimonial__grid {
+  align-items: center;
+}
+
+/* grid-column 2/7 y 7/12 (no 1/13 completo) — 10 de las 12 columnas,
+   centradas, dejando la 1 y la 12 como margen simétrico a los lados;
+   5 columnas para el video, 5 para el testimonio, a pedido de David. */
+.project-testimonial__media {
+  grid-column: 2 / 7;
+  display: flex;
+  justify-content: center;
+}
+
+/* Sin border-radius — David lo probó (recortaba el <video> para que
+   coincidiera con el bisel redondeado del mockup, ver historial en
+   git) y no le gustó el resultado visual. El negro que rodea al
+   celular dentro del video (el mockup no tiene canal alpha, ver
+   README de assets/animations/onboarding-tool/) queda tal cual. */
+/* max-width: 310px = ancho de 3 columnas del grid de 12 sobre el
+   frame de referencia de 1440px (3 columnas × 90px + 2 gutters ×
+   20px = 270+40=310px, mismo cálculo de columna que ya usa el
+   comentario de .project-devices más arriba) — a pedido de David,
+   sin mover la posición (sigue centrado dentro de las 5 columnas de
+   .project-testimonial__media vía flex). */
+.project-testimonial__video {
+  display: block;
+  width: 100%;
+  max-width: 310px;
+  height: auto;
+}
+
+.project-testimonial__content {
+  grid-column: 7 / 12;
+  margin: 0;
+}
+
+.project-testimonial__quote-icon {
+  font-size: 40px;
+  color: var(--color-text-white);
+  opacity: 0.6;
+}
+
+.project-testimonial__quote {
+  margin: 0;
+  margin-top: var(--space-16);
+}
+
+.project-testimonial__quote p {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 500;
+  font-size: var(--text-h4-size);
+  line-height: var(--text-h4-line);
+  color: var(--color-text-white);
+}
+
+.project-testimonial__attribution {
+  margin-top: var(--space-32);
+  display: flex;
+  align-items: center;
+  gap: var(--space-12);
+}
+
+/* Foto real de David (assets/images/onboarding-tool/testimonial-avatar.jpg),
+   recortada a 260×260 centrada en la cara antes de bajarla a 96×96
+   (@2x de este círculo de 48px) — así el círculo (border-radius:50%)
+   recorta directo sobre la cara, sin dejar ver el fondo amarillo
+   cuadrado original del archivo fuente. */
+.project-testimonial__avatar {
+  display: block;
+  flex-shrink: 0;
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.project-testimonial__name {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  color: var(--color-text-white);
+}
+
+/* opacity en vez de un token de gris — la escala --color-gray-* está
+   calibrada para fondos claros (--color-bg/white), no para texto
+   secundario sobre un fondo rojo oscuro; bajar la opacidad de
+   --color-text-white mantiene el mismo matiz de blanco que el resto
+   del bloque, solo con menos énfasis. */
+.project-testimonial__role {
+  display: block;
+  margin-top: 2px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-line);
+  color: var(--color-text-white);
+  opacity: 0.75;
+}
+
+/* Dots — abajo del track (fuera del scroll, no se desplazan con las
+   slides), clicables, sincronizados con la slide visible vía JS (ver
+   "Carrusel de testimonios" en js/main.js). padding-bottom mayor que
+   el top porque ya viene pegado al padding-block:96 del último
+   elemento del track (el slide), no hace falta tanto aire arriba. */
+.project-testimonial__dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-12);
+  padding-top: var(--space-8);
+  padding-bottom: var(--space-40);
+}
+
+.project-testimonial__dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(243, 241, 237, 0.4);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.project-testimonial__dot:hover {
+  background-color: rgba(243, 241, 237, 0.7);
+}
+
+.project-testimonial__dot.is-active {
+  background-color: var(--color-text-white);
+  transform: scale(1.25);
+}
+
+/* ===== Methodology (pasos del proceso) =====
+   Sección nueva a partir de una captura de Mobbin (Railway, "How the
+   program works" — no un nodo de Figma): se toma el LAYOUT (título +
+   lista de pasos numerados con una línea vertical conectando cada
+   número), pero no su tipografía (serif) ni su fondo — acá usa
+   var(--font-display)/var(--font-body) de esta página. Fondo blanco a
+   pedido de David (antes era --color-purple-950; con fondo blanco el
+   texto/línea/círculo vuelven a usar tokens de la escala Gray, que sí
+   está calibrada para fondos claros — ver comentario en
+   .project-methodology__desc). Solo título + pasos: el link "Learn
+   more" de la referencia se dejó afuera a pedido de David. */
+.project-methodology {
+  padding-block: var(--space-96);
+  background-color: white;
+}
+
+/* Prueba: alineado a la izquierda como .project-process__headline (en
+   vez de centrado con max-width:640px) — a pedido de David, para ver
+   cómo se ve la sección así. */
+.project-methodology__headline {
+  margin-top: var(--space-16);
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-h2-size);
+  line-height: var(--text-h2-line);
+  color: var(--color-text-black);
+}
+
+.project-methodology__body {
+  margin-top: var(--space-16);
+  max-width: 600px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--color-gray-600);
+}
+
+.project-methodology__list {
+  max-width: 720px;
+  margin-top: var(--space-48);
+  margin-inline: auto;
+  list-style: none;
+}
+
+.project-methodology__item {
+  position: relative;
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-24);
+  padding-bottom: var(--space-32);
+  margin: 0;
+}
+
+/* flex:1 para que __time quede empujado al borde derecho del <li>
+   (mismo ancho de columna en los 4 pasos, sin importar cuánto texto
+   tenga cada título/descripción). Clase separada de
+   .project-methodology__body (el párrafo de intro de la sección) —
+   antes compartían nombre y esa regla de flex:1/max-width se colaba
+   sin querer en las dos, encontrado al revisar el CSS antes de un
+   experimento de dos columnas con foto que se probó y se descartó. */
+.project-methodology__content {
+  flex: 1;
+}
+
+/* Tiempo aproximado de cada etapa — a pedido de David, primero se
+   probó como columna a la derecha del paso; después pidió moverlo
+   debajo del body en vez de al costado. */
+.project-methodology__time {
+  display: block;
+  margin-top: var(--space-8);
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-line);
+  color: var(--color-gray-600);
+}
+
+.project-methodology__item:last-child {
+  padding-bottom: 0;
+}
+
+/* Línea vertical detrás de cada número (mismo criterio que la
+   referencia de Mobbin) — un ::after posicionado en vez de un
+   border-left en el <li>, para que no se estire de más contra el
+   padding-bottom del último item. z-index del número por encima para
+   que la línea pase "detrás" del círculo, no lo atraviese encima. */
+.project-methodology__item:not(:last-child)::after {
+  content: "";
+  position: absolute;
+  top: 40px;
+  left: 20px;
+  bottom: 0;
+  width: 1px;
+  transform: translateX(-50%);
+  background-color: var(--color-gray-300);
+}
+
+.project-methodology__number {
+  position: relative;
+  z-index: 1;
+  flex-shrink: 0;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  border: 1px solid var(--color-gray-300);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-body-size);
+  color: var(--color-text-black);
+  background-color: white;
+}
+
+.project-methodology__title {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-h5-size);
+  line-height: var(--text-h5-line);
+  color: var(--color-text-black);
+}
+
+/* --color-gray-600, no opacity — con fondo blanco la escala Gray ya
+   está calibrada para esto (mismo token que usa
+   .project-about__meta-item dd para su texto secundario), a
+   diferencia del fondo oscuro que tenía esta sección antes. */
+.project-methodology__desc {
+  margin: 0;
+  margin-top: var(--space-8);
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--color-gray-600);
+}
+
+/* ===== Foto del proceso (sesión de testing real) =====
+   Sección nueva, debajo de .project-methodology — foto real (la misma
+   que se probó y se sacó del layout de dos columnas de arriba) con su
+   caption, a pedido de David. max-width:860px = 8 columnas del grid de
+   12 (misma fórmula ya usada en .project-bento__grid/.project-process__carousel),
+   centrada. */
+.project-photo {
+  padding-block: var(--space-96);
+  background-color: var(--color-surface-project);
+}
+
+.project-photo__figure {
+  max-width: 860px;
+  margin: 0 auto;
+}
+
+.project-photo__figure img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+.project-photo__caption {
+  margin-top: var(--space-12);
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  color: var(--color-text-black);
+}
+
+/* ===== Slide 2 del carrusel de testimonios (hardware) =====
+   Reusa toda la base de .project-testimonial (fondo rojo, ícono de
+   cita, tipografía) — el modificador --hardware en el __slide solo
+   pisa el split de columnas: acá el video ocupa 6 columnas y el
+   testimonio las otras 6, de borde a borde (columnas 1-12 completas),
+   a diferencia de la slide 1 que deja la 1 y la 12 como margen (10
+   columnas centradas, 5/5). También el video no tiene el
+   max-width:310px de la slide 1 — al ser una laptop (formato
+   horizontal, no un celular vertical) tiene sentido que ocupe el
+   ancho real de su columna. */
+.project-testimonial__slide--hardware .project-testimonial__media {
+  grid-column: 1 / 7;
+  justify-content: flex-start;
+}
+
+.project-testimonial__slide--hardware .project-testimonial__video {
+  max-width: none;
+}
+
+.project-testimonial__slide--hardware .project-testimonial__content {
+  grid-column: 7 / 13;
+}
+
+/* ===== Reflections (Limitations / Learnings) =====
+   Sección nueva, debajo de .project-photo, fondo blanco — dos
+   columnas de 5 (2/7 y 7/12, mismo split centrado 5/5 que ya usa
+   .project-testimonial), cada una con su eyebrow y una lista de
+   puntos. Escala tipográfica ya usada en el resto de la página:
+   .eyebrow (compartida) para "Limitations"/"Learnings", y
+   --text-body-lg-* + --color-text-black para cada punto — mismos
+   tokens que .project-about__body/.project-bento__body, no una
+   escala nueva. El guión "—" ya viene como parte del texto (David lo
+   pegó así), por eso list-style:none en vez de un bullet del
+   navegador — encimarían dos marcas distintas por ítem. */
+.project-reflections {
+  padding-block: var(--space-96);
+  background-color: white;
+}
+
+.project-reflections__col:nth-child(1) {
+  grid-column: 2 / 7;
+}
+
+.project-reflections__col:nth-child(2) {
+  grid-column: 7 / 12;
+}
+
+/* Mismo estilo que .project-methodology__title (los títulos de "Four
+   stages": Research/Define/Design/Validate) — a pedido de David, en
+   vez del .eyebrow chico en mayúsculas que tenía antes. */
+.project-reflections__heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-h5-size);
+  line-height: var(--text-h5-line);
+  color: var(--color-text-black);
+}
+
+.project-reflections__list {
+  margin: 0;
+  margin-top: var(--space-16);
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-16);
+}
+
+.project-reflections__list li {
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--color-text-black);
 }

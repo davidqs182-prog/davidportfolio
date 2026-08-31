@@ -104,3 +104,156 @@ ffmpeg -c:v libvpx-vp9 -i "<fuente>.webm" \
   falta un placeholder — además un poster en JPG no podría mantener la
   transparencia (habría que generarlo en PNG si en algún momento se
   necesita).
+
+---
+
+# bento-sketching.webm / .mp4 — casilla alta del bento grid en project-onboarding.html
+
+Video de David sosteniendo/escribiendo en un flip chart (proceso de
+research), para la casilla `.project-bento__tile--tall` de la sección
+"Behind the scenes". A diferencia del video del hero, **sin canal
+alpha** — es un video normal, opaco, así que sí aplica el preset "V0.1"
+(MP4 + WebM, ver arriba) tal cual.
+
+Fuente: "WhatsApp Video 2026-08-07 at 12.54.24.mp4" de David — grabado
+en vertical con el celular (viene con metadata de rotación -90°, no en
+píxeles físicos portrait; ffmpeg la aplica solo al recodificar), 576×1024
+efectivos, ~30fps, 15.1s, 3.2MB con audio.
+
+```bash
+ffmpeg -i "<fuente>.mp4" \
+  -vf "fps=30" \
+  -c:v libx264 -profile:v high -level 4.2 -preset veryslow -crf 10 -pix_fmt yuv420p \
+  -an -movflags +faststart \
+  bento-sketching.mp4
+
+ffmpeg -i "<fuente>.mp4" \
+  -vf "fps=30" \
+  -c:v libvpx-vp9 -crf 24 -b:v 0 -deadline good -cpu-used 2 -pix_fmt yuv420p \
+  -an \
+  bento-sketching.webm
+
+ffmpeg -y -ss 0 -i bento-sketching.mp4 -update 1 -frames:v 1 -q:v 2 bento-sketching-poster.jpg
+```
+
+- `-an`: el video se usa muted en el sitio (mismo criterio que el resto
+  de los videos de proyecto), así que se descarta el audio de la fuente
+  al codificar en vez de cargarlo sin usarlo.
+- Con `-crf 10 -preset veryslow` el MP4 (6.5MB) termina pesando más que
+  la fuente original (3.2MB) — mismo trade-off ya documentado en este
+  README: acá se prioriza nitidez sobre peso. El WebM (1.8MB) es el que
+  realmente se sirve primero.
+- Resultado: MP4 6.5MB, WebM 1.8MB, poster JPG 58KB.
+
+---
+
+# order.webm — animación de teléfono en la sección "Testimonial" de project-onboarding.html
+
+Screen recording de una interacción dentro de la app (flujo de "order"),
+para el lado izquierdo de la sección de testimonio con fondo rojo
+`#E0232A`.
+
+**Ronda 1** — fuente `order.mp4` (ya estaba en
+`assets/images/onboarding-tool/`): h264, 288×602, 60fps, 14.68s, 6.7MB,
+sin alpha. Preset "V0.1" tal cual (MP4+WebM). Resultado: MP4 1.4MB,
+WebM 736KB.
+
+**Ronda 2** — David pasó `Screen.mp4` (`Desktop/Figma Test/`), 2x la
+resolución de la ronda 1 (576×1204, mismo mockup, sin alpha tampoco).
+Mismo preset "V0.1". El negro del bisel del celular (fuera del contorno
+redondeado, el video no tenía transparencia) se intentó tapar con
+`border-radius` en `.project-testimonial__video` — David lo probó en
+vivo y no le gustó el resultado, se sacó.
+
+**Ronda 3 (actual)** — David re-exportó el mismo video con **canal
+alpha real** (`order.webm`, `Desktop/Figma Test/`): VP9/WebM,
+576×1204, 60fps, 14.68s, 7.17MB, con `alpha_mode:1`. Con esto el fondo
+negro desaparece de verdad (transparencia real, no un recorte
+aproximado) — mismo criterio que `hands-tablet-mockup.webm` más abajo:
+**WebM-only, sin respaldo MP4** (H.264 no soporta alpha), sin poster
+(la sección ya es del mismo rojo `#E0232A` de fondo, no hace falta
+placeholder).
+
+```bash
+ffmpeg -c:v libvpx-vp9 -i "<fuente>.webm" \
+  -vf "fps=30" \
+  -c:v libvpx-vp9 -crf 24 -b:v 0 -deadline good -cpu-used 2 -pix_fmt yuva420p \
+  -an \
+  order.webm
+```
+
+- **`-c:v libvpx-vp9` antes de `-i`: obligatorio** — mismo motivo que
+  `hands-tablet-mockup.webm` (ver más abajo): sin forzar el decoder de
+  entrada, ffmpeg no extrae bien el canal alpha del contenedor.
+- Verificado de verdad (no solo el tag `alpha_mode`): se extrajo un
+  frame con `-pix_fmt rgba` y se leyó el byte de alpha de una esquina
+  con `xxd` — dio `00` (transparente) en la esquina y `ff` (opaco) en
+  el centro de la pantalla del celular, confirmando que el canal alpha
+  quedó bien decodificado y codificado, no solo etiquetado.
+- Resultado: fuente 7.17MB → WebM 1.72MB.
+- `order.mp4` y `order-poster.jpg` de la ronda 2 se borraron — ya no
+  se usan (no tiene sentido un fallback MP4 sin transparencia para un
+  video pensado para verse sin fondo).
+
+**Poster (`order-poster.png`)** — agregado después, cuando el
+carrusel de testimonios pasó a cargar/reproducir cada video recién en
+un punto específico (40% de la sección visible, o al hacer swipe —
+ver "Carrusel de testimonios (video)" en `js/main.js`): sin poster, el
+`<video>` se veía vacío hasta ese momento, y David no quería ese hueco
+en blanco. **PNG, no JPG** — el video tiene canal alpha real, y un
+JPG no puede guardar transparencia (saldría con fondo negro/opaco
+detrás del bisel, el mismo bug que ya arreglamos antes). Extraído con
+el mismo decoder forzado (`-c:v libvpx-vp9`) para que el frame
+exportado conserve el alpha:
+
+```bash
+ffmpeg -c:v libvpx-vp9 -ss 1 -i order.webm -update 1 -frames:v 1 order-poster.png
+```
+
+Verificado con `ffprobe -show_entries stream=pix_fmt` sobre el PNG
+resultante — debe decir `rgba`, no `rgb24` (que perdería el alpha).
+
+---
+
+# macbook-order.webm — animación de laptop en la segunda sección de testimonio de project-onboarding.html
+
+Mockup de MacBook (mismo tipo de animación que `order.webm`, pero de
+una laptop en vez de un celular), para el lado izquierdo (6 columnas)
+de la segunda sección de testimonio, roja, al final de la página.
+Con canal alpha real — mismo criterio que `order.webm`/
+`hands-tablet-mockup.webm`: WebM-only, sin respaldo MP4.
+
+Fuente: `MacBook.webm` de David (`Downloads/`) — VP9/WebM,
+3580×2160, 60fps, 6.63s, 28MB, `alpha_mode:1`. Resolución nativa muy
+por encima de lo que hace falta para mostrarse en 6 columnas
+(~640px a 1440px de referencia), así que se bajó a 1800px de ancho
+(~2.8x ese ancho de display, margen de sobra para retina) en vez de
+usarla tal cual — bajar la resolución de una fuente con alpha antes
+de codificar no afecta la transparencia, solo el tamaño del archivo.
+
+```bash
+ffmpeg -c:v libvpx-vp9 -i "<fuente>.webm" \
+  -vf "fps=30,scale=1800:-2:flags=lanczos" \
+  -c:v libvpx-vp9 -crf 24 -b:v 0 -deadline good -cpu-used 2 -pix_fmt yuva420p \
+  -an \
+  macbook-order.webm
+```
+
+- `-c:v libvpx-vp9` antes de `-i`: obligatorio, mismo motivo ya
+  documentado arriba (si no, ffmpeg no decodifica bien el alpha del
+  contenedor de origen).
+- `scale=1800:-2`: el `-2` calcula el alto automático manteniendo la
+  proporción real del mockup, redondeado a un número par (obligatorio
+  para `yuv420p`/`yuva420p`, que necesita dimensiones pares).
+- Verificado con el mismo método que `order.webm`: frame extraído con
+  `-pix_fmt rgba`, esquina revisada con `xxd` — dio prácticamente 0
+  de alpha (transparente), no 255.
+- Resultado: fuente 28MB (3580×2160) → WebM 978KB (1800×1086).
+
+**Poster (`macbook-order-poster.png`)** — mismo motivo y mismo método
+que el de `order.webm` arriba: PNG (no JPG) para conservar el alpha,
+extraído con el decoder VP9 forzado.
+
+```bash
+ffmpeg -c:v libvpx-vp9 -ss 1 -i macbook-order.webm -update 1 -frames:v 1 macbook-order-poster.png
+```

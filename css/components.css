@@ -13,8 +13,44 @@
    Fuentes de Google (Work Sans, Inter, Material Symbols) se cargan
    vía <link> en el <head> de cada página. DIN Next LT Pro es una
    fuente paga (licencia de Fischbach), self-hosted acá porque no
-   tiene un <link> externo — solo el peso Bold/700, el único que usa
-   el sitio hoy (título de las páginas de proyecto). */
+   tiene un <link> externo — David la usa como prueba de tipografía
+   completa en project-onboarding.html (--font-display/--font-body
+   redefinidos SOLO ahí, ver project-onboarding.css), no reemplaza
+   Work Sans/Inter en el resto del sitio.
+
+   4 declaraciones para los pesos que la página realmente usa (headlines
+   700, botones 500/600, eyebrow 600, body 400) — no cargamos italic,
+   Condensed, Black, etc. del paquete completo que mandó David, esos no
+   se usan acá. DIN Next no tiene un archivo "SemiBold"/600 propio: el
+   de Medium se registra dos veces (500 y 600) para que los usos con
+   font-weight:600 (.btn--lg, .eyebrow) no salten directo a Bold/700 —
+   sin esto, el navegador busca el peso disponible más cercano hacia
+   arriba y usaría Bold en vez de Medium, perdiendo la jerarquía visual
+   que ya tenían botones/eyebrow frente a los headlines. */
+@font-face {
+  font-family: "DIN Next LT Pro";
+  src: url("../assets/fonts/din-next-lt-pro/DINNextLTPro-Regular.otf") format("opentype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DIN Next LT Pro";
+  src: url("../assets/fonts/din-next-lt-pro/DINNextLTPro-Medium.otf") format("opentype");
+  font-weight: 500;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "DIN Next LT Pro";
+  src: url("../assets/fonts/din-next-lt-pro/DINNextLTPro-Medium.otf") format("opentype");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
 @font-face {
   font-family: "DIN Next LT Pro";
   src: url("../assets/fonts/din-next-lt-pro/DINNextLTPro-Bold.otf") format("opentype");
@@ -192,4 +228,36 @@
 
 .btn:hover .material-symbols-rounded.icon-forward {
   transform: translateX(4px);
+}
+
+/* Ícono "retroceder" — misma idea que .icon-forward, pero para íconos
+   que apuntan hacia atrás/izquierda (ej. "arrow_back" en "Back to
+   home"): al pasar el mouse, se desliza hacia la IZQUIERDA, no hacia
+   la derecha — deslizar a la derecha reforzaría "avanzar", lo
+   contrario de lo que dice la flecha. Por eso es una clase separada
+   de .icon-forward y no una variante con el mismo signo invertido a
+   mano en cada uso. */
+.material-symbols-rounded.icon-back {
+  transition: transform 0.2s ease;
+}
+
+.btn:hover .material-symbols-rounded.icon-back {
+  transform: translateX(-4px);
+}
+
+/* ---------- Eyebrow ----------
+   Etiqueta chica en mayúsculas que antecede a un título de sección
+   (escala Overline de tokens.css). Nació como estilo puntual de la
+   página de proyecto (label de "About the project" y de la ficha
+   Role/Team/Timeline) — se sube acá al pasar a usarse en una segunda
+   sección de esa misma página, para no repetir la regla dos veces. */
+.eyebrow {
+  display: block;
+  font-family: var(--font-body);
+  font-weight: 600;
+  font-size: var(--text-overline-size);
+  line-height: var(--text-overline-line);
+  letter-spacing: var(--text-overline-tracking);
+  text-transform: uppercase;
+  color: var(--color-text-black);
 }

@@ -38,6 +38,16 @@
   --color-gray-300: #d1d5db;
   --color-gray-400: #9ca3af;
   --color-gray-500: #6b7280;
+  /* 550 — agregado nuestro (no está en Figma), mismo criterio que
+     Purple 950: un paso intermedio que no existía en la escala.
+     Texto secundario (captions, ficha Role/Team/Timeline) sobre
+     --color-bg (#F3F1ED): con Gray 500 el contraste da 4.29:1 (no
+     llega al mínimo WCAG AA de 4.5:1 para texto normal); con Gray 600
+     da 6.71:1, que cumple pero se siente más pesado de lo que David
+     quería para un texto secundario. Este valor se calculó para caer
+     justo en el mínimo aceptable (~4.5:1) — visualmente más liviano
+     que 600, sin dejar de cumplir el estándar. */
+  --color-gray-550: #666e7c;
   --color-gray-600: #4b5563;
   --color-gray-700: #374151;
   --color-gray-800: #1f2937;

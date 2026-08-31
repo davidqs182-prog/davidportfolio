@@ -155,6 +155,11 @@
   var lazyVideos = document.querySelectorAll("video");
   var videosToLoad = [];
   lazyVideos.forEach(function (video) {
+    // Los videos del carrusel de testimonios NO pasan por acá — tienen
+    // su propio disparador (40% de la sección visible para el primero,
+    // volverse la slide activa del swipe para el resto). Ver "Carrusel
+    // de testimonios (video)" más abajo.
+    if (video.closest(".project-testimonial__track")) return;
     if (video.querySelector("source[data-src]")) {
       videosToLoad.push(video);
     }
@@ -251,4 +256,171 @@
   window.addEventListener("scroll", checkTriggers, { passive: true });
   window.addEventListener("resize", checkTriggers);
   checkTriggers(); // por si ya arranca visible (pantallas muy altas)
+})();
+
+// ===== Dots de carrusel (reusado por Testimonials y Behind the scenes) =====
+// El scroll horizontal con snap ya funciona solo (CSS puro) — esta
+// función solo sincroniza los dots de abajo con el item visible: clic
+// en un dot desliza hasta ese item, y el dot activo cambia solo según
+// cuál item está más visible DENTRO DEL TRACK (IntersectionObserver
+// con el track como root, no con el viewport — si no, con items
+// full-bleed casi siempre "visibles" a la vez según scroll vertical).
+// Misma función para las dos secciones que la usan (mismo
+// comportamiento, a pedido de David) — evita repetir esta lógica dos
+// veces casi idéntica.
+//
+// itemsPerDot: cuántos items representa cada dot (default 1, un dot
+// por item — así funciona el carrusel de Testimonials, 1 slide = 1
+// dot). "Behind the scenes" pidió solo 2 dots para 4 tarjetas, así
+// que ahí cada dot agrupa 2 items — clic en el dot N desliza al
+// primer item de ese grupo, y el dot activo se calcula agrupando el
+// item más visible (Math.floor(index / itemsPerDot)).
+function initCarouselDots(trackSelector, itemSelector, dotSelector, itemsPerDot) {
+  itemsPerDot = itemsPerDot || 1;
+
+  var track = document.querySelector(trackSelector);
+  if (!track) return;
+
+  var items = Array.prototype.slice.call(track.querySelectorAll(itemSelector));
+  var dots = Array.prototype.slice.call(document.querySelectorAll(dotSelector));
+  if (!items.length || !dots.length) return;
+
+  function setActive(index) {
+    dots.forEach(function (dot, i) {
+      var isActive = i === index;
+      dot.classList.toggle("is-active", isActive);
+      dot.setAttribute("aria-selected", isActive ? "true" : "false");
+    });
+  }
+
+  dots.forEach(function (dot, dotIndex) {
+    dot.addEventListener("click", function () {
+      var item = items[dotIndex * itemsPerDot];
+      if (!item) return;
+      item.scrollIntoView({
+        behavior: "smooth",
+        inline: "start",
+        block: "nearest",
+      });
+    });
+  });
+
+  if (!("IntersectionObserver" in window)) return;
+
+  // visible[i] guarda si ese item está actualmente >=60% visible.
+  // Con carruseles donde se ve más de un item a la vez (ej. "Behind
+  // the scenes", con 2-3 tarjetas simultáneas en pantallas anchas),
+  // puede haber más de un item pasando el threshold al mismo tiempo —
+  // se elige el de MENOR índice (el más a la izquierda) como activo,
+  // en vez de "el último que avisó el observer" (que dependía del
+  // orden de entrega de IntersectionObserver, no del orden real de
+  // las tarjetas, y daba un dot activo inconsistente).
+  var visible = items.map(function () {
+    return false;
+  });
+
+  var observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        var index = items.indexOf(entry.target);
+        if (index === -1) return;
+        visible[index] = entry.isIntersecting;
+      });
+      var activeIndex = visible.indexOf(true);
+      if (activeIndex !== -1) setActive(Math.floor(activeIndex / itemsPerDot));
+    },
+    { root: track, threshold: 0.6 }
+  );
+
+  items.forEach(function (item) {
+    observer.observe(item);
+  });
+}
+
+initCarouselDots(
+  ".project-testimonial__track",
+  ".project-testimonial__slide",
+  ".project-testimonial__dot"
+);
+initCarouselDots(
+  ".project-process__track",
+  ".project-process__item",
+  ".project-process__dot",
+  2
+);
+
+// ===== Carrusel de testimonios (video) =====
+// A pedido de David: el video de la primera slide arranca cuando el
+// 40% de TODA la sección (no del video en sí) está visible en
+// pantalla — así coincide con el momento en que el usuario realmente
+// "llega" a esta parte de la página, no con un punto arbitrario cerca
+// del borde. El resto de las slides no cargan ni reproducen su video
+// hasta que el usuario hace swipe y esa slide se vuelve la visible
+// dentro del carrusel (root: el track, no el viewport) — así no se
+// descarga/reproduce de más un video que todavía no se ve. Estos
+// videos NO pasan por el lazy-load genérico de más arriba (ver el
+// "return" agregado ahí) — este bloque es dueño completo de su carga
+// y reproducción.
+(function () {
+  var section = document.querySelector(".project-testimonial");
+  var track = document.querySelector(".project-testimonial__track");
+  if (!section || !track) return;
+
+  var slides = Array.prototype.slice.call(
+    track.querySelectorAll(".project-testimonial__slide")
+  );
+  if (!slides.length) return;
+
+  function loadAndPlay(video) {
+    if (!video) return;
+    // .load() solo la primera vez (cuando había data-src pendiente) —
+    // si el usuario hace swipe de ida y vuelta, las llamadas
+    // siguientes deben resumir la reproducción donde estaba, no
+    // reiniciar el video de cero cada vez que la slide vuelve a
+    // quedar visible.
+    var pendingSources = video.querySelectorAll("source[data-src]");
+    if (pendingSources.length) {
+      pendingSources.forEach(function (source) {
+        source.src = source.dataset.src;
+        source.removeAttribute("data-src");
+      });
+      video.load();
+    }
+    video.play().catch(function () {
+      // Autoplay bloqueado: el video se queda pausado en su primer
+      // frame hasta que el usuario interactúe con la página.
+    });
+  }
+
+  if (!("IntersectionObserver" in window)) {
+    slides.forEach(function (slide) {
+      loadAndPlay(slide.querySelector("video"));
+    });
+    return;
+  }
+
+  var sectionObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        loadAndPlay(slides[0].querySelector("video"));
+        sectionObserver.disconnect();
+      });
+    },
+    { threshold: 0.4 }
+  );
+  sectionObserver.observe(section);
+
+  var slideObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        loadAndPlay(entry.target.querySelector("video"));
+      });
+    },
+    { root: track, threshold: 0.6 }
+  );
+  slides.slice(1).forEach(function (slide) {
+    slideObserver.observe(slide);
+  });
 })();

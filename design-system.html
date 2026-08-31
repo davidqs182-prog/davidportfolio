@@ -52,6 +52,7 @@
         <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-300)"></span><span class="ds-swatch__name">Gray 300</span><span class="ds-swatch__hex">#D1D5DB</span></div>
         <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-400)"></span><span class="ds-swatch__name">Gray 400</span><span class="ds-swatch__hex">#9CA3AF</span></div>
         <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-500)"></span><span class="ds-swatch__name">Gray 500</span><span class="ds-swatch__hex">#6B7280</span></div>
+        <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-550)"></span><span class="ds-swatch__name">Gray 550 <span class="ds-tag">extra</span></span><span class="ds-swatch__hex">#666E7C</span></div>
         <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-600)"></span><span class="ds-swatch__name">Gray 600</span><span class="ds-swatch__hex">#4B5563</span></div>
         <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-700)"></span><span class="ds-swatch__name">Gray 700</span><span class="ds-swatch__hex">#374151</span></div>
         <div class="ds-swatch"><span class="ds-swatch__color" style="background:var(--color-gray-800)"></span><span class="ds-swatch__name">Gray 800 — text</span><span class="ds-swatch__hex">#1F2937</span></div>
@@ -76,6 +77,10 @@
       <p class="ds-section-desc">
         <strong>--color-surface-project</strong> es el fondo de header + hero en las páginas de detalle de proyecto
         (ej. <code>project-onboarding.html</code>) — no viene de la escala Gray, es un valor literal tomado de Figma.
+        <strong>Gray 550</strong> es un paso intermedio que agregamos nosotros (no está en Figma), para texto
+        secundario (captions, ficha Role/Team/Timeline) sobre <code>--color-bg</code>: Gray 500 da 4.29:1 de
+        contraste ahí (no llega al mínimo WCAG AA de 4.5:1 para texto normal) y Gray 600 da 6.71:1 pero se sentía
+        muy pesado para un texto secundario — 550 se calculó para caer justo en ~4.5:1.
       </p>
     </section>
 
@@ -99,15 +104,34 @@
       <div class="ds-type-row"><span class="ds-type-label">Body · 14 / 20</span><p class="ds-type-sample" style="font-family:var(--font-body); font-weight:400; font-size:var(--text-body-size); line-height:var(--text-body-line);">Creamos experiencias digitales que conectan marcas con personas.</p></div>
       <div class="ds-type-row"><span class="ds-type-label">Body Small · 12 / 16</span><p class="ds-type-sample" style="font-family:var(--font-body); font-weight:400; font-size:var(--text-body-sm-size); line-height:var(--text-body-sm-line);">Última actualización: 6 de agosto, 2026</p></div>
       <div class="ds-type-row"><span class="ds-type-label">Caption · 11 / 14</span><p class="ds-type-sample" style="font-family:var(--font-body); font-weight:400; font-size:var(--text-caption-size); line-height:var(--text-caption-line);">Fig. 1 — Evolución del tráfico mensual en 2026</p></div>
-      <div class="ds-type-row"><span class="ds-type-label">Overline · 10 / 14</span><p class="ds-type-sample" style="font-family:var(--font-body); font-weight:600; font-size:var(--text-overline-size); line-height:var(--text-overline-line); letter-spacing:var(--text-overline-tracking); text-transform:uppercase;">Caso de estudio</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Overline · 10 / 14</span><p class="ds-type-sample eyebrow">Caso de estudio</p></div>
+      <p class="ds-section-desc">
+        Como componente reusable es la clase <code>.eyebrow</code> (<code>css/components.css</code>) —
+        se usa como label antes de un título de sección o como etiqueta de una ficha de datos
+        (ej. "Role"/"Team"/"Timeline" y "Behind the scenes" en la página de proyecto).
+      </p>
 
       <h3>DIN Next LT Pro <span class="ds-tag">extra</span></h3>
       <p class="ds-section-desc">
         Fuente paga (licencia de Fischbach), self-hosted vía <code>@font-face</code> en <code>css/components.css</code> —
-        no es parte de la escala tipográfica general, solo se usa en el título de las páginas de detalle de proyecto
-        (<code>--font-din-next</code>). Únicamente está cargado el peso Bold/700, el único que usa el sitio hoy.
+        no es parte de la escala tipográfica general del sitio. Prueba de David acotada a
+        <code>project-onboarding.html</code> únicamente: esa página redefine
+        <code>--font-display</code>/<code>--font-body</code> (ver comentario al inicio de
+        <code>css/project-onboarding.css</code>), así que toda la página — headlines, body, botones,
+        eyebrow — usa DIN Next en vez de Work Sans/Inter, con la misma escala de tamaños de siempre.
+        El resto del sitio (<code>index.html</code>) no se toca.
       </p>
-      <div class="ds-type-row"><span class="ds-type-label">Bold · 700</span><p class="ds-type-sample" style="font-family:var(--font-din-next); font-weight:700; font-size:32px; line-height:1.12;">Onboarding Tool</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Regular · 400</span><p class="ds-type-sample" style="font-family:var(--font-din-next); font-weight:400; font-size:16px; line-height:1.4;">An onboarding and offboarding webapp.</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Medium · 500</span><p class="ds-type-sample" style="font-family:var(--font-din-next); font-weight:500; font-size:16px; line-height:1.4;">Back to home</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Medium · 600 <span class="ds-tag">extra</span></span><p class="ds-type-sample" style="font-family:var(--font-din-next); font-weight:600; font-size:16px; line-height:1.4;">About the project</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Bold · 700</span><p class="ds-type-sample" style="font-family:var(--font-din-next); font-weight:700; font-size:32px; line-height:1.12;">Turning chaos into one connected system.</p></div>
+      <p class="ds-section-desc">
+        <strong>Medium · 600</strong> reusa el mismo archivo que Medium · 500 — DIN Next no trae un peso
+        "SemiBold"/600 propio en la licencia que tenemos, y sin registrarlo aparte los usos con
+        <code>font-weight:600</code> (<code>.btn--lg</code>, <code>.eyebrow</code>) saltarían directo a
+        Bold/700, perdiendo la jerarquía frente a los headlines.
+      </p>
+
     </section>
 
     <!-- ===== Espaciado ===== -->
@@ -179,10 +203,10 @@
           </tr>
           <tr>
             <td>Outline + ícono <span class="ds-tag">extra</span></td>
-            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--sm"><span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>Back to home</button></td>
-            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--md"><span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>Back to home</button></td>
-            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--lg"><span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>Back to home</button></td>
-            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--md" disabled><span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>Back to home</button></td>
+            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--sm"><span class="material-symbols-rounded icon-back" aria-hidden="true">arrow_back</span>Back to home</button></td>
+            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--md"><span class="material-symbols-rounded icon-back" aria-hidden="true">arrow_back</span>Back to home</button></td>
+            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--lg"><span class="material-symbols-rounded icon-back" aria-hidden="true">arrow_back</span>Back to home</button></td>
+            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--md" disabled><span class="material-symbols-rounded icon-back" aria-hidden="true">arrow_back</span>Back to home</button></td>
           </tr>
           <tr>
             <td>Ghost</td>
@@ -229,9 +253,14 @@
           <span class="ds-icon-usage">Botón "Go to project" (tarjetas de proyecto). Con la clase <code>icon-forward</code> agregada, se desliza a la derecha en hover — ver tabla de Botones.</span>
         </div>
         <div class="ds-icon-card">
-          <span class="material-symbols-rounded" aria-hidden="true">arrow_back</span>
+          <span class="material-symbols-rounded icon-back" aria-hidden="true">arrow_back</span>
           <span class="ds-icon-name">arrow_back</span>
-          <span class="ds-icon-usage">Botón "Back to home" (header de páginas de proyecto). Sin animación.</span>
+          <span class="ds-icon-usage">Botón "Back to home" (header de páginas de proyecto). Con la clase <code>icon-back</code> agregada, se desliza a la izquierda en hover — igual que <code>icon-forward</code> pero en la dirección contraria, porque esta flecha apunta hacia atrás.</span>
+        </div>
+        <div class="ds-icon-card">
+          <span class="material-symbols-rounded" aria-hidden="true">format_quote</span>
+          <span class="ds-icon-name">format_quote</span>
+          <span class="ds-icon-usage">Secciones "Testimonial" (project-onboarding.html) — marca la cita, agrandado a 40px vía <code>.project-testimonial__quote-icon</code>.</span>
         </div>
       </div>
     </section>
