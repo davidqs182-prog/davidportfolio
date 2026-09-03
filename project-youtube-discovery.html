@@ -95,15 +95,132 @@
               <dd>David Quirós Soto</dd>
             </div>
             <div class="ytd-about__meta-item">
-              <dt class="eyebrow">Visual Designer</dt>
-              <dd>Juan Angustia (mentor)</dd>
+              <dt class="eyebrow">Built with</dt>
+              <dd>
+                <ul class="ytd-about__meta-list">
+                  <li>Figma</li>
+                  <li>Google Antigravity</li>
+                  <li>Gemini</li>
+                </ul>
+              </dd>
+            </div>
+            <div class="ytd-about__meta-item">
+              <dt class="eyebrow">Project Duration</dt>
+              <dd>2024 – Present</dd>
             </div>
           </dl>
         </div>
       </div>
     </section>
 
-    <!-- Próximas secciones (El problema, Insight clave, La solución, etc.) -->
+    <!-- Sección 2: "El problema" — apilada en 3 bloques, no 2 columnas
+         lado a lado (David cambió de idea sobre el layout anterior):
+         1) eyebrow + headline, columnas 1-6 (6 columnas, arranca en el
+            borde izquierdo del grid — David lo pidió así en vez de
+            columna 2, ya no queda alineado con el párrafo de abajo)
+         2) imagen, columnas 2-11 (10 columnas, centrada — 1 columna de
+            aire a cada lado dentro de las 12)
+         3) párrafo de descripción, columnas 2-7 (6 columnas)
+         Mismo patrón de sección que .ytd-about (mismo padding-block).
+         Fondo todavía sin definir (David lo va a dar después). -->
+    <section class="ytd-problem">
+      <div class="ytd-problem__inner container">
+        <div class="ytd-problem__grid grid-12">
+          <div class="ytd-problem__header">
+            <p class="eyebrow">The problem</p>
+            <h2 class="ytd-problem__headline">Deciding what to watch: choice overload</h2>
+          </div>
+          <!-- Video en vez de la imagen estática que había antes —
+               misma captura del feed de YouTube (Figma), ahora con las
+               anotaciones a mano de David dibujándose encima. Arranca
+               sola cuando la sección entra en pantalla (IntersectionObserver
+               en js/main.js, sección "Animación de El problema"), no al
+               cargar la página — no tiene loop, es una revelación de
+               una sola vez que se queda asentada en el frame final. -->
+          <div class="ytd-problem__visual">
+            <video
+              class="ytd-problem__video"
+              poster="assets/animations/youtube-compass-card/problem-animation-poster.jpg"
+              width="1916"
+              height="1004"
+              muted
+              playsinline
+              preload="none"
+            >
+              <source data-src="assets/animations/youtube-compass-card/problem-animation.webm" type="video/webm">
+              <source data-src="assets/animations/youtube-compass-card/problem-animation.mp4" type="video/mp4">
+            </video>
+          </div>
+          <p class="ytd-problem__body">Every day, 3 million videos get uploaded to YouTube. To pick one, users have almost nothing to go on: a thumbnail, a title, a few seconds of doubt. The decision comes before the enjoyment — creating friction at the exact moment that matters most: the first one.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección 3: "Insight clave" — apilada en 3 bloques (David
+         cambió de idea sobre el layout de 2 columnas que tenía antes):
+         1) eyebrow + headline + primer párrafo, columnas 2-7
+         2) tarjeta de video, columnas 2-11 (10 columnas, centrada) —
+            mismo borde degradado animado tipo "Gemini" que la tarjeta
+            de la home (ver .ytd-insight__card-border más abajo), con
+            el gráfico "most replayed" (Figma, nodo 310:3806, exportado
+            en SVG esta vez) superpuesto abajo, como si fuera la barra
+            de progreso real del video.
+
+            El video "test.webm" que pidió David es el mismo video de
+            playa/Mentawai que ya se había rechazado antes con otro
+            nombre — sigue sin ser algo que se pueda confirmar como
+            suyo, así que la tarjeta queda como placeholder (fondo
+            sólido) hasta que haya un video real para acá.
+         3) segundo párrafo, columnas 2-7
+         Mismo padding-block y tipografía que el resto de las
+         secciones. -->
+    <section class="ytd-insight">
+      <div class="ytd-insight__inner container">
+        <div class="ytd-insight__grid grid-12">
+          <div class="ytd-insight__header">
+            <p class="eyebrow">Key insight</p>
+            <h2 class="ytd-insight__headline">"Most Replayed" for Discovery</h2>
+          </div>
+          <p class="ytd-insight__body ytd-insight__body--primary">YouTube already knows exactly where each video hooks people: the peaks on the progress bar, "most replayed." That data tells the platform which moment of a video makes people stay. Today it's only used inside the video you've already chosen. What if it were used to help you choose?</p>
+          <!-- Segundo párrafo, al lado del primero (misma fila del
+               grid), en las columnas que quedan libres a la derecha —
+               por eso arranca igual de alto que el primer párrafo, no
+               igual de alto que el eyebrow/headline (que ahora viven en
+               su propia fila arriba, .ytd-insight__header). -->
+          <p class="ytd-insight__body ytd-insight__body--aside">With Gemini now integrated into YouTube's recommendation engine, this idea is even more viable: multimodal analysis already identifies, frame by frame, what makes a video hook viewers — which would directly reinforce automatic selection of these moments.</p>
+          <div class="ytd-insight__card">
+            <div class="ytd-insight__card-border">
+              <div class="ytd-insight__card-border-inner">
+                <!-- Mismo video generado con la cuenta de Gemini de
+                     David (plantilla "Mundo diminuto") que ya usamos
+                     en la tarjeta de la home — mismos archivos, no
+                     duplicados. Arranca solo cuando la sección entra
+                     en pantalla (ver "Animación de El problema"... la
+                     de acá se llama distinto, ver js/main.js), en
+                     loop y sin audio (los archivos ya se codificaron
+                     sin pista de audio, -an en ffmpeg). -->
+                <video
+                  class="ytd-insight__card-media"
+                  poster="assets/animations/youtube-compass-card/youtube-compass-preview-2-poster.jpg"
+                  width="1280"
+                  height="720"
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                >
+                  <source data-src="assets/animations/youtube-compass-card/youtube-compass-preview-2.webm" type="video/webm">
+                  <source data-src="assets/animations/youtube-compass-card/youtube-compass-preview-2.mp4" type="video/mp4">
+                </video>
+                <img class="ytd-insight__card-graphic" src="assets/images/youtube-compass/insight-most-replayed.svg" alt="Barra de progreso de YouTube mostrando la franja de picos de &quot;most replayed&quot;, el momento del video donde más gente vuelve a ver" width="1172" height="98">
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Próximas secciones (La solución, Para quién, etc.) -->
   </main>
 
   <!-- Herramienta de guía (no es parte del diseño del sitio): overlay

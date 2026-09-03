@@ -53,13 +53,13 @@
   --ytd-red: #ff0033;
 }
 
-/* Fondo de toda la página: blanco puro ("Almost White" #FFFFFF de la
-   guía de marca de YouTube, ver design-system.html
-   #youtube-discovery-ref) — a pedido de David, en vez del
-   --color-bg crema que usa el resto del portafolio. Página-específico
-   (no se toca tokens.css ni el resto del sitio). */
+/* Fondo de toda la página — David lo bajó de blanco puro (#FFFFFF,
+   "Almost White" de la guía de marca de YouTube) a #FAFAFA, un gris
+   casi imperceptible, en vez del --color-bg crema que usa el resto
+   del portafolio. Página-específico (no se toca tokens.css ni el
+   resto del sitio). */
 body {
-  background-color: #ffffff;
+  background-color: #fafafa;
 }
 
 /* ===== Hero + header =====
@@ -320,6 +320,211 @@ body {
   background-color: #ffffff;
 }
 
+/* ===== Sección 2: "El problema" =====
+   Mismo patrón de sección que .ytd-about arriba (mismo padding-block,
+   misma .inner + .container por el mismo motivo de siempre — fondo +
+   .container en el mismo elemento corta a 1440px). Apilada en 3
+   bloques (David cambió de idea sobre el layout de 2 columnas lado a
+   lado que tenía antes):
+   1) header (eyebrow + headline), columnas 2-7 (6 columnas)
+   2) imagen, columnas 2-11 (10 columnas, centrada)
+   3) body, columnas 2-7 (6 columnas — mismo ancho/arranque que el
+      header, para que los dos queden alineados por encima y por
+      debajo de la imagen ancha)
+
+   Sin background-color todavía — David dijo que el color de fondo de
+   esta sección se define después, así que se deja heredar el de
+   <body> (#FAFAFA) hasta entonces en vez de fijar algo a ojo. */
+.ytd-problem {
+  padding-block: var(--space-96);
+}
+
+.ytd-problem__header {
+  grid-column: 1 / 7;
+}
+
+/* Mismo tratamiento tipográfico que .ytd-about__headline/__body — "se
+   escribe de la misma forma que el texto de arriba", a pedido de
+   David — mismo tamaño/peso/color, la única diferencia real entre las
+   dos secciones es el ancho de columna (6 acá, 8 en Overview). */
+.ytd-problem__headline {
+  margin-top: var(--space-16);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-h1-size);
+  line-height: var(--text-h1-line);
+  letter-spacing: 0;
+  color: var(--ytd-black);
+}
+
+/* Espaciado entre los 3 bloques apilados — David pidió "un espaciado
+   adecuado", sin un valor puntual. 64px entre el header y la imagen
+   (un salto más grande antes de la pieza visual ancha) y 48px entre
+   la imagen y la descripción (un poco menos, el párrafo se lee como
+   continuación/comentario de lo que se acaba de ver, no como un
+   bloque nuevo del todo). Ambos de la escala --space-* existente, no
+   valores sueltos. */
+.ytd-problem__visual {
+  grid-column: 2 / 12;
+  margin-top: var(--space-64);
+}
+
+.ytd-problem__video {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
+}
+
+.ytd-problem__body {
+  grid-column: 2 / 8;
+  margin-top: var(--space-48);
+  max-width: 600px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--ytd-black);
+}
+
+/* ===== Sección 3: "Insight clave" =====
+   Apilada en 3 bloques (David cambió de idea sobre el layout de 2
+   columnas que tenía antes): header+primer párrafo (columnas 2-7),
+   tarjeta de video (columnas 2-11, 10 columnas centrada), segundo
+   párrafo (columnas 2-7 de nuevo). Mismo padding-block y misma
+   tipografía que el resto de las secciones (eyebrow + headline
+   YouTubeDisplay 800 + body Roboto). background-color: blanco puro,
+   a pedido de David — a diferencia de .ytd-problem (esa sigue sin
+   definir, hereda el #FAFAFA de <body>). */
+.ytd-insight {
+  padding-block: var(--space-96);
+  background-color: #ffffff;
+}
+
+.ytd-insight__header {
+  grid-column: 2 / 8;
+}
+
+.ytd-insight__headline {
+  margin-top: var(--space-16);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-h1-size);
+  line-height: var(--text-h1-line);
+  letter-spacing: 0;
+  color: var(--ytd-black);
+}
+
+.ytd-insight__body {
+  max-width: 600px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--ytd-black);
+}
+
+/* Los dos párrafos van en la misma fila del grid, uno al lado del
+   otro — por eso ambos arrancan con el mismo margin-top (la separación
+   respecto al header de arriba), en vez de que el segundo dependa del
+   primero como antes. Así quedan alineados a la misma altura sin
+   necesidad de medir nada a ojo. */
+.ytd-insight__body--primary {
+  grid-column: 2 / 8;
+  margin-top: var(--space-16);
+}
+
+/* "Las otras columnas": el grid es de 12 y el párrafo izquierdo ya usa
+   2/8 (6 columnas, con la columna 1 de margen) — a la derecha, dentro
+   de las mismas 12 columnas, solo caben 5 sin invadir esa margen
+   simétrica del otro lado (8/13). Visualmente lee como la mitad
+   derecha, que es lo que se pidió. */
+.ytd-insight__body--aside {
+  grid-column: 8 / 13;
+  margin-top: var(--space-16);
+}
+
+/* ===== Tarjeta de video ("most replayed") =====
+   8 columnas centrada (3-11 — David bajó esto de 10 columnas, se
+   sentía muy ancho). Mismo borde degradado animado tipo "Gemini" que
+   ya usamos en la tarjeta de la home (index.html/styles.css) — se
+   reimplementa acá en vez de reusar esa clase directamente porque
+   esta página se maneja como una unidad aparte (mismo criterio que ya
+   seguimos con la tipografía/colores propios del proyecto). Colores/
+   tiempos idénticos a los de la home. */
+.ytd-insight__card {
+  grid-column: 3 / 11;
+  margin-top: var(--space-64);
+}
+
+.ytd-insight__card-border {
+  background: linear-gradient(
+    135deg,
+    #4285f4,
+    #9b72cb,
+    #1ba1e3,
+    #d96570,
+    #9b72cb,
+    #4285f4
+  );
+  background-size: 300% 300%;
+  animation: ytd-insight-card-border-rotate 6s ease infinite;
+  border-radius: 12px;
+  padding: 3px;
+  box-shadow:
+    0 0 20px rgba(66, 133, 244, 0.35),
+    0 0 40px rgba(155, 114, 203, 0.25),
+    0 0 60px rgba(217, 101, 112, 0.15);
+}
+
+@keyframes ytd-insight-card-border-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ytd-insight__card-border {
+    animation: none;
+  }
+}
+
+/* 16:9 — proporción típica de un reproductor de video. */
+.ytd-insight__card-border-inner {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 9px;
+  overflow: hidden;
+  background-color: #000000;
+}
+
+.ytd-insight__card-media {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* El gráfico "most replayed" se apoya justo en el borde inferior de
+   la tarjeta, como si fuera la barra de progreso real del video que
+   está adentro — por eso position:absolute + bottom:0 en vez de vivir
+   en el flujo normal debajo del placeholder. */
+.ytd-insight__card-graphic {
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
 .ytd-about__content {
   grid-column: 1 / 9;
 }
@@ -376,4 +581,19 @@ body {
      de color (--ytd-black, el negro real de marca de YouTube) para
      todo el texto, no la escala de grises del resto del sitio. */
   color: var(--ytd-black);
+}
+
+/* Lista de herramientas ("Built with") — mismo look que el resto de la
+   ficha (hereda font-family/size/color de .ytd-about__meta-item dd de
+   arriba, el <dd> que la envuelve), solo sin viñeta por defecto del
+   navegador — David pidió sacar el guion que tenía antes como marcador,
+   texto plano nomás. */
+.ytd-about__meta-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.ytd-about__meta-list li + li {
+  margin-top: var(--space-4);
 }

@@ -554,3 +554,88 @@ initCarouselDots(
   );
   coverObserver.observe(cover);
 })();
+
+// ===== Animación de "El problema" (project-youtube-discovery.html) =====
+// El video (anotaciones a mano dibujándose sobre el screenshot del feed
+// de YouTube) arranca solo cuando la sección entra en pantalla, no al
+// cargar la página — misma idea que el resto de los videos con lazy-load
+// del sitio, pero acá el trigger es visibilidad de la SECCIÓN entera
+// (40%), no de la tarjeta específica. Sin loop: es una revelación de una
+// sola vez, se queda asentada en el frame final (mismo criterio que un
+// video "explicativo" en vez de uno "de fondo" en loop).
+(function () {
+  var section = document.querySelector(".ytd-problem");
+  var video = document.querySelector(".ytd-problem__video");
+  if (!section || !video) return;
+
+  function loadAndPlay() {
+    var pendingSources = video.querySelectorAll("source[data-src]");
+    pendingSources.forEach(function (source) {
+      source.src = source.dataset.src;
+      source.removeAttribute("data-src");
+    });
+    video.load();
+    video.play().catch(function () {
+      // Autoplay bloqueado: el poster (primer frame, sin anotaciones)
+      // se queda como imagen estática.
+    });
+  }
+
+  if (!("IntersectionObserver" in window)) {
+    loadAndPlay();
+    return;
+  }
+
+  var problemObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        loadAndPlay();
+        problemObserver.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.4 }
+  );
+  problemObserver.observe(section);
+})();
+
+// ===== Video de "Insight clave" (project-youtube-discovery.html) =====
+// Mismo criterio que el de "El problema" arriba (arranca solo al 40%
+// visible de la SECCIÓN, no de la tarjeta), pero este SÍ tiene loop —
+// es el mismo video de fondo/ambiente que ya usamos en la tarjeta de
+// la home (Gemini, plantilla "Mundo diminuto"), no una revelación de
+// una sola vez.
+(function () {
+  var section = document.querySelector(".ytd-insight");
+  var video = document.querySelector(".ytd-insight__card-media");
+  if (!section || !video) return;
+
+  function loadAndPlay() {
+    var pendingSources = video.querySelectorAll("source[data-src]");
+    pendingSources.forEach(function (source) {
+      source.src = source.dataset.src;
+      source.removeAttribute("data-src");
+    });
+    video.load();
+    video.play().catch(function () {
+      // Autoplay bloqueado: el poster se queda como imagen estática.
+    });
+  }
+
+  if (!("IntersectionObserver" in window)) {
+    loadAndPlay();
+    return;
+  }
+
+  var insightObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        loadAndPlay();
+        insightObserver.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.4 }
+  );
+  insightObserver.observe(section);
+})();
