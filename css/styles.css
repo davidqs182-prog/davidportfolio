@@ -258,6 +258,290 @@ body {
   background-color: #fcfcfb;
 }
 
+/* ===== Tercera tarjeta ("YouTube Compass"): cover animada, no imagen =====
+   David todavía no tiene un cover real para este proyecto — en vez del
+   placeholder gris, esto recrea el hero real de
+   project-youtube-discovery.html (mismo degradé cian/rosa, mismo título
+   "YouTube [compás] Compass", misma animación 3D "flyIn") directo acá,
+   con el mismo aspect-ratio que las otras tarjetas (1299/670) para que
+   el grid no salte de tamaño.
+
+   Colores/tipografía escritos literales (no var(--font-display)/
+   var(--font-body)) porque index.html no redefine esos tokens como sí
+   hace project-youtube-discovery.css — hacerlo acá rompería Work
+   Sans/Inter en el resto de la home. "YouTubeDisplay" igual está
+   disponible: el @font-face vive en components.css (que index.html sí
+   carga), no depende de la redefinición de --font-display.
+
+   overflow:hidden + perspective en el MISMO elemento — mismo motivo que
+   .ytd-hero en project-youtube-discovery.css: la animación pasa por
+   posiciones intermedias más grandes que el tamaño final, y sin esto
+   desborda el ancho de la página (encontrado en vivo por David, ya nos
+   mordió una vez con el hero real). */
+.project-card__ytd-hero {
+  position: relative;
+  overflow: hidden;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  aspect-ratio: 1299 / 670;
+  background-color: #ffffff;
+  background-image:
+    radial-gradient(ellipse 75% 85% at 85% -15%, rgba(77, 238, 255, 0.95), transparent 65%),
+    radial-gradient(ellipse 80% 70% at 25% 130%, rgba(255, 200, 200, 0.95), transparent 60%);
+  perspective: 25vw;
+  /* Ancho de 8 de las 12 columnas del grid del sitio — mismo criterio
+     y fórmula que .ytd-hero__title-frame en project-youtube-discovery.css
+     (ver ese archivo para el álgebra completa), acá como variable local
+     porque el título Y el video de preview de abajo comparten este
+     mismo ancho. */
+  --ytd-8col: calc(
+    (2 * (min(100vw, var(--grid-max-width)) - (2 * var(--grid-margin))) - var(--grid-gutter)) / 3
+  );
+}
+
+/* .project-card__ytd-hero-flip: a diferencia de .ytd-hero__flip (que
+   anima apenas carga la página), acá el estado de reposo POR DEFECTO es
+   el primer frame de la animación (rotate3d 90°, "de canto") — la
+   tarjeta puede tardar en entrar en pantalla, así que no tiene sentido
+   que ya esté asentada antes de que el usuario la vea. Recién cuando
+   IntersectionObserver agrega .is-inview (ver js/main.js, dispara al
+   70% visible) se reproduce la animación hacia el frame final (0°). */
+.project-card__ytd-hero-flip {
+  transform: translateZ(25vw) rotate3d(1, 0, 0, 90deg);
+  transform-style: preserve-3d;
+  transform-origin: center;
+}
+
+.project-card__ytd-hero-flip.is-inview {
+  animation: project-card-ytd-flyIn 0.75s forwards cubic-bezier(0.9, 0, 0.1, 1);
+}
+
+/* Salida — David pidió que, 4s después de asentarse, el título+compás
+   se vayan hacia arriba usando "el mismo efecto" que la entrada: mismo
+   mecanismo (translateZ + rotate3d en X, mismo cubic-bezier/duración),
+   pero en reversa y sumando translateY hacia arriba en vez de solo la
+   rotación. -500px de translateY alcanza sobrado para salir del alto
+   real de la tarjeta (aspect-ratio 1299/670, nunca pasa de ~600px) sin
+   depender del alto propio del título (que es mucho más chico) — el
+   overflow:hidden de .project-card__ytd-hero recorta la salida en el
+   borde de arriba, por eso "sale" en vez de solo desaparecer de golpe.
+   .is-leaving se agrega vía JS 4s después de .is-inview (ver
+   js/main.js) — el estado final de is-inview (0°) es el "from" acá,
+   así que no hace falta declarar ese frame otra vez. */
+.project-card__ytd-hero-flip.is-leaving {
+  animation: project-card-ytd-flyOut 0.75s forwards cubic-bezier(0.9, 0, 0.1, 1);
+}
+
+.project-card__ytd-hero-flip-inner {
+  transform: translateZ(calc(-1 * 25vw));
+}
+
+@keyframes project-card-ytd-flyIn {
+  from {
+    transform: translateZ(25vw) rotate3d(1, 0, 0, 90deg);
+  }
+  to {
+    transform: translateZ(25vw) rotate3d(1, 0, 0, 0deg);
+  }
+}
+
+@keyframes project-card-ytd-flyOut {
+  from {
+    transform: translateY(0) translateZ(25vw) rotate3d(1, 0, 0, 0deg);
+  }
+  to {
+    transform: translateY(-500px) translateZ(25vw) rotate3d(1, 0, 0, -90deg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card__ytd-hero-flip {
+    animation: none;
+    transform: translateZ(25vw) rotate3d(1, 0, 0, 0deg);
+  }
+
+  .project-card__ytd-hero-flip.is-leaving {
+    /* Se queda asentado — a alguien que pidió menos movimiento no le
+       conviene que el contenido encima desaparezca solo. */
+    animation: none;
+  }
+}
+
+/* .project-card__ytd-hero-title-frame: ancho fijo a 8 de las 12
+   columnas del grid del sitio — mismo criterio y misma fórmula que
+   .ytd-hero__title-frame en project-youtube-discovery.css (David pidió
+   ahí 10 columnas para el hero real, acá pidió 8 para esta versión
+   chica dentro de la tarjeta). Álgebra: N columnas + (N-1) gutters
+   sobre 12 columnas + 11 gutters se simplifica a
+   (N×contenedor + gutter×(N-12)) / 12 — para N=8 da (2×contenedor -
+   gutter) / 3. contenedor = ancho de las 12 columnas completas
+   (min(100vw, grid-max-width) - 2×grid-margin), el mismo que ya usa
+   .container en toda la página.
+
+   container-type: inline-size + font-size en cqi en
+   .project-card__ytd-hero-title (no clamp/vw) — el texto LLENA esas 8
+   columnas en vez de solo no desbordarlas, igual que en el hero real.
+   El ancho en sí vive en --ytd-8col (definida en .project-card__ytd-hero
+   más arriba) — el video de preview de abajo comparte esa misma
+   variable en vez de repetir la fórmula dos veces. */
+.project-card__ytd-hero-title-frame {
+  width: var(--ytd-8col);
+  margin-inline: auto;
+  container-type: inline-size;
+}
+
+/* font-size en cqi: misma relación medida en vivo que
+   .ytd-hero__title en project-youtube-discovery.css (texto puro real
+   de YouTubeDisplay ExtraBold + letter-spacing -0.02em = 6:1 contra su
+   propio font-size) — mismo font-family/weight/tracking acá, así
+   que la misma relación aplica. Se resta el gap fijo (2 × 12px, no
+   escala con el texto) del 100cqi antes de dividir, mismo motivo que
+   allá: si no, el gap pesaría de más en pantallas angostas y el
+   título no llegaría a llenar el frame. flex-wrap: nowrap por la
+   misma razón que allá — al tamaño exacto, "wrap" puede saltar
+   "Compass" a una segunda línea por redondeo de subpíxel. */
+.project-card__ytd-hero-title {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-wrap: nowrap;
+  gap: 0 12px;
+  margin: 0;
+  font-family: "YouTubeDisplay", "Arial Black", system-ui, sans-serif;
+  font-weight: 800;
+  font-size: calc((100cqi - (2 * 12px)) / 6);
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  text-transform: uppercase;
+  color: #212121;
+}
+
+.project-card__ytd-hero-icon {
+  display: block;
+  width: auto;
+  height: 1.1em;
+}
+
+/* ===== Video de preview (segundo acto de la cover) =====
+   Entra con el MISMO mecanismo 3D que el título (translateZ + rotate3d
+   en X, mismo cubic-bezier/duración) — position:absolute + inset:0
+   para ocupar el mismo centro de .project-card__ytd-hero sin depender
+   del layout flex del título (que para este momento ya salió de
+   pantalla). .is-inview se agrega vía JS (js/main.js) justo cuando
+   termina el flyOut del título, no en el mismo IntersectionObserver
+   que el título — ver comentario ahí para la cadena completa. */
+.project-card__ytd-hero-video-flip {
+  position: absolute;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateZ(25vw) rotate3d(1, 0, 0, 90deg);
+  transform-style: preserve-3d;
+  transform-origin: center;
+}
+
+.project-card__ytd-hero-video-flip.is-inview {
+  animation: project-card-ytd-flyIn 0.75s forwards cubic-bezier(0.9, 0, 0.1, 1);
+}
+
+/* Salida del video — mismo efecto que la salida del título (reusa el
+   mismo @keyframes project-card-ytd-flyOut), a pedido de David. Forma
+   parte del ciclo continuo título↔video cada 4s: ver js/main.js. */
+.project-card__ytd-hero-video-flip.is-leaving {
+  animation: project-card-ytd-flyOut 0.75s forwards cubic-bezier(0.9, 0, 0.1, 1);
+}
+
+.project-card__ytd-hero-video-flip-inner {
+  transform: translateZ(calc(-1 * 25vw));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card__ytd-hero-video-flip {
+    animation: none;
+    transform: translateZ(25vw) rotate3d(1, 0, 0, 0deg);
+  }
+
+  .project-card__ytd-hero-video-flip.is-leaving {
+    animation: none;
+  }
+}
+
+/* Mismo ancho de 8 columnas que el título (--ytd-8col, definida en
+   .project-card__ytd-hero) — David pidió que el video ocupe el mismo
+   ancho. No necesita container query units como el título: acá no hay
+   texto que "llenar", el video ya tiene su aspect-ratio real (16:9,
+   1920×1080 nativo) y solo necesita ese ancho fijo. */
+.project-card__ytd-hero-video-frame {
+  width: var(--ytd-8col);
+}
+
+/* ===== Borde degradado animado + resplandor =====
+   David dio este efecto tal cual (colores/tiempos/valores literales,
+   no tokens del sitio — es una identidad puntual de este video, no
+   parte del sistema de diseño).
+
+   El degradé "gira" animando su propio background-position sobre un
+   background-size inflado a 300% (no se mueve el elemento) — 3px de
+   padding entre este contenedor (12px de radius) y el contenedor
+   interno (9px = 12-3) simulan el grosor del borde, dejando los dos
+   radios concéntricos. */
+.project-card__ytd-hero-video-border {
+  background: linear-gradient(
+    135deg,
+    #4285f4,
+    #9b72cb,
+    #1ba1e3,
+    #d96570,
+    #9b72cb,
+    #4285f4
+  );
+  background-size: 300% 300%;
+  animation: project-card-ytd-video-border-rotate 6s ease infinite;
+  border-radius: 12px;
+  padding: 3px;
+  box-shadow:
+    0 0 20px rgba(66, 133, 244, 0.35),
+    0 0 40px rgba(155, 114, 203, 0.25),
+    0 0 60px rgba(217, 101, 112, 0.15);
+}
+
+@keyframes project-card-ytd-video-border-rotate {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .project-card__ytd-hero-video-border {
+    animation: none;
+  }
+}
+
+/* Contenedor interno: el que realmente recorta el video (radius 9px,
+   3px menos que el de afuera) — el <video> ya no lleva su propio
+   border-radius. */
+.project-card__ytd-hero-video-border-inner {
+  border-radius: 9px;
+  overflow: hidden;
+  background-color: #000000;
+}
+
+.project-card__ytd-hero-video {
+  display: block;
+  width: 100%;
+  height: auto;
+  aspect-ratio: 16 / 9;
+  object-fit: cover;
+}
+
 .project-card__title {
   margin-top: var(--space-24);
   font-family: var(--font-body);

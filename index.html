@@ -106,19 +106,118 @@
         </div>
       </article>
 
-      <!-- Imagen de portada todavía placeholder (gris, "Image placeholder")
-           — David no ha dado un cover real para este proyecto todavía.
-           Título/descripción sí son el copy real (ver project-youtube-discovery.html),
-           ya no el relleno Lorem Ipsum del nombre viejo "YouTube Discovery". -->
+      <!-- Cover de la tarjeta, en dos actos — a pedido de David:
+           1) título+compás entran (flyIn), se quedan 4s, salen hacia
+              arriba (flyOut) — ver .project-card__ytd-hero-flip.
+           2) apenas termina esa salida, un video real de David
+              ("mi video jugando", gameplay propio) entra con el MISMO
+              efecto 3D (su propio .project-card__ytd-hero-video-flip),
+              con un borde degradado animado alrededor. Los dos
+              comparten el mismo .project-card__ytd-hero como escenario
+              (position:relative + perspective ahí), el video
+              posicionado absolute encima para no depender del layout
+              flex del título.
+           aria-hidden porque todo esto es decorativo — el título real y
+           accesible para lectores de pantalla es el <h3> de abajo. -->
       <article class="project-card">
-        <img
-          class="project-card__image"
-          src="assets/images/work-youtube-discovery-placeholder.svg"
-          alt=""
-          width="1299"
-          height="670"
-          loading="lazy"
-        >
+        <div class="project-card__ytd-hero" aria-hidden="true">
+          <div class="project-card__ytd-hero-flip">
+            <div class="project-card__ytd-hero-flip-inner">
+              <div class="project-card__ytd-hero-title-frame">
+                <p class="project-card__ytd-hero-title">
+                  <span>YouTube</span>
+                  <img class="project-card__ytd-hero-icon" src="assets/images/ytd-compass-icon.png" alt="">
+                  <span>Compass</span>
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video 1: gameplay propio de David (Fortnite). -->
+          <div class="project-card__ytd-hero-video-flip">
+            <div class="project-card__ytd-hero-video-flip-inner">
+              <div class="project-card__ytd-hero-video-frame">
+                <div class="project-card__ytd-hero-video-border">
+                  <div class="project-card__ytd-hero-video-border-inner">
+                    <video
+                      class="project-card__ytd-hero-video"
+                      poster="assets/animations/youtube-compass-card/youtube-compass-preview-poster.jpg"
+                      width="1920"
+                      height="1080"
+                      muted
+                      loop
+                      playsinline
+                      preload="none"
+                    >
+                      <source data-src="assets/animations/youtube-compass-card/youtube-compass-preview.webm" type="video/webm">
+                      <source data-src="assets/animations/youtube-compass-card/youtube-compass-preview.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video 2: generado por David con Gemini (plantilla "Mundo
+               diminuto" propia de la herramienta). Mismo markup que el
+               video 1 — comparten las mismas clases de estructura/estilo
+               (.project-card__ytd-hero-video-flip, etc.), js/main.js los
+               distingue por orden en el DOM (el segundo
+               .project-card__ytd-hero-video-flip que encuentra). -->
+          <div class="project-card__ytd-hero-video-flip">
+            <div class="project-card__ytd-hero-video-flip-inner">
+              <div class="project-card__ytd-hero-video-frame">
+                <div class="project-card__ytd-hero-video-border">
+                  <div class="project-card__ytd-hero-video-border-inner">
+                    <video
+                      class="project-card__ytd-hero-video"
+                      poster="assets/animations/youtube-compass-card/youtube-compass-preview-2-poster.jpg"
+                      width="1280"
+                      height="720"
+                      muted
+                      loop
+                      playsinline
+                      preload="none"
+                    >
+                      <source data-src="assets/animations/youtube-compass-card/youtube-compass-preview-2.webm" type="video/webm">
+                      <source data-src="assets/animations/youtube-compass-card/youtube-compass-preview-2.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Video 3: ardilla en el jardín de David, grabación propia
+               con el celular (vertical, sin marca de agua ni gráficos).
+               Mismo markup/clases que los otros dos — la rotación en
+               js/main.js ya está generalizada a N videos (usa
+               videoFlips.length), así que agregar este no necesitó
+               tocar el JS. -->
+          <div class="project-card__ytd-hero-video-flip">
+            <div class="project-card__ytd-hero-video-flip-inner">
+              <div class="project-card__ytd-hero-video-frame">
+                <div class="project-card__ytd-hero-video-border">
+                  <div class="project-card__ytd-hero-video-border-inner">
+                    <video
+                      class="project-card__ytd-hero-video"
+                      poster="assets/animations/youtube-compass-card/youtube-compass-preview-3-poster.jpg"
+                      width="1920"
+                      height="1080"
+                      muted
+                      loop
+                      playsinline
+                      preload="none"
+                    >
+                      <source data-src="assets/animations/youtube-compass-card/youtube-compass-preview-3.webm" type="video/webm">
+                      <source data-src="assets/animations/youtube-compass-card/youtube-compass-preview-3.mp4" type="video/mp4">
+                    </video>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
         <h3 class="project-card__title">YouTube Compass</h3>
         <p class="project-card__description">
           Conceptual UX project. I redesigned the way users discover content on YouTube,

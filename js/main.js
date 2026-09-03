@@ -160,6 +160,11 @@
     // volverse la slide activa del swipe para el resto). Ver "Carrusel
     // de testimonios (video)" más abajo.
     if (video.closest(".project-testimonial__track")) return;
+    // El video de preview de "YouTube Compass" tampoco pasa por acá —
+    // su carga y su play() están encadenados a la salida del título
+    // (ver "Cover animada de YouTube Compass" más abajo), no a la
+    // visibilidad genérica.
+    if (video.closest(".project-card__ytd-hero")) return;
     if (video.querySelector("source[data-src]")) {
       videosToLoad.push(video);
     }
@@ -423,4 +428,129 @@ initCarouselDots(
   slides.slice(1).forEach(function (slide) {
     slideObserver.observe(slide);
   });
+})();
+
+// ===== Cover animada de "YouTube Compass" (tarjeta de Work en la home) =====
+// Mismo truco 3D "flyIn" que project-youtube-discovery.html (ver ese CSS
+// para la explicación completa de la técnica perspective/translateZ), pero
+// acá NO dispara al cargar la página — David pidió que dispare recién
+// cuando la tarjeta está 70% visible en pantalla, para que se vea "entrar"
+// justo cuando el usuario llega a ella haciendo scroll. Es una animación
+// de entrada de una sola vez: se agrega .is-inview (la clase que activa
+// la animación por CSS) y se deja de observar.
+//
+// Ciclo continuo, cada 4s, alternando título → video 1 → título →
+// video 2 → título → video 1 → ... (David pidió específicamente que
+// el título+compás aparezcan siempre entre medio de los dos videos,
+// nunca un video seguido de otro):
+// - título+compás entran, se quedan 4s, salen hacia arriba (.is-leaving
+//   en .project-card__ytd-hero-flip — flyOut, ver styles.css) Y EN EL
+//   MISMO INSTANTE entra el video que le toca (.is-inview en su propio
+//   .project-card__ytd-hero-video-flip) — se cruzan, no hay espera en
+//   blanco entre los dos.
+// - 4s después, se repite en reversa: ese video sale (mismo flyOut) y
+//   el título vuelve a entrar, otra vez en el mismo instante — y la
+//   próxima vez que el título salga, le toca entrar al OTRO video.
+// - así indefinidamente mientras la tarjeta siga en pantalla.
+//
+// Reiniciar una animación de "entrada" ya jugada no alcanza con sacar y
+// volver a poner la misma clase en el mismo tick — el navegador no
+// detecta el cambio y no la vuelve a reproducir. Por eso enter() fuerza
+// un reflow (leer offsetWidth) entre sacar las clases viejas y poner
+// is-inview de nuevo.
+//
+// prefers-reduced-motion: no se arranca el ciclo — el título se queda
+// asentado (ver la regla ya existente en styles.css) y los videos ni
+// se cargan, para no generar un loop de movimiento continuo a alguien
+// que pidió lo contrario.
+(function () {
+  var cover = document.querySelector(".project-card__ytd-hero");
+  if (!cover) return;
+
+  var flip = cover.querySelector(".project-card__ytd-hero-flip");
+  if (!flip) return;
+
+  // Los dos videos comparten exactamente las mismas clases (mismo
+  // markup, mismo estilo) — se distinguen acá solo por el orden en que
+  // aparecen en el HTML, no por una clase o id distinta.
+  var videoFlips = Array.prototype.slice.call(
+    cover.querySelectorAll(".project-card__ytd-hero-video-flip")
+  );
+
+  var SWAP_INTERVAL_MS = 4000;
+  var prefersReducedMotion =
+    window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  function loadVideo(videoFlip) {
+    var video = videoFlip.querySelector(".project-card__ytd-hero-video");
+    if (!video) return;
+    var pendingSources = video.querySelectorAll("source[data-src]");
+    if (!pendingSources.length) return;
+    pendingSources.forEach(function (source) {
+      source.src = source.dataset.src;
+      source.removeAttribute("data-src");
+    });
+    video.load();
+  }
+
+  function enter(el) {
+    if (!el) return;
+    el.classList.remove("is-leaving");
+    el.classList.remove("is-inview");
+    void el.offsetWidth; // forzar reflow para poder re-disparar la animación
+    el.classList.add("is-inview");
+  }
+
+  function leave(el) {
+    if (el) el.classList.add("is-leaving");
+  }
+
+  var showingTitle = true;
+  var activeVideoFlip = null;
+  var nextVideoIndex = 0;
+
+  function swap() {
+    if (showingTitle) {
+      var videoFlip = videoFlips[nextVideoIndex];
+      leave(flip);
+      enter(videoFlip);
+      var video = videoFlip.querySelector(".project-card__ytd-hero-video");
+      if (video) {
+        video.play().catch(function () {
+          // Autoplay bloqueado: el poster se queda como imagen estática.
+        });
+      }
+      activeVideoFlip = videoFlip;
+      nextVideoIndex = (nextVideoIndex + 1) % videoFlips.length;
+    } else {
+      leave(activeVideoFlip);
+      enter(flip);
+      activeVideoFlip = null;
+    }
+    showingTitle = !showingTitle;
+  }
+
+  function start() {
+    flip.classList.add("is-inview");
+    if (prefersReducedMotion) return;
+    videoFlips.forEach(loadVideo);
+    setInterval(swap, SWAP_INTERVAL_MS);
+  }
+
+  if (!("IntersectionObserver" in window)) {
+    start();
+    return;
+  }
+
+  var coverObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        start();
+        coverObserver.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.7 }
+  );
+  coverObserver.observe(cover);
 })();
