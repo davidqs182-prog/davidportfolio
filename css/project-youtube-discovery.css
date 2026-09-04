@@ -893,13 +893,66 @@ body {
 }
 
 /* 8 columnas centrada (3/11, misma fórmula que .ytd-insight__card). */
-.ytd-solution__video {
+.ytd-solution__video-card {
   grid-column: 3 / 11;
   margin-top: var(--space-64);
-  display: block;
-  width: 100%;
-  height: auto;
+}
+
+/* Mismo borde degradado animado tipo "Gemini" que
+   .ytd-insight__card-border (colores/tiempos idénticos) —
+   reimplementado acá en vez de reusar esa clase directamente, mismo
+   criterio de siempre (cada sección de la página se maneja como
+   unidad aparte). */
+.ytd-solution__video-border {
+  background: linear-gradient(
+    135deg,
+    #4285f4,
+    #9b72cb,
+    #1ba1e3,
+    #d96570,
+    #9b72cb,
+    #4285f4
+  );
+  background-size: 300% 300%;
+  animation: ytd-insight-card-border-rotate 6s ease infinite;
   border-radius: 12px;
+  padding: 3px;
+  box-shadow:
+    0 0 20px rgba(66, 133, 244, 0.35),
+    0 0 40px rgba(155, 114, 203, 0.25),
+    0 0 60px rgba(217, 101, 112, 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ytd-solution__video-border {
+    animation: none;
+  }
+}
+
+.ytd-solution__video-border-inner {
+  position: relative;
+  aspect-ratio: 16 / 9;
+  border-radius: 9px;
+  overflow: hidden;
+  background-color: #000000;
+}
+
+.ytd-solution__video {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Centrado bajo el video con justify-self (mismo grid-column que la
+   tarjeta del video, para quedar alineado con su ancho en vez de con
+   el de las columnas de texto). */
+.ytd-solution__cta {
+  grid-column: 3 / 11;
+  justify-self: center;
+  margin-top: var(--space-32);
 }
 
 .ytd-about__content {

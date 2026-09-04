@@ -297,20 +297,34 @@
           <p class="ytd-solution__body ytd-solution__body--aside">Alongside it, two types of cards: individual videos and themed collections (salsa dancing, Costa Rican politics, whatever). Entering a collection changes the player entirely — it fills with content from that theme only. Old-but-good content, with strong engagement and watch time, gets a real second chance without competing against what's freshly uploaded.</p>
           <!-- Grabación de pantalla de David (YouTube) montada sobre un
                mockup de TV en After Effects/editor de video — 8
-               columnas centradas. -->
-          <video
-            class="ytd-solution__video"
-            poster="assets/animations/youtube-compass-card/solution-tv-mockup-poster.jpg"
-            width="1920"
-            height="1080"
-            muted
-            loop
-            playsinline
-            preload="none"
-          >
-            <source data-src="assets/animations/youtube-compass-card/solution-tv-mockup.webm" type="video/webm">
-            <source data-src="assets/animations/youtube-compass-card/solution-tv-mockup.mp4" type="video/mp4">
-          </video>
+               columnas centradas. Mismo borde degradado tipo "Gemini"
+               que la tarjeta de video de "Key insight" (ver
+               .ytd-insight__card-border) — reimplementado acá en vez
+               de reusar esa clase directamente por el mismo criterio
+               de siempre (cada sección se maneja como unidad aparte). -->
+          <div class="ytd-solution__video-card">
+            <div class="ytd-solution__video-border">
+              <div class="ytd-solution__video-border-inner">
+                <video
+                  class="ytd-solution__video"
+                  poster="assets/animations/youtube-compass-card/solution-tv-mockup-poster.jpg"
+                  width="1920"
+                  height="1080"
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                >
+                  <source data-src="assets/animations/youtube-compass-card/solution-tv-mockup.webm" type="video/webm">
+                  <source data-src="assets/animations/youtube-compass-card/solution-tv-mockup.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+          <a href="https://youtube-clone-sandy-two.vercel.app" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--md ytd-solution__cta">
+            Go to app
+            <span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span>
+          </a>
         </div>
       </div>
     </section>
