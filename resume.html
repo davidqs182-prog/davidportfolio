@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Resume — David Quirós</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <link rel="stylesheet" href="css/resume.css">
+</head>
+<body>
+
+  <header class="navbar container">
+    <img
+      class="navbar__logo"
+      src="assets/Logo/pixelPersonas.svg"
+      alt="pixelPersona"
+      width="1384"
+      height="180"
+    >
+  </header>
+
+  <main>
+    <!-- Mismo hero que index.html (título grande + personaje + intro),
+         pero fijo: sin el tipeo letra por letra ni el scroll-scrub del
+         personaje. Frame 30 (mano arriba, saludando) en vez del frame 0
+         de reposo — más apropiado para una página de resume. Sin
+         id="stageImg" — el scroll-scrub de main.js busca ese id
+         puntual, así que no encuentra nada acá y no hace nada, aunque
+         el script sí esté cargado. -->
+    <section class="hero container">
+      <h1 class="hero__title">Product<br>Designer</h1>
+
+      <div class="hero__stage">
+        <p class="hero__intro" aria-label="Hi! I am David Quirós, a product designer based in Germany.">
+          <span aria-hidden="true">Hi! I am </span><span class="hero__intro-name" aria-hidden="true">David Quirós</span><span aria-hidden="true">, a product designer based in </span><span class="hero__intro-strike" aria-hidden="true">Costa Rica</span><span aria-hidden="true"> Germany.</span>
+        </p>
+        <img
+          class="hero__avatar"
+          src="assets/animations/hero-guitar-scroll/frames/frame_00030.png"
+          alt="David Quirós waving"
+          draggable="false"
+          width="828"
+          height="1108"
+        >
+      </div>
+
+      <h2 class="hero__subtitle">Resume</h2>
+    </section>
+
+    <!-- Placeholder — David pasa los datos reales después. Estructura
+         y estilos ya definitivos (escala tipográfica/spacing/grid-12
+         ya establecidos en el sitio), solo el contenido es de relleno. -->
+    <section class="resume-contact container">
+      <ul class="resume-contact__list">
+        <li class="resume-contact__item">
+          <span class="material-symbols-rounded" aria-hidden="true">mail</span>
+          <span>davidqs182@gmail.com</span>
+        </li>
+        <li class="resume-contact__item">
+          <span class="material-symbols-rounded" aria-hidden="true">call</span>
+          <span>+49 162 9576790</span>
+        </li>
+        <li class="resume-contact__item">
+          <span class="material-symbols-rounded" aria-hidden="true">location_on</span>
+          <span>Gelsenkirchen, Germany</span>
+        </li>
+        <li class="resume-contact__item">
+          <span class="material-symbols-rounded" aria-hidden="true">link</span>
+          <a href="https://pixel-personas.com">pixel-personas.com</a>
+        </li>
+      </ul>
+    </section>
+
+    <section class="resume-summary container">
+      <div class="grid-12">
+        <h2 class="resume-section__heading">Summary</h2>
+        <p class="resume-summary__body">
+          Placeholder summary — a short paragraph about professional background,
+          focus areas, and what makes this person effective on a team. Replace
+          with the real one-paragraph pitch.
+        </p>
+      </div>
+    </section>
+
+    <!-- Experience: título compartido arriba de las dos columnas (así
+         la primera entrada de cada columna arranca a la misma altura
+         — antes el título solo estaba encima de la columna izquierda,
+         corriendo a la derecha una fila más abajo). 2 entradas en cada
+         columna (2/7 + 8/13, mismo inicio en columna 2 que el resto
+         del contenido desde Summary). Education ya no comparte fila
+         con Experience — pasa a ser su propia sección, apilada antes
+         de Skills. -->
+    <section class="resume-experience container">
+      <div class="resume-work__grid grid-12">
+        <h2 class="resume-section__heading">Experience</h2>
+        <div class="resume-entry-list resume-entry-list--col1">
+          <article class="resume-entry grid-12">
+            <p class="resume-entry__dates">2023 – Present</p>
+            <div class="resume-entry__content">
+              <h3 class="resume-entry__role">Product Designer</h3>
+              <p class="resume-entry__company">Fischbach Group</p>
+              <ul class="resume-entry__bullets">
+                <li>— Design of large-scale internal products: native Leo app (iOS/Android), Planner (staff and resource management), and Onboarding (employee onboarding).</li>
+              </ul>
+            </div>
+          </article>
+          <article class="resume-entry grid-12">
+            <p class="resume-entry__dates">2021 – 2023</p>
+            <div class="resume-entry__content">
+              <h3 class="resume-entry__role">Senior Product Designer &amp; Strategy Lead</h3>
+              <p class="resume-entry__company">Impact Technology</p>
+              <ul class="resume-entry__bullets">
+                <li>— End-to-end design and strategy for digital products (Leo, Ökoloco, Institude Wissen, VOCHECKER).</li>
+                <li>— Research, prototyping, and close collaboration with development.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+
+        <div class="resume-entry-list resume-entry-list--col2">
+          <article class="resume-entry grid-12">
+            <p class="resume-entry__dates">2019 – 2021</p>
+            <div class="resume-entry__content">
+              <h3 class="resume-entry__role">Digital Marketing Manager &amp; UX Strategist</h3>
+              <p class="resume-entry__company">Colono Construcción</p>
+              <ul class="resume-entry__bullets">
+                <li>— Managed advertising campaigns across Google, Facebook, Instagram, and TikTok.</li>
+                <li>— Optimized web experience to align with each campaign, focused on conversion and KPIs.</li>
+              </ul>
+            </div>
+          </article>
+          <article class="resume-entry grid-12">
+            <p class="resume-entry__dates">2017 – 2018</p>
+            <div class="resume-entry__content">
+              <h3 class="resume-entry__role">UX Researcher &amp; Product Catalog Designer</h3>
+              <p class="resume-entry__company">Electro Caribe S&amp;C</p>
+              <ul class="resume-entry__bullets">
+                <li>— User research and redesign of electrical product lines (industrial, commercial, home).</li>
+                <li>— Digital and printed catalogs, plus training for key stakeholders.</li>
+              </ul>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Skills: mismo patrón que Experience — heading arriba de las
+         dos columnas (así ambas arrancan a la misma altura), 2 grupos
+         de categorías en cada columna. -->
+    <section class="resume-skills container">
+      <div class="resume-work__grid grid-12">
+        <h2 class="resume-section__heading">Skills</h2>
+
+        <div class="resume-skills__col resume-skills__col--1">
+          <div class="resume-skills__group">
+            <h3 class="resume-skills__category">Design &amp; Research</h3>
+            <ul class="resume-skills__list">
+              <li class="resume-skill">UX Research</li>
+              <li class="resume-skill">Prototyping</li>
+              <li class="resume-skill">User Interviews</li>
+              <li class="resume-skill">Usability Testing</li>
+              <li class="resume-skill">Product Strategy</li>
+              <li class="resume-skill">UX Copywriting</li>
+              <li class="resume-skill">Wireframing</li>
+              <li class="resume-skill">Mockups</li>
+            </ul>
+          </div>
+
+          <div class="resume-skills__group">
+            <h3 class="resume-skills__category">Tools</h3>
+            <ul class="resume-skills__list">
+              <li class="resume-skill">Figma</li>
+              <li class="resume-skill">Webflow</li>
+              <li class="resume-skill">Google Antigravity</li>
+              <li class="resume-skill">Gemini</li>
+              <li class="resume-skill">Claude (Code, Design, Cowork)</li>
+              <li class="resume-skill">Photoshop</li>
+              <li class="resume-skill">Illustrator</li>
+              <li class="resume-skill">Premiere Pro</li>
+              <li class="resume-skill">After Effects</li>
+              <li class="resume-skill">InDesign</li>
+            </ul>
+          </div>
+        </div>
+
+        <div class="resume-skills__col resume-skills__col--2">
+          <div class="resume-skills__group">
+            <h3 class="resume-skills__category">Marketing &amp; Growth</h3>
+            <ul class="resume-skills__list">
+              <li class="resume-skill">Digital Advertising (Google, Meta, TikTok)</li>
+              <li class="resume-skill">Campaign Analytics</li>
+              <li class="resume-skill">KPI Tracking</li>
+            </ul>
+          </div>
+
+          <div class="resume-skills__group">
+            <h3 class="resume-skills__category">Other</h3>
+            <p class="resume-skills__note">Trilingual: Spanish, English, German</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Education: mismo patrón de 2 columnas que Experience (heading
+         compartido arriba, ambas arrancando a la misma altura) — acá
+         ordenado del más viejo al más nuevo (al revés que Experience),
+         a pedido de David. -->
+    <section class="resume-education container">
+      <div class="resume-work__grid grid-12">
+        <h2 class="resume-section__heading">Education</h2>
+
+        <div class="resume-entry-list resume-entry-list--col1">
+          <article class="resume-entry grid-12">
+            <p class="resume-entry__dates">2017</p>
+            <div class="resume-entry__content">
+              <h3 class="resume-entry__role">Business Management</h3>
+              <p class="resume-entry__company">Universidad de Costa Rica (UCR) — San José, Costa Rica</p>
+            </div>
+          </article>
+          <article class="resume-entry grid-12">
+            <p class="resume-entry__dates">2020</p>
+            <div class="resume-entry__content">
+              <h3 class="resume-entry__role">UX Design Professional Certificate</h3>
+              <p class="resume-entry__company">Google — Limón, Costa Rica</p>
+            </div>
+          </article>
+          <article class="resume-entry grid-12">
+            <p class="resume-entry__dates">2026</p>
+            <div class="resume-entry__content">
+              <h3 class="resume-entry__role">Introduction to Subagents</h3>
+              <p class="resume-entry__company">Anthropic Academy</p>
+            </div>
+          </article>
+        </div>
+
+        <div class="resume-entry-list resume-entry-list--col2">
+          <article class="resume-entry grid-12">
+            <p class="resume-entry__dates">2026</p>
+            <div class="resume-entry__content">
+              <h3 class="resume-entry__role">Claude 101</h3>
+              <p class="resume-entry__company">Anthropic Academy</p>
+            </div>
+          </article>
+          <article class="resume-entry grid-12">
+            <p class="resume-entry__dates">2026</p>
+            <div class="resume-entry__content">
+              <h3 class="resume-entry__role">Claude Code 101</h3>
+              <p class="resume-entry__company">Anthropic Academy</p>
+            </div>
+          </article>
+          <article class="resume-entry grid-12">
+            <p class="resume-entry__dates">2026</p>
+            <div class="resume-entry__content">
+              <h3 class="resume-entry__role">Introduction to Agent Skills</h3>
+              <p class="resume-entry__company">Anthropic Academy</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Herramienta de guía (no es parte del diseño del sitio): overlay
+       de las 12 columnas del grid, igual que en las páginas de
+       proyecto — para chequear alineación mientras se arma esta
+       página. -->
+  <div id="grid-overlay" aria-hidden="true">
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+  </div>
+
+  <div id="dev-tools">
+    <button id="grid-overlay-toggle" type="button">
+      <span class="material-symbols-rounded" aria-hidden="true">grid_on</span>
+      Grid
+    </button>
+  </div>
+
+  <style>
+    #grid-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      z-index: 99999;
+      pointer-events: none;
+      max-width: var(--grid-max-width);
+      margin-inline: auto;
+      padding-inline: var(--grid-margin);
+      grid-template-columns: repeat(var(--grid-columns), 1fr);
+      column-gap: var(--grid-gutter);
+    }
+    #grid-overlay.is-visible {
+      display: grid;
+    }
+    .grid-overlay__col {
+      background: rgba(97, 70, 133, 0.12);
+      border-left: 1px solid rgba(97, 70, 133, 0.4);
+      border-right: 1px solid rgba(97, 70, 133, 0.4);
+    }
+    #dev-tools {
+      position: fixed;
+      right: 16px;
+      bottom: 16px;
+      z-index: 100000;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    #dev-tools button {
+      border: none;
+      border-radius: 999px;
+      padding: 8px 14px;
+      background: var(--color-purple-950);
+      color: var(--color-text-white);
+      font-family: var(--font-body);
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+      text-align: right;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+    }
+    #dev-tools button.is-active {
+      background: var(--color-purple-500);
+    }
+  </style>
+  <script>
+    (function () {
+      var overlay = document.getElementById("grid-overlay");
+      var toggle = document.getElementById("grid-overlay-toggle");
+
+      function toggleGrid() {
+        overlay.classList.toggle("is-visible");
+        toggle.classList.toggle("is-active");
+      }
+
+      toggle.addEventListener("click", toggleGrid);
+      document.addEventListener("keydown", function (e) {
+        if (e.key.toLowerCase() !== "g") return;
+        if (e.target.closest("input, textarea, [contenteditable]")) return;
+        toggleGrid();
+      });
+    })();
+  </script>
+
+  <script src="js/main.js"></script>
+</body>
+</html>

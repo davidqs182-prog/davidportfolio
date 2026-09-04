@@ -1,0 +1,279 @@
+/* =====================================================================
+   RESUME
+   =====================================================================
+   Página nueva, contenido de relleno (David pasa los datos reales
+   después) — pero la estructura y los estilos ya son definitivos:
+   misma escala tipográfica de tokens.css (H2 para títulos de sección,
+   Body Large para texto de cuerpo, Overline/--color-gray-550 para
+   texto secundario) y el mismo .grid-12/.container que el resto del
+   sitio. Nada de esto se re-mide cuando llegue el contenido real, solo
+   se reemplaza texto.
+   ===================================================================== */
+
+/* ---------- Contacto ----------
+   Fila simple, centrada como el resto del hero (mismo criterio visual
+   que .hero, que también es center-aligned) — ícono + dato, sin
+   bullets del navegador. */
+.resume-contact {
+  padding-block: 0 var(--space-40);
+}
+
+.resume-contact__list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: var(--space-8) var(--space-32);
+}
+
+.resume-contact__item {
+  display: flex;
+  align-items: center;
+  gap: var(--space-8);
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  color: var(--color-gray-550);
+}
+
+.resume-contact__item .material-symbols-rounded {
+  font-size: 18px;
+  color: var(--color-gray-550);
+}
+
+.resume-contact__item a {
+  color: inherit;
+  text-decoration: none;
+}
+
+.resume-contact__item a:hover {
+  text-decoration: underline;
+}
+
+/* ---------- Título de sección compartido ----------
+   Misma escala H2 (36/44, weight 700) que .project-methodology__headline/
+   .ytd-insight__headline usan para titulares de sección — acá no hace
+   falta el eyebrow chico encima porque el título YA es el nombre corto
+   de la sección ("Experience", no una oración larga). */
+.resume-section__heading {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-h2-size);
+  line-height: var(--text-h2-line);
+  color: var(--color-text-black);
+}
+
+/* ---------- Secciones (Summary/Experience/Education+Skills) ----------
+   padding-block parejo entre todas, fondo blanco alternado con el
+   --color-bg del body (mismo patrón de alternancia ya usado en otras
+   páginas del sitio). */
+.resume-summary {
+  padding-block: var(--space-48);
+}
+
+/* Título y párrafo, ambos arrancando en la columna 2 (no en la 1) —
+   mismo inset que el resto de las secciones de acá para abajo. */
+.resume-summary .resume-section__heading {
+  grid-column: 2 / 13;
+}
+
+.resume-summary__body {
+  grid-column: 2 / 13;
+  margin: 0;
+  margin-top: var(--space-16);
+  max-width: 600px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--color-text-black);
+}
+
+/* ---------- Experience: 2 columnas ----------
+   El H2 "Experience" queda arriba de las dos columnas (fuera del
+   grid-12 de las columnas), así ambas arrancan a la misma altura — a
+   pedido de David: "la experiencia inicial de la columna derecha
+   tiene que estar alineada con la de la columna izquierda". Antes el
+   título vivía SOLO en la columna izquierda, empujando su lista media
+   fila más abajo que la derecha.
+   5/5 (2/7 + 8/13): mismo inicio en columna 2 que el resto del
+   contenido desde Summary, con un hueco de 1 columna en el medio (la
+   7). */
+.resume-experience {
+  padding-block: var(--space-48);
+}
+
+/* El heading es el primer hijo del grid-12 y pide casi todo el ancho
+   (2/13) — ocupa la fila 1 completa por sí solo, así las dos columnas
+   de abajo (que no caben en esa fila) pasan automáticamente a la fila
+   2, EMPATADAS entre sí. No hace falta grid-row explícito. */
+.resume-work__grid > .resume-section__heading {
+  grid-column: 2 / 13;
+}
+
+.resume-entry-list--col1 {
+  grid-column: 2 / 7;
+}
+
+.resume-entry-list--col2 {
+  grid-column: 8 / 13;
+}
+
+/* ---------- Skills: 2 columnas ----------
+   Mismo patrón que Experience: el H2 "Skills" arriba de las dos
+   columnas (fila propia, ver regla de .resume-work__grid >
+   .resume-section__heading más arriba), 2 grupos de categoría en cada
+   columna, ambas arrancando a la misma altura. 5/5 (2/7 + 8/13). */
+.resume-skills {
+  padding-block: var(--space-48);
+}
+
+.resume-skills__col {
+  margin-top: var(--space-24);
+}
+
+.resume-skills__col--1 {
+  grid-column: 2 / 7;
+}
+
+.resume-skills__col--2 {
+  grid-column: 8 / 13;
+}
+
+/* ---------- Education ----------
+   Sección propia, apilada después de Skills — mismo patrón de 2
+   columnas que Experience (heading compartido en .resume-work__grid,
+   .resume-entry-list--col1/--col2 ya definidas más arriba), así que
+   no hace falta CSS nuevo acá, solo el padding-block de la sección. */
+.resume-education {
+  padding-block: var(--space-48);
+}
+
+/* ---------- Entradas (Experience/Education) ----------
+   Cada entrada es su propio grid-12: fecha en las primeras 3 columnas
+   (1/4), contenido en las otras 9 (4/13) — mismo .grid-12 que ya usa
+   el resto del sitio, no un layout nuevo. Ahora ese 3/9 se calcula
+   sobre el ancho de la columna (5/12), más angosto que una sección de
+   ancho completo — esperado. */
+.resume-entry-list {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-32);
+  margin-top: var(--space-24);
+}
+
+.resume-entry__dates {
+  grid-column: 1 / 4;
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  color: var(--color-gray-550);
+}
+
+.resume-entry__content {
+  grid-column: 4 / 13;
+}
+
+.resume-entry__role {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-h4-size);
+  line-height: var(--text-h4-line);
+  color: var(--color-text-black);
+}
+
+.resume-entry__company {
+  margin: 0;
+  margin-top: var(--space-4);
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  color: var(--color-gray-550);
+}
+
+/* Mismo patrón que .project-reflections__list: el guión "—" ya viene
+   como parte del texto, por eso list-style:none en vez de un bullet
+   del navegador (encimarían dos marcas por ítem). */
+.resume-entry__bullets {
+  margin: 0;
+  margin-top: var(--space-12);
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.resume-entry__bullets li {
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--color-text-black);
+}
+
+/* ---------- Skills ----------
+   Agrupadas por categoría (Design & Research / Tools / Marketing &
+   Growth / Other) en vez de una sola lista plana — a pedido de David.
+   Cada categoría es su propio grupo: título chico (misma escala H5
+   que .project-reflections__heading, el mismo patrón ya usado en el
+   sitio para sub-títulos dentro de una sección) + su lista de pills. */
+.resume-skills__group + .resume-skills__group {
+  margin-top: var(--space-24);
+}
+
+.resume-skills__category {
+  margin: 0;
+  font-family: var(--font-display);
+  font-weight: 700;
+  font-size: var(--text-h5-size);
+  line-height: var(--text-h5-line);
+  color: var(--color-text-black);
+}
+
+/* Pills simples — mismo border-radius:999px que .btn (misma familia
+   visual de "forma redondeada" ya establecida en el sitio), blanco
+   puro de fondo (a pedido de David, en vez del Gray 100 original) y
+   Body de tokens.css, no una escala nueva. Page-scoped (no es
+   .chip/.tag genérico en components.css) porque todavía no hay un
+   segundo lugar en el sitio que lo reuse — mismo criterio que
+   .ytd-insight__card-border, que tampoco se generalizó hasta tener un
+   segundo caso real. */
+.resume-skills__list {
+  margin: 0;
+  padding: 0;
+  margin-top: var(--space-8);
+  list-style: none;
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-8);
+}
+
+/* "Other" (idiomas) sigue sin ser una lista de tags independientes
+   (es una sola frase) — no usa .resume-skills__list — pero ahora
+   lleva el mismo badge blanco que .resume-skill, a pedido de David,
+   en vez de texto corrido suelto. display:inline-block para que el
+   badge quede pegado al texto (un <p> es block por default y se
+   estiraría a todo el ancho). */
+.resume-skills__note {
+  display: inline-block;
+  margin: 0;
+  margin-top: var(--space-8);
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--text-body-size);
+  color: var(--color-text-black);
+  background-color: #ffffff;
+  border-radius: 999px;
+  padding: var(--space-8) var(--space-16);
+}
+
+.resume-skill {
+  font-family: var(--font-body);
+  font-weight: 500;
+  font-size: var(--text-body-size);
+  color: var(--color-text-black);
+  background-color: #ffffff;
+  border-radius: 999px;
+  padding: var(--space-8) var(--space-16);
+}
