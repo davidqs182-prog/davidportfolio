@@ -149,6 +149,17 @@
   font-weight: 500;
 }
 
+/* Modifier: solo-ícono — mismo .btn (radio/colores/tamaños sin
+   cambios), sin texto, perfectamente circular. Se combina con un
+   tamaño (.btn--sm/md/lg) y un color (.btn--outline, etc.) igual que
+   cualquier otro botón — este modifier solo saca el padding horizontal
+   y fuerza ancho = alto (aspect-ratio:1/1 contra el min-height que ya
+   define cada tamaño). */
+.btn--icon {
+  padding: 0;
+  aspect-ratio: 1 / 1;
+}
+
 /* Estilo: Primary */
 .btn--primary {
   background-color: var(--color-purple-500);

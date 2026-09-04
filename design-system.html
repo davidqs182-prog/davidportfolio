@@ -232,6 +232,13 @@
             <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--md" disabled><span class="material-symbols-rounded icon-back" aria-hidden="true">arrow_back</span>Back to home</button></td>
           </tr>
           <tr>
+            <td>Outline + solo ícono <span class="ds-tag">extra</span></td>
+            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--sm btn--icon" aria-label="Previous"><span class="material-symbols-rounded" aria-hidden="true">chevron_left</span></button></td>
+            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--md btn--icon" aria-label="Previous"><span class="material-symbols-rounded" aria-hidden="true">chevron_left</span></button></td>
+            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--lg btn--icon" aria-label="Previous"><span class="material-symbols-rounded" aria-hidden="true">chevron_left</span></button></td>
+            <td data-tokens="Default: white&#10;Hover: #f2f2f7&#10;Disabled border: #b2c2eb"><button class="btn btn--outline btn--md btn--icon" aria-label="Previous" disabled><span class="material-symbols-rounded" aria-hidden="true">chevron_left</span></button></td>
+          </tr>
+          <tr>
             <td>Ghost</td>
             <td data-tokens="Default: transparent&#10;Hover: #f2f2f7"><button class="btn btn--ghost btn--sm">Button</button></td>
             <td data-tokens="Default: transparent&#10;Hover: #f2f2f7"><button class="btn btn--ghost btn--md">Button</button></td>
@@ -254,7 +261,7 @@
           </tr>
         </tbody>
       </table>
-      <p class="ds-section-desc"><span class="ds-tag">extra</span> = variante que agregamos nosotros, no viene del componente Button original de Figma. <strong>Dark</strong> usa Purple 950 (default) y Purple 900 (hover) — un "negro" que en realidad es parte de la escala de marca. <strong>Outline + ícono</strong> es el patrón usado en el header de las páginas de proyecto ("Back to home"): ícono al inicio + texto, sin animación (a diferencia de <strong>Dark + ícono</strong>, que es el patrón de "Go to project" en las tarjetas de "Work" — texto + ícono al final, deslizándose a la derecha en hover). Los dos usan el mismo <code>gap: 8px</code> de <code>.btn</code>, solo cambia el orden de ícono/texto en el HTML.</p>
+      <p class="ds-section-desc"><span class="ds-tag">extra</span> = variante que agregamos nosotros, no viene del componente Button original de Figma. <strong>Dark</strong> usa Purple 950 (default) y Purple 900 (hover) — un "negro" que en realidad es parte de la escala de marca. <strong>Outline + ícono</strong> es el patrón usado en el header de las páginas de proyecto ("Back to home"): ícono al inicio + texto, sin animación (a diferencia de <strong>Dark + ícono</strong>, que es el patrón de "Go to project" en las tarjetas de "Work" — texto + ícono al final, deslizándose a la derecha en hover). Los dos usan el mismo <code>gap: 8px</code> de <code>.btn</code>, solo cambia el orden de ícono/texto en el HTML. <strong>Outline + solo ícono</strong> usa el modifier <code>.btn--icon</code> (<code>css/components.css</code>) — mismo componente, sin texto, circular (<code>aspect-ratio:1/1</code> contra el <code>min-height</code> de cada tamaño); como el ícono es el único contenido, el botón necesita su propio <code>aria-label</code> en vez del <code>aria-hidden</code> que llevaría acompañando texto visible. Flechas de swipe de los carruseles de la página de Onboarding ("Behind the scenes" y "Testimonial").</p>
     </section>
 
     <!-- ===== Íconos ===== -->
@@ -284,6 +291,16 @@
           <span class="material-symbols-rounded" aria-hidden="true">format_quote</span>
           <span class="ds-icon-name">format_quote</span>
           <span class="ds-icon-usage">Secciones "Testimonial" (project-onboarding.html) — marca la cita, agrandado a 40px vía <code>.project-testimonial__quote-icon</code>.</span>
+        </div>
+        <div class="ds-icon-card">
+          <span class="material-symbols-rounded" aria-hidden="true">chevron_left</span>
+          <span class="ds-icon-name">chevron_left</span>
+          <span class="ds-icon-usage">Flecha "anterior" de los carruseles con swipe (project-onboarding.html: "Behind the scenes" y "Testimonial") — botón <code>.btn--outline.btn--icon</code>, sin animación de hover.</span>
+        </div>
+        <div class="ds-icon-card">
+          <span class="material-symbols-rounded" aria-hidden="true">chevron_right</span>
+          <span class="ds-icon-name">chevron_right</span>
+          <span class="ds-icon-usage">Flecha "siguiente" de los mismos carruseles, par de <code>chevron_left</code>.</span>
         </div>
       </div>
     </section>

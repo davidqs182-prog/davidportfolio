@@ -418,8 +418,14 @@
    tarjetas, sin que el navegador los trate como una tarjeta más del
    scroll horizontal). */
 .project-process__carousel {
+  position: relative;
   margin-top: var(--space-48);
   width: 100%;
+  /* Declarada acá (no en .project-process__track) para que las
+     flechas de swipe, que viven como hermanas del track adentro de
+     este mismo elemento, puedan usar la misma fórmula — el track ya
+     la hereda igual, sin necesitar su propia copia. */
+  --process-inset: max(var(--grid-margin), calc((100% - var(--grid-max-width)) / 2 + var(--grid-margin)));
   /* Fondo --color-surface-project — David volvió a este después de
      probar Gray 300, Gray 200 y blanco total. padding-top/bottom:40px — sin
      esto las tarjetas y los captions quedaban pegados al borde
@@ -443,7 +449,8 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  /* --process-inset reproduce a mano la misma cuenta que hace
+  /* --process-inset (heredada de .project-process__carousel, el
+     padre — ver esa regla) reproduce a mano la misma cuenta que hace
      .container (max-width:1440 + margin-inline:auto + padding-inline:70px),
      porque este carrusel YA NO vive dentro de un .container (ver
      arriba) — necesita su propio cálculo para que la columna 1/12
@@ -461,7 +468,6 @@
      que el margin-inline:auto de .container. Verificado en vivo a
      1440px (70px) y 1728px (136.4px), coincide exacto con
      .project-process__inner en ambos casos. */
-  --process-inset: max(var(--grid-margin), calc((100% - var(--grid-max-width)) / 2 + var(--grid-margin)));
   padding-left: var(--process-inset);
   padding-right: var(--process-inset);
   /* scroll-padding — OBLIGATORIO junto con el padding, no redundante.
@@ -477,6 +483,29 @@
 
 .project-process__track::-webkit-scrollbar {
   display: none;
+}
+
+/* Flechas de swipe — indican que el carrusel se puede deslizar (el
+   gesto nativo con scroll-snap ya funciona sin esto). Ancladas al
+   borde del carrusel completo (el padre position:relative), no al
+   track, así no se mueven con el scroll horizontal. left/right con
+   --process-inset para que arranquen exacto en el borde de la columna
+   1 y terminen en el borde de la columna 12 — mismas columnas que
+   usa el resto de la página, no un valor a ojo. Centradas verticalmente
+   con top:50%/translateY(-50%). */
+.project-process__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.project-process__arrow--prev {
+  left: var(--process-inset);
+}
+
+.project-process__arrow--next {
+  right: var(--process-inset);
 }
 
 /* Dots — mismo patrón visual/interactivo que .project-testimonial__dots
@@ -665,6 +694,24 @@
   grid-row: 2 / 3;
 }
 
+/* Envuelve la nota en el grid-12 real de la página (el de
+   .project-bento__grid es uno aparte, escalado a 860px para el mockup
+   de tiles) — así "empieza en la columna 3" se resuelve con
+   grid-column en vez de un margin-left a ojo. */
+.project-bento__footnote-row {
+  margin-top: var(--space-16);
+}
+
+/* Mismo estilo que .project-process__caption (misma página) — a
+   pedido de David. */
+.project-bento__footnote {
+  grid-column: 3 / 13;
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  color: var(--color-text-black);
+}
+
 /* ===== Testimonial (carrusel, cierre del case study) =====
    Sección nueva a partir de un boceto a mano de David (sin nodo de
    Figma): mismo fondo rojo #E0232A que .project-devices (mismo
@@ -687,7 +734,12 @@
    adentro — ya no hay un .project-testimonial__inner.container por
    slide: el padding del track ya hace ese trabajo. */
 .project-testimonial {
+  position: relative;
   background-color: #e0232a;
+  /* Declarada acá (no en .project-testimonial__track) para que las
+     flechas de swipe, hermanas del track adentro de esta misma
+     sección, puedan usarla también — el track la hereda igual. */
+  --testimonial-inset: max(var(--grid-margin), calc((100% - var(--grid-max-width)) / 2 + var(--grid-margin)));
 }
 
 .project-testimonial__track {
@@ -696,7 +748,6 @@
   overflow-x: auto;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
-  --testimonial-inset: max(var(--grid-margin), calc((100% - var(--grid-max-width)) / 2 + var(--grid-margin)));
   padding-left: var(--testimonial-inset);
   padding-right: var(--testimonial-inset);
   scroll-padding-left: var(--testimonial-inset);
@@ -705,6 +756,24 @@
 
 .project-testimonial__track::-webkit-scrollbar {
   display: none;
+}
+
+/* Flechas de swipe — mismo patrón que .project-process__arrow (ver esa
+   regla para el detalle completo): ancladas al borde de la sección
+   completa, no al track, para no moverse con el scroll horizontal. */
+.project-testimonial__arrow {
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+  z-index: 2;
+}
+
+.project-testimonial__arrow--prev {
+  left: var(--testimonial-inset);
+}
+
+.project-testimonial__arrow--next {
+  right: var(--testimonial-inset);
 }
 
 .project-testimonial__slide {

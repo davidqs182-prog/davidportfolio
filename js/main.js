@@ -354,6 +354,80 @@ initCarouselDots(
   2
 );
 
+// ===== Flechas de carrusel (reusado por Testimonials y Behind the
+// scenes) =====
+// Los botones son sobre todo un indicador visual de "acá se puede
+// hacer swipe" — el scroll nativo con snap ya funciona sin esto. Pero
+// como son <button> reales (necesario para accesibilidad, con su
+// aria-label), también navegan de verdad: cada clic avanza/retrocede
+// UN item, a diferencia de los dots de "Behind the scenes" que
+// agrupan de a 2 (itemsPerDot). Mismo mecanismo de "item más visible"
+// que initCarouselDots, pero sin agrupar.
+function initCarouselArrows(trackSelector, itemSelector, prevSelector, nextSelector) {
+  var track = document.querySelector(trackSelector);
+  if (!track) return;
+
+  var items = Array.prototype.slice.call(track.querySelectorAll(itemSelector));
+  var prevBtn = document.querySelector(prevSelector);
+  var nextBtn = document.querySelector(nextSelector);
+  if (!items.length || (!prevBtn && !nextBtn)) return;
+
+  var currentIndex = 0;
+
+  function goTo(index) {
+    var item = items[index];
+    if (!item) return;
+    item.scrollIntoView({ behavior: "smooth", inline: "start", block: "nearest" });
+  }
+
+  if (prevBtn) {
+    prevBtn.addEventListener("click", function () {
+      goTo(Math.max(currentIndex - 1, 0));
+    });
+  }
+  if (nextBtn) {
+    nextBtn.addEventListener("click", function () {
+      goTo(Math.min(currentIndex + 1, items.length - 1));
+    });
+  }
+
+  if (!("IntersectionObserver" in window)) return;
+
+  var visible = items.map(function () {
+    return false;
+  });
+
+  var observer = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        var index = items.indexOf(entry.target);
+        if (index === -1) return;
+        visible[index] = entry.isIntersecting;
+      });
+      var activeIndex = visible.indexOf(true);
+      if (activeIndex !== -1) currentIndex = activeIndex;
+    },
+    { root: track, threshold: 0.6 }
+  );
+
+  items.forEach(function (item) {
+    observer.observe(item);
+  });
+}
+
+initCarouselArrows(
+  ".project-testimonial__track",
+  ".project-testimonial__slide",
+  ".project-testimonial__arrow--prev",
+  ".project-testimonial__arrow--next"
+);
+initCarouselArrows(
+  ".project-process__track",
+  ".project-process__item",
+  ".project-process__arrow--prev",
+  ".project-process__arrow--next"
+);
+
 // ===== Carrusel de testimonios (video) =====
 // A pedido de David: el video de la primera slide arranca cuando el
 // 40% de TODA la sección (no del video en sí) está visible en
