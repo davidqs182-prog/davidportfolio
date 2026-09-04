@@ -673,15 +673,65 @@ initCarouselArrows(
   problemObserver.observe(section);
 })();
 
-// ===== Video de "Insight clave" (project-youtube-discovery.html) =====
+// ===== Videos de "Insight clave" (project-youtube-discovery.html) =====
 // Mismo criterio que el de "El problema" arriba (arranca solo al 40%
-// visible de la SECCIÓN, no de la tarjeta), pero este SÍ tiene loop —
-// es el mismo video de fondo/ambiente que ya usamos en la tarjeta de
-// la home (Gemini, plantilla "Mundo diminuto"), no una revelación de
-// una sola vez.
+// visible de la SECCIÓN, no de la tarjeta), pero estos SÍ tienen loop —
+// son los videos de fondo/ambiente que se turnan por opacidad según la
+// barrita activa (ver .ytd-insight__card-media--1/--2 en
+// project-youtube-discovery.css). Los DOS arrancan a reproducirse
+// juntos, aunque solo uno se vea a la vez — es opacidad, no display,
+// la que los intercala, así que ambos necesitan estar corriendo de
+// fondo para que el que "entra" ya esté en marcha, no arrancando desde
+// cero. querySelectorAll en vez de querySelector porque ahora hay más
+// de un <video> con esta clase base.
 (function () {
   var section = document.querySelector(".ytd-insight");
-  var video = document.querySelector(".ytd-insight__card-media");
+  var videos = Array.prototype.slice.call(
+    document.querySelectorAll(".ytd-insight__card-media")
+  );
+  if (!section || !videos.length) return;
+
+  function loadAndPlay(video) {
+    var pendingSources = video.querySelectorAll("source[data-src]");
+    pendingSources.forEach(function (source) {
+      source.src = source.dataset.src;
+      source.removeAttribute("data-src");
+    });
+    video.load();
+    video.play().catch(function () {
+      // Autoplay bloqueado: el poster se queda como imagen estática.
+    });
+  }
+
+  function loadAndPlayAll() {
+    videos.forEach(loadAndPlay);
+  }
+
+  if (!("IntersectionObserver" in window)) {
+    loadAndPlayAll();
+    return;
+  }
+
+  var insightObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        loadAndPlayAll();
+        insightObserver.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.4 }
+  );
+  insightObserver.observe(section);
+})();
+
+// ===== Video de "The solution" (project-youtube-discovery.html) =====
+// Mismo criterio que el video de "El problema" (arranca solo al 40%
+// visible de la SECCIÓN, en loop) — mockup de TV con la grabación de
+// pantalla de David.
+(function () {
+  var section = document.querySelector(".ytd-solution");
+  var video = document.querySelector(".ytd-solution__video");
   if (!section || !video) return;
 
   function loadAndPlay() {
@@ -701,15 +751,15 @@ initCarouselArrows(
     return;
   }
 
-  var insightObserver = new IntersectionObserver(
+  var solutionObserver = new IntersectionObserver(
     function (entries) {
       entries.forEach(function (entry) {
         if (!entry.isIntersecting) return;
         loadAndPlay();
-        insightObserver.unobserve(entry.target);
+        solutionObserver.unobserve(entry.target);
       });
     },
     { threshold: 0.4 }
   );
-  insightObserver.observe(section);
+  solutionObserver.observe(section);
 })();

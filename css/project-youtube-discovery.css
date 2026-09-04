@@ -511,18 +511,395 @@ body {
   object-fit: cover;
 }
 
-/* El gráfico "most replayed" se apoya justo en el borde inferior de
-   la tarjeta, como si fuera la barra de progreso real del video que
-   está adentro — por eso position:absolute + bottom:0 en vez de vivir
-   en el flujo normal debajo del placeholder. */
-.ytd-insight__card-graphic {
+/* Los 2 videos se turnan por opacidad, no por cambiar el src — los dos
+   quedan reproduciéndose en loop de fondo todo el tiempo, y la
+   animación solo decide cuál se ve. Mismo ciclo de 10s y mismos cortes
+   (33.333%/66.666%) que .ytd-insight__card-story-fill: video 1 se ve
+   durante la barrita 1 (0%-33.333%) Y la 3 (66.666%-100%, todavía no
+   hay un tercer video), video 2 solo durante la barrita 2. ~1% de
+   fundido cruzado en cada corte (mismo criterio que el fade de
+   .ytd-insight__card-peak-compass) para que no sea un corte seco. */
+.ytd-insight__card-media--1 {
+  animation: ytd-insight-card-media-1 10s linear infinite;
+}
+
+.ytd-insight__card-media--2 {
+  animation: ytd-insight-card-media-2 10s linear infinite;
+}
+
+@keyframes ytd-insight-card-media-1 {
+  0%,
+  32.333% {
+    opacity: 1;
+  }
+  33.333%,
+  65.666% {
+    opacity: 0;
+  }
+  66.666%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@keyframes ytd-insight-card-media-2 {
+  0%,
+  32.333% {
+    opacity: 0;
+  }
+  33.333%,
+  65.666% {
+    opacity: 1;
+  }
+  66.666%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ytd-insight__card-media--1,
+  .ytd-insight__card-media--2 {
+    animation: none;
+  }
+  .ytd-insight__card-media--2 {
+    opacity: 0;
+  }
+}
+
+/* Barritas tipo Instagram Stories, arriba del video — puramente
+   decorativas (por eso el aria-hidden en el HTML, no son controles
+   reales). 3 segmentos iguales sobre un ciclo de 10s, calcado del
+   loop del video (~10.01s, ver comentario del <video> más arriba):
+   el segmento 1 se llena durante el primer tercio y se queda lleno,
+   el 2 arranca vacío y se llena en el segundo tercio, el 3 igual en
+   el último — el mismo mecanismo real de Instagram (anteriores
+   llenas, la activa llenándose, las futuras vacías). No está
+   sincronizado frame a frame con el <video> (arrancan en momentos
+   distintos: el CSS al cargar la página, el video recién cuando
+   IntersectionObserver dispara el autoplay) — es una aproximación
+   visual, no un contador real. */
+.ytd-insight__card-stories {
+  position: absolute;
+  top: 12px;
+  left: 12px;
+  right: 12px;
+  z-index: 1;
+  display: flex;
+  gap: 4px;
+}
+
+.ytd-insight__card-story {
+  flex: 1;
+  height: 3px;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.35);
+  overflow: hidden;
+}
+
+.ytd-insight__card-story-fill {
+  display: block;
+  height: 100%;
+  width: 0%;
+  background-color: #ffffff;
+  animation-duration: 10s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+.ytd-insight__card-story-fill--1 {
+  animation-name: ytd-insight-story-fill-1;
+}
+
+.ytd-insight__card-story-fill--2 {
+  animation-name: ytd-insight-story-fill-2;
+}
+
+.ytd-insight__card-story-fill--3 {
+  animation-name: ytd-insight-story-fill-3;
+}
+
+@keyframes ytd-insight-story-fill-1 {
+  0% {
+    width: 0%;
+  }
+  33.333% {
+    width: 100%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes ytd-insight-story-fill-2 {
+  0%,
+  33.333% {
+    width: 0%;
+  }
+  66.666% {
+    width: 100%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+@keyframes ytd-insight-story-fill-3 {
+  0%,
+  66.666% {
+    width: 0%;
+  }
+  100% {
+    width: 100%;
+  }
+}
+
+/* Sin movimiento: snapshot estático (1ra llena, 2da a la mitad, 3ra
+   vacía) en vez de las 3 en 0%, para que se lea igual "una historia
+   en progreso" sin animar nada. */
+@media (prefers-reduced-motion: reduce) {
+  .ytd-insight__card-story-fill {
+    animation: none;
+  }
+  .ytd-insight__card-story-fill--1 {
+    width: 100%;
+  }
+  .ytd-insight__card-story-fill--2 {
+    width: 50%;
+  }
+  .ytd-insight__card-story-fill--3 {
+    width: 0%;
+  }
+}
+
+/* Envoltorio del gráfico "most replayed" — se apoya justo en el borde
+   inferior de la tarjeta, como si fuera la barra de progreso real del
+   video que está adentro (por eso position:absolute + bottom:0 en vez
+   de vivir en el flujo normal debajo del placeholder). aspect-ratio
+   1172/98 igual al viewBox del SVG: así este wrapper ES exactamente
+   la caja del gráfico ya escalado, y los picos de la brújula (abajo)
+   pueden ubicarse con left/top en % directo desde las coordenadas del
+   SVG, sin convertir a píxeles. */
+.ytd-insight__card-peaks {
   position: absolute;
   left: 0;
   right: 0;
   bottom: 0;
+  aspect-ratio: 1172 / 98;
+}
+
+.ytd-insight__card-graphic {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Brújula 3D (mismo ícono que .ytd-hero__icon) apareciendo arriba de
+   cada uno de los 3 picos grandes del gráfico — sincronizada con las
+   barritas de Instagram Stories de arriba (mismo ciclo de 10s, mismos
+   cortes en 33.333%/66.666%): brújula 1 aparece mientras se llena la
+   barrita 1, brújula 2 con la barrita 2, brújula 3 con la barrita 3.
+   Posiciones (left/top en %) = coordenadas x/y de cada pico en el
+   path del SVG (assets/images/youtube-compass/insight-most-replayed.svg),
+   divididas por el ancho/alto del viewBox (1172/98) — medidas del
+   path real, no a ojo:
+     Pico 1: x=61.24  → 5.23%   y=21.97 → 22.42%
+     Pico 2: x=722.93 → 61.68%  y=35.65 → 36.38%
+     Pico 3: x=1042.3 → 88.94%  y=30.86 → 31.49%
+   transform: translate(-50%, calc(-100% - 6px)) ubica el borde
+   inferior de la brújula 6px arriba de ese punto (flotando sobre la
+   punta del pico, sin taparlo) — el -50% en X la centra sobre el
+   punto. */
+.ytd-insight__card-peak-compass {
+  position: absolute;
+  display: block;
+  width: 36px;
+  height: auto;
+  opacity: 0;
+  pointer-events: none;
+  animation-duration: 10s;
+  animation-timing-function: linear;
+  animation-iteration-count: infinite;
+}
+
+/* Pulso tipo "corazón" (doble latido: golpe grande, golpe chico, pausa)
+   en la imagen de adentro — corre siempre, sin pausar ni sincronizar
+   con el ciclo de 10s del envoltorio, porque total solo se ve mientras
+   ese envoltorio está en opacity:1 (su propia ventana de 3 a 3.3s cada
+   10s) — no hace falta coordinarlos, alcanza con que el pulso sea
+   continuo. */
+.ytd-insight__card-peak-compass-icon {
   display: block;
   width: 100%;
   height: auto;
+  animation: ytd-insight-compass-heartbeat 1s ease-in-out infinite;
+}
+
+@keyframes ytd-insight-compass-heartbeat {
+  0%,
+  100% {
+    transform: scale(1);
+  }
+  14% {
+    transform: scale(1.2);
+  }
+  28% {
+    transform: scale(1);
+  }
+  42% {
+    transform: scale(1.12);
+  }
+  70% {
+    transform: scale(1);
+  }
+}
+
+.ytd-insight__card-peak-compass--1 {
+  left: 5.23%;
+  top: 22.42%;
+  animation-name: ytd-insight-peak-compass-1;
+}
+
+.ytd-insight__card-peak-compass--2 {
+  left: 61.68%;
+  top: 36.38%;
+  animation-name: ytd-insight-peak-compass-2;
+}
+
+.ytd-insight__card-peak-compass--3 {
+  left: 88.94%;
+  top: 31.49%;
+  animation-name: ytd-insight-peak-compass-3;
+}
+
+@keyframes ytd-insight-peak-compass-1 {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 6px)) scale(0.7);
+  }
+  1% {
+    opacity: 1;
+    transform: translate(-50%, calc(-100% - 6px)) scale(1);
+  }
+  32.333% {
+    opacity: 1;
+    transform: translate(-50%, calc(-100% - 6px)) scale(1);
+  }
+  33.333%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 6px)) scale(0.7);
+  }
+}
+
+@keyframes ytd-insight-peak-compass-2 {
+  0%,
+  33.333% {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 6px)) scale(0.7);
+  }
+  34.333% {
+    opacity: 1;
+    transform: translate(-50%, calc(-100% - 6px)) scale(1);
+  }
+  65.666% {
+    opacity: 1;
+    transform: translate(-50%, calc(-100% - 6px)) scale(1);
+  }
+  66.666%,
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 6px)) scale(0.7);
+  }
+}
+
+@keyframes ytd-insight-peak-compass-3 {
+  0%,
+  66.666% {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 6px)) scale(0.7);
+  }
+  67.666% {
+    opacity: 1;
+    transform: translate(-50%, calc(-100% - 6px)) scale(1);
+  }
+  99% {
+    opacity: 1;
+    transform: translate(-50%, calc(-100% - 6px)) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: translate(-50%, calc(-100% - 6px)) scale(0.7);
+  }
+}
+
+/* Sin movimiento: brújula 1 fija y visible, 2 y 3 ocultas — snapshot
+   estático en vez de las 3 ciclando. */
+@media (prefers-reduced-motion: reduce) {
+  .ytd-insight__card-peak-compass {
+    animation: none;
+    transform: translate(-50%, calc(-100% - 6px));
+  }
+  .ytd-insight__card-peak-compass--1 {
+    opacity: 1;
+  }
+  .ytd-insight__card-peak-compass-icon {
+    animation: none;
+  }
+}
+
+/* ===== "The solution" =====
+   Mismo patrón que .ytd-insight (ver ese bloque arriba): header con
+   eyebrow+headline en 6 columnas (2/8), primer párrafo debajo en esas
+   mismas columnas, segundo párrafo al lado en las otras 6 (8/13),
+   arrancando a la misma altura que el primero — a pedido de David,
+   reusa la estructura tal cual en vez de inventar una nueva. Sin
+   background-color propio: hereda el #FAFAFA de <body>, igual que
+   .ytd-problem (alterna con el blanco de .ytd-insight). */
+.ytd-solution {
+  padding-block: var(--space-96);
+}
+
+.ytd-solution__header {
+  grid-column: 2 / 8;
+}
+
+.ytd-solution__headline {
+  margin-top: var(--space-16);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-h1-size);
+  line-height: var(--text-h1-line);
+  letter-spacing: 0;
+  color: var(--ytd-black);
+}
+
+.ytd-solution__body {
+  max-width: 600px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--ytd-black);
+}
+
+.ytd-solution__body--primary {
+  grid-column: 2 / 8;
+  margin-top: var(--space-16);
+}
+
+.ytd-solution__body--aside {
+  grid-column: 8 / 13;
+  margin-top: var(--space-16);
+}
+
+/* 8 columnas centrada (3/11, misma fórmula que .ytd-insight__card). */
+.ytd-solution__video {
+  grid-column: 3 / 11;
+  margin-top: var(--space-64);
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 12px;
 }
 
 .ytd-about__content {

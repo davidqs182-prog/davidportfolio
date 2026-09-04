@@ -191,16 +191,26 @@
           <div class="ytd-insight__card">
             <div class="ytd-insight__card-border">
               <div class="ytd-insight__card-border-inner">
-                <!-- Mismo video generado con la cuenta de Gemini de
-                     David (plantilla "Mundo diminuto") que ya usamos
-                     en la tarjeta de la home — mismos archivos, no
-                     duplicados. Arranca solo cuando la sección entra
-                     en pantalla (ver "Animación de El problema"... la
-                     de acá se llama distinto, ver js/main.js), en
-                     loop y sin audio (los archivos ya se codificaron
-                     sin pista de audio, -an en ffmpeg). -->
+                <!-- Dos videos apilados (mismo hueco, object-fit:cover),
+                     mostrados por turnos según qué barrita de arriba se
+                     está llenando — igual que Instagram Stories, cada
+                     segmento es contenido distinto. Los dos quedan
+                     SIEMPRE reproduciéndose en loop de fondo (muted,
+                     sin costo real) y es la opacidad la que los
+                     muestra/oculta en el momento justo — mismo ciclo de
+                     10s y mismos cortes en 33.333%/66.666% que
+                     .ytd-insight__card-story-fill y
+                     .ytd-insight__card-peak-compass, para que todo
+                     quede sincronizado. Arrancan a cargar/reproducir
+                     solo cuando la sección entra en pantalla (ver
+                     js/main.js). Sin audio (-an en ffmpeg). -->
+                <!-- Video 1 (barrita 1 y, por ahora, también la 3 — no
+                     hay todavía un tercer video): mismo video generado
+                     con la cuenta de Gemini de David (plantilla "Mundo
+                     diminuto") que ya usamos en la tarjeta de la home —
+                     mismos archivos, no duplicados. -->
                 <video
-                  class="ytd-insight__card-media"
+                  class="ytd-insight__card-media ytd-insight__card-media--1"
                   poster="assets/animations/youtube-compass-card/youtube-compass-preview-2-poster.jpg"
                   width="1280"
                   height="720"
@@ -212,7 +222,58 @@
                   <source data-src="assets/animations/youtube-compass-card/youtube-compass-preview-2.webm" type="video/webm">
                   <source data-src="assets/animations/youtube-compass-card/youtube-compass-preview-2.mp4" type="video/mp4">
                 </video>
-                <img class="ytd-insight__card-graphic" src="assets/images/youtube-compass/insight-most-replayed.svg" alt="Barra de progreso de YouTube mostrando la franja de picos de &quot;most replayed&quot;, el momento del video donde más gente vuelve a ver" width="1172" height="98">
+                <!-- Video 2 (barrita 2): otro video generado con Gemini
+                     (mismo estilo "planeta diminuto"), pedido aparte —
+                     ver assets/animations/youtube-compass-card/README.md
+                     si existiera, si no, mismo criterio de procedencia
+                     ya aplicado al video 1. -->
+                <video
+                  class="ytd-insight__card-media ytd-insight__card-media--2"
+                  poster="assets/animations/youtube-compass-card/youtube-compass-preview-4-poster.jpg"
+                  width="1280"
+                  height="720"
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                >
+                  <source data-src="assets/animations/youtube-compass-card/youtube-compass-preview-4.webm" type="video/webm">
+                  <source data-src="assets/animations/youtube-compass-card/youtube-compass-preview-4.mp4" type="video/mp4">
+                </video>
+                <!-- Decorativo: simula las barritas de progreso de
+                     Instagram Stories arriba del video, como si el
+                     placeholder fuera una historia reproduciéndose —
+                     no son controles reales, por eso aria-hidden. -->
+                <div class="ytd-insight__card-stories" aria-hidden="true">
+                  <div class="ytd-insight__card-story"><span class="ytd-insight__card-story-fill ytd-insight__card-story-fill--1"></span></div>
+                  <div class="ytd-insight__card-story"><span class="ytd-insight__card-story-fill ytd-insight__card-story-fill--2"></span></div>
+                  <div class="ytd-insight__card-story"><span class="ytd-insight__card-story-fill ytd-insight__card-story-fill--3"></span></div>
+                </div>
+                <!-- Envuelve el gráfico + la brújula: mismo aspect-
+                     ratio que el SVG (1172:98), así left/top en % dan
+                     directo las coordenadas del viewBox sin tener que
+                     recalcular píxeles. Posiciones de la brújula
+                     medidas de los 3 picos grandes reales del path del
+                     SVG (x/98 alto, y de cada pico), no a ojo. -->
+                <div class="ytd-insight__card-peaks">
+                  <img class="ytd-insight__card-graphic" src="assets/images/youtube-compass/insight-most-replayed.svg" alt="Barra de progreso de YouTube mostrando la franja de picos de &quot;most replayed&quot;, el momento del video donde más gente vuelve a ver" width="1172" height="98">
+                  <!-- Envoltorio (posición/aparición) + imagen adentro
+                       (pulso) separados a propósito: dos elementos
+                       distintos animando su propio transform cada uno,
+                       para que el pulso tipo "corazón" (en la imagen)
+                       no pise la animación de entrada/salida (en el
+                       envoltorio) — un solo elemento no puede animar
+                       dos transforms independientes al mismo tiempo. -->
+                  <span class="ytd-insight__card-peak-compass ytd-insight__card-peak-compass--1" aria-hidden="true">
+                    <img class="ytd-insight__card-peak-compass-icon" src="assets/images/ytd-compass-icon.png" alt="" width="556" height="686">
+                  </span>
+                  <span class="ytd-insight__card-peak-compass ytd-insight__card-peak-compass--2" aria-hidden="true">
+                    <img class="ytd-insight__card-peak-compass-icon" src="assets/images/ytd-compass-icon.png" alt="" width="556" height="686">
+                  </span>
+                  <span class="ytd-insight__card-peak-compass ytd-insight__card-peak-compass--3" aria-hidden="true">
+                    <img class="ytd-insight__card-peak-compass-icon" src="assets/images/ytd-compass-icon.png" alt="" width="556" height="686">
+                  </span>
+                </div>
               </div>
             </div>
           </div>
@@ -220,7 +281,41 @@
       </div>
     </section>
 
-    <!-- Próximas secciones (La solución, Para quién, etc.) -->
+    <!-- Mismo patrón de layout que .ytd-insight (header con eyebrow+
+         headline en 6 columnas, primer párrafo debajo en las mismas
+         columnas, segundo párrafo al lado en las otras 6, alineado a
+         la misma altura donde empieza el primer párrafo) — a pedido
+         de David, "acomodalo como las secciones seleccionadas". -->
+    <section class="ytd-solution">
+      <div class="ytd-solution__inner container">
+        <div class="ytd-solution__grid grid-12">
+          <div class="ytd-solution__header">
+            <p class="eyebrow">The solution</p>
+            <h2 class="ytd-solution__headline">A feed that starts playing before you decide</h2>
+          </div>
+          <p class="ytd-solution__body ytd-solution__body--primary">When you open the app, the player starts automatically with content from your creators — not the full video, but a preview built from their highest-retention moments. If it hooks you, you keep watching. If not, it automatically moves to the next one.</p>
+          <p class="ytd-solution__body ytd-solution__body--aside">Alongside it, two types of cards: individual videos and themed collections (salsa dancing, Costa Rican politics, whatever). Entering a collection changes the player entirely — it fills with content from that theme only. Old-but-good content, with strong engagement and watch time, gets a real second chance without competing against what's freshly uploaded.</p>
+          <!-- Grabación de pantalla de David (YouTube) montada sobre un
+               mockup de TV en After Effects/editor de video — 8
+               columnas centradas. -->
+          <video
+            class="ytd-solution__video"
+            poster="assets/animations/youtube-compass-card/solution-tv-mockup-poster.jpg"
+            width="1920"
+            height="1080"
+            muted
+            loop
+            playsinline
+            preload="none"
+          >
+            <source data-src="assets/animations/youtube-compass-card/solution-tv-mockup.webm" type="video/webm">
+            <source data-src="assets/animations/youtube-compass-card/solution-tv-mockup.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </section>
+
+    <!-- Próximas secciones (Para quién, Limitaciones, Cierre) -->
   </main>
 
   <!-- Herramienta de guía (no es parte del diseño del sitio): overlay
