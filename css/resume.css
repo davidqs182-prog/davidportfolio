@@ -277,3 +277,39 @@
   border-radius: 999px;
   padding: var(--space-8) var(--space-16);
 }
+
+/* ---------- Impresión / PDF ----------
+   A pedido de David: una sola página horizontal, del mismo alto que
+   el contenido real (no A4 fijo) — así el PDF se ve igual que la
+   página renderizada en pantalla, sin cortes entre páginas. El ancho
+   (297mm) coincide con A4 horizontal; el alto (875mm, con margen de
+   sobra) se midió en vivo con scrollHeight a ese mismo ancho
+   (1123px ≈ 297mm a 96dpi) — 3284px de contenido real ≈ 869mm, se
+   redondeó un poco para arriba. Si el contenido cambia de largo
+   (más/menos texto), este alto hay que volver a medirlo y ajustarlo,
+   no es un valor que se recalcule solo.
+   margin:0 porque el "margen" ya lo da el padding-inline del
+   .container/las secciones — un margin de página encima duplicaría
+   ese aire.
+   print-color-adjust:exact fuerza a que el navegador imprima los
+   colores de fondo (el crema --color-bg, los degradados, etc.) tal
+   cual se ven en pantalla — por default los navegadores los omiten al
+   imprimir/exportar a PDF para ahorrar tinta. */
+@media print {
+  @page {
+    size: 297mm 875mm;
+    margin: 0;
+  }
+
+  html,
+  body {
+    print-color-adjust: exact;
+    -webkit-print-color-adjust: exact;
+  }
+
+  .resume-entry,
+  .resume-skills__group,
+  .resume-entry-list > article {
+    break-inside: avoid;
+  }
+}
