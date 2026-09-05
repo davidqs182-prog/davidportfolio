@@ -1,6 +1,23 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3EV32X3877"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-3EV32X3877');
+  </script>
+  <!-- End Google tag (gtag.js) -->
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-TLW9D86D');</script>
+  <!-- End Google Tag Manager -->
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Resume — David Quirós</title>
@@ -13,15 +30,21 @@
   <link rel="stylesheet" href="css/resume.css">
 </head>
 <body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLW9D86D"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
 
   <header class="navbar container">
-    <img
-      class="navbar__logo"
-      src="assets/Logo/pixelPersonas.svg"
-      alt="pixelPersona"
-      width="1384"
-      height="180"
-    >
+    <a href="index.html">
+      <img
+        class="navbar__logo"
+        src="assets/Logo/pixelPersonas.svg"
+        alt="pixelPersona"
+        width="1384"
+        height="180"
+      >
+    </a>
   </header>
 
   <main>
@@ -84,8 +107,9 @@
           digital products, from user research and prototyping to shipping
           with cross-functional engineering teams. Led design strategy for
           consumer and internal platforms spanning marketplace, logistics,
-          and workforce management. Fluent in Figma-based rapid prototyping
-          and translating ambiguous problems into clear, testable user flows.
+          and workforce management. Fluent in Figma and AI workflows for
+          rapid prototyping, translating ambiguous problems into clear,
+          testable user flows.
         </p>
       </div>
     </section>
@@ -311,6 +335,14 @@
     }
     #grid-overlay.is-visible {
       display: grid;
+    }
+    /* El botón de grilla es una herramienta de guía en pantalla — no
+       tiene sentido en el PDF exportado. */
+    @media print {
+      #dev-tools,
+      #grid-overlay {
+        display: none !important;
+      }
     }
     .grid-overlay__col {
       background: rgba(97, 70, 133, 0.12);
