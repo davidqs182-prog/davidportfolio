@@ -251,8 +251,10 @@
     </section>
   </main>
 
-  <!-- Herramienta de guía (no es parte del diseño del sitio): overlay
-       de las 12 columnas del grid, igual que en project-onboarding.html. -->
+  <!-- Herramienta de guía (no es parte del diseño del sitio, solo
+       visible en localhost — ver js/main.js): overlay del grid +
+       selector de breakpoint (Desktop/Tablet/Mobile). Estilos y
+       lógica centralizados en css/components.css y js/main.js. -->
   <div id="grid-overlay" aria-hidden="true">
     <div class="grid-overlay__col"></div>
     <div class="grid-overlay__col"></div>
@@ -269,81 +271,29 @@
   </div>
 
   <div id="dev-tools">
+    <div id="dev-tools__breakpoints">
+      <button data-breakpoint="desktop" class="is-active" type="button">
+        <span class="material-symbols-rounded" aria-hidden="true">desktop_windows</span>
+        Desktop
+      </button>
+      <button data-breakpoint="tablet" type="button">
+        <span class="material-symbols-rounded" aria-hidden="true">tablet_mac</span>
+        Tablet
+      </button>
+      <button data-breakpoint="mobile" type="button">
+        <span class="material-symbols-rounded" aria-hidden="true">smartphone</span>
+        Mobile
+      </button>
+    </div>
     <button id="grid-overlay-toggle" type="button">
       <span class="material-symbols-rounded" aria-hidden="true">grid_on</span>
       Grid
     </button>
   </div>
 
-  <style>
-    #grid-overlay {
-      display: none;
-      position: fixed;
-      inset: 0;
-      z-index: 99999;
-      pointer-events: none;
-      max-width: var(--grid-max-width);
-      margin-inline: auto;
-      padding-inline: var(--grid-margin);
-      grid-template-columns: repeat(var(--grid-columns), 1fr);
-      column-gap: var(--grid-gutter);
-    }
-    #grid-overlay.is-visible {
-      display: grid;
-    }
-    .grid-overlay__col {
-      background: rgba(97, 70, 133, 0.12);
-      border-left: 1px solid rgba(97, 70, 133, 0.4);
-      border-right: 1px solid rgba(97, 70, 133, 0.4);
-    }
-    #dev-tools {
-      position: fixed;
-      right: 16px;
-      bottom: 16px;
-      z-index: 100000;
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      gap: 10px;
-    }
-    #dev-tools button {
-      border: none;
-      border-radius: 999px;
-      padding: 8px 14px;
-      background: var(--color-purple-950);
-      color: var(--color-text-white);
-      font-family: var(--font-body);
-      font-size: 13px;
-      font-weight: 500;
-      cursor: pointer;
-      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-      text-align: right;
-      display: inline-flex;
-      align-items: center;
-      gap: 6px;
-    }
-    #dev-tools button.is-active {
-      background: var(--color-purple-500);
-    }
-  </style>
-  <script>
-    (function () {
-      var overlay = document.getElementById("grid-overlay");
-      var toggle = document.getElementById("grid-overlay-toggle");
-
-      function toggleGrid() {
-        overlay.classList.toggle("is-visible");
-        toggle.classList.toggle("is-active");
-      }
-
-      toggle.addEventListener("click", toggleGrid);
-      document.addEventListener("keydown", function (e) {
-        if (e.key.toLowerCase() !== "g") return;
-        if (e.target.closest("input, textarea, [contenteditable]")) return;
-        toggleGrid();
-      });
-    })();
-  </script>
+  <div id="dev-preview" aria-hidden="true">
+    <iframe id="dev-preview-frame" title="Vista previa responsiva"></iframe>
+  </div>
 
   <script src="js/main.js"></script>
 </body>

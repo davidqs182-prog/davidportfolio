@@ -315,3 +315,157 @@
   text-transform: uppercase;
   color: var(--color-text-black);
 }
+
+/* =====================================================================
+   DEV TOOLS
+   =====================================================================
+   Herramienta de guía — NO es parte del diseño del sitio, es para
+   trabajar. Antes vivía duplicada como <style>/<script> inline en cada
+   página (index.html, project-onboarding.html,
+   project-youtube-discovery.html, resume.html); se centralizó acá +
+   en js/main.js al agregar el selector de breakpoints, para no
+   mantener la misma regla 4 veces.
+
+   Oculta por default (display:none en #dev-tools) y solo main.js la
+   muestra, y ÚNICAMENTE si location.hostname es localhost/127.0.0.1 —
+   así en pixel-personas.com (o cualquier otro dominio) queda oculta
+   siempre, sin importar si alguien se olvida de sacarla antes de un
+   commit a master. No depende de un paso manual.
+
+   #grid-overlay: overlay fijo con las columnas del grid superpuestas
+   sobre la página real, para chequear alineación mientras se trabaja.
+   Reusa las MISMAS 12 divs .grid-overlay__col en los 3 breakpoints —
+   en Tablet/Mobile se ocultan las columnas de más con :nth-child en
+   vez de generar HTML distinto por breakpoint. */
+#grid-overlay {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99999;
+  pointer-events: none;
+  max-width: var(--grid-max-width);
+  margin-inline: auto;
+  padding-inline: var(--grid-margin);
+  grid-template-columns: repeat(var(--grid-columns), 1fr);
+  column-gap: var(--grid-gutter);
+}
+
+#grid-overlay.is-visible {
+  display: grid;
+}
+
+.grid-overlay__col {
+  background: rgba(97, 70, 133, 0.12);
+  border-left: 1px solid rgba(97, 70, 133, 0.4);
+  border-right: 1px solid rgba(97, 70, 133, 0.4);
+}
+
+/* Breakpoint Tablet: 8 columnas visibles (se ocultan la 9ª a la 12ª),
+   ancho/margen/gutter de --grid-tablet-* (tokens.css). */
+#grid-overlay.bp-tablet {
+  max-width: var(--grid-tablet-width);
+  padding-inline: var(--grid-tablet-margin);
+  grid-template-columns: repeat(var(--grid-tablet-columns), 1fr);
+  column-gap: var(--grid-tablet-gutter);
+}
+
+#grid-overlay.bp-tablet .grid-overlay__col:nth-child(n + 9) {
+  display: none;
+}
+
+/* Breakpoint Mobile: 4 columnas visibles (se ocultan la 5ª a la 12ª). */
+#grid-overlay.bp-mobile {
+  max-width: var(--grid-mobile-width);
+  padding-inline: var(--grid-mobile-margin);
+  grid-template-columns: repeat(var(--grid-mobile-columns), 1fr);
+  column-gap: var(--grid-mobile-gutter);
+}
+
+#grid-overlay.bp-mobile .grid-overlay__col:nth-child(n + 5) {
+  display: none;
+}
+
+/* #dev-tools: panel fijo abajo a la derecha con los botones — Grid
+   (muestra/oculta el overlay) + Desktop/Tablet/Mobile (cambian qué
+   grid se previsualiza, y de paso fuerzan el overlay visible). */
+#dev-tools {
+  display: none;
+  position: fixed;
+  right: 16px;
+  bottom: 16px;
+  z-index: 100000;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 10px;
+}
+
+#dev-tools.is-dev-visible {
+  display: flex;
+}
+
+#dev-tools__breakpoints {
+  display: flex;
+  gap: 6px;
+}
+
+#dev-tools button {
+  border: none;
+  border-radius: 999px;
+  padding: 8px 14px;
+  background: var(--color-purple-950);
+  color: var(--color-text-white);
+  font-family: var(--font-body);
+  font-size: 13px;
+  font-weight: 500;
+  cursor: pointer;
+  box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
+  text-align: right;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+#dev-tools button.is-active {
+  background: var(--color-purple-500);
+}
+
+/* Modal con el <iframe> de vista previa — se abre al elegir Tablet o
+   Mobile (ver js/main.js openPreview()). Es el sitio real cargado de
+   nuevo a ese ancho exacto, así el contenido se reacomoda de verdad
+   (texto con clamp()/vw, grid-12 en 1fr, flex-wrap...), no es solo el
+   overlay de líneas. Fondo oscuro semi-transparente para remarcar que
+   es una simulación, no la página real de la pestaña. */
+#dev-preview {
+  display: none;
+  position: fixed;
+  inset: 0;
+  z-index: 99998;
+  align-items: center;
+  justify-content: center;
+  background: rgba(18, 12, 34, 0.6);
+}
+
+#dev-preview.is-visible {
+  display: flex;
+}
+
+#dev-preview-frame {
+  border: 0;
+  border-radius: 12px;
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+  background: #ffffff;
+  height: 90vh;
+  max-width: 95vw;
+  max-height: 95vh;
+}
+
+/* Ocultas también al exportar/imprimir a PDF (ver css/resume.css) —
+   acá de nuevo porque ahora es una regla compartida, no exclusiva de
+   Resume. */
+@media print {
+  #dev-tools,
+  #grid-overlay,
+  #dev-preview {
+    display: none !important;
+  }
+}

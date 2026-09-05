@@ -1,3 +1,127 @@
+// ===== Dev tools (overlay de grid + vista previa de breakpoints) =====
+// Antes vivía como <style>/<script> inline duplicado en cada página;
+// centralizado acá al agregar Tablet/Mobile (ver css/components.css
+// para los estilos). Guardado con "if (!overlay || !toggle) return"
+// como el resto de este archivo, así no rompe nada en páginas que no
+// tengan el markup (ej. design-system.html, que nunca lo tuvo).
+//
+// Oculto en cualquier dominio que no sea localhost/127.0.0.1 — "solo
+// me sirven en la rama local para trabajar" (a pedido de David). Es
+// automático: no depende de acordarse de sacarlo antes de un commit a
+// master, funciona igual sea cual sea el dominio real (pixel-personas.com
+// hoy, o cualquier otro en el futuro).
+(function () {
+  var overlay = document.getElementById("grid-overlay");
+  var devTools = document.getElementById("dev-tools");
+  var gridToggle = document.getElementById("grid-overlay-toggle");
+  if (!overlay || !devTools || !gridToggle) return;
+
+  var isLocalDev =
+    location.hostname === "localhost" ||
+    location.hostname === "127.0.0.1" ||
+    location.hostname === "";
+  if (!isLocalDev) return;
+
+  // Aplica el overlay de grid del breakpoint pedido (columnas/margen/
+  // gutter, ver css/components.css) — separado de setBreakpoint()
+  // porque esta parte SÍ se reusa dentro del <iframe> de vista previa
+  // (ver más abajo), y esa nunca debe intentar abrir su propia vista
+  // previa (se anidaría sin fin).
+  function applyGridBreakpoint(name) {
+    overlay.classList.remove("bp-tablet", "bp-mobile");
+    if (name === "tablet") overlay.classList.add("bp-tablet");
+    if (name === "mobile") overlay.classList.add("bp-mobile");
+    overlay.classList.add("is-visible");
+    gridToggle.classList.add("is-active");
+  }
+
+  // Si la URL trae ?__devpreview=tablet|mobile, esta página NO es la
+  // pestaña real — es el <iframe> que la pestaña real acaba de abrir
+  // para mostrar "cómo se ve el sitio a este ancho". Acá adentro solo
+  // mostramos el grid de ese breakpoint (sin el panel de botones — ya
+  // se controla desde afuera) y cortamos: si siguiera de largo,
+  // intentaría abrir SU PROPIA vista previa al ejecutar este mismo
+  // script, y esa otra, y así infinito.
+  var previewBreakpoint = new URLSearchParams(location.search).get(
+    "__devpreview"
+  );
+  if (previewBreakpoint) {
+    applyGridBreakpoint(previewBreakpoint);
+    return;
+  }
+
+  devTools.classList.add("is-dev-visible");
+
+  var preview = document.getElementById("dev-preview");
+  var previewFrame = document.getElementById("dev-preview-frame");
+  var PREVIEW_WIDTHS = { tablet: "768px", mobile: "375px" };
+
+  var breakpointButtons = Array.prototype.slice.call(
+    devTools.querySelectorAll("[data-breakpoint]")
+  );
+
+  function toggleGrid() {
+    var willShow = !overlay.classList.contains("is-visible");
+    overlay.classList.toggle("is-visible", willShow);
+    gridToggle.classList.toggle("is-active", willShow);
+  }
+
+  function closePreview() {
+    if (!preview) return;
+    preview.classList.remove("is-visible");
+    // src = about:blank además de ocultarlo: para que el video/JS de
+    // la página que estaba de fondo en el iframe no se quede
+    // corriendo sin que se vea (scroll listeners, IntersectionObserver,
+    // autoplay de video, etc. — no tiene sentido gastar CPU en eso).
+    if (previewFrame) previewFrame.src = "about:blank";
+  }
+
+  // Abre el iframe de vista previa al ancho real del breakpoint —
+  // esto SÍ hace que el contenido se reacomode de verdad (texto que
+  // usa clamp()/vw, grid-12 con columnas en 1fr, flex-wrap, etc.),
+  // no es solo el overlay de líneas. Carga la MISMA URL actual +
+  // ?__devpreview=<name>, así el propio script de esa copia sabe que
+  // tiene que mostrarse como preview (ver arriba) en vez de intentar
+  // levantar su propio panel de dev-tools.
+  function openPreview(name) {
+    if (!preview || !previewFrame) return;
+    previewFrame.style.width = PREVIEW_WIDTHS[name];
+    var url = new URL(location.href);
+    url.searchParams.set("__devpreview", name);
+    previewFrame.src = url.toString();
+    preview.classList.add("is-visible");
+  }
+
+  function setBreakpoint(name) {
+    breakpointButtons.forEach(function (btn) {
+      btn.classList.toggle("is-active", btn.dataset.breakpoint === name);
+    });
+
+    if (name === "desktop") {
+      closePreview();
+      overlay.classList.remove("bp-tablet", "bp-mobile");
+      overlay.classList.add("is-visible");
+      gridToggle.classList.add("is-active");
+    } else {
+      openPreview(name);
+    }
+  }
+
+  gridToggle.addEventListener("click", toggleGrid);
+
+  breakpointButtons.forEach(function (btn) {
+    btn.addEventListener("click", function () {
+      setBreakpoint(btn.dataset.breakpoint);
+    });
+  });
+
+  document.addEventListener("keydown", function (e) {
+    if (e.key.toLowerCase() !== "g") return;
+    if (e.target.closest("input, textarea, [contenteditable]")) return;
+    toggleGrid();
+  });
+})();
+
 // ===== Animación de scroll (hero) =====
 // Comportamiento: el scroll actúa como "disparador" de dirección, no como
 // control de posición exacta. Al detectar scroll hacia abajo, la animación

@@ -126,7 +126,7 @@
   --text-overline-line: 14px;
   --text-overline-tracking: 0.15em;
 
-  /* ---------- Layout grid ----------
+  /* ---------- Layout grid (Desktop) ----------
      Igual al "Layout Grid" configurado en el frame de Figma: 12
      columnas, 70px de margen lateral, 20px de espacio entre
      columnas, sobre un frame de referencia de 1440px. */
@@ -134,6 +134,40 @@
   --grid-margin: 70px;
   --grid-gutter: 20px;
   --grid-max-width: 1440px;
+
+  /* ---------- Breakpoints y grids de Tablet / Mobile ----------
+     Cortes de ancho estándar de industria (los mismos que usan
+     Bootstrap 5 y Tailwind, entre otros): Mobile <768px, Tablet
+     768–1023px, Desktop ≥1024px. No son variables usables dentro de
+     @media (la spec de CSS no permite var() ahí) — quedan como
+     referencia documentada; los @media reales que las necesiten van
+     con el número literal.
+
+     Columnas/márgenes/gutters de Tablet y Mobile: estándar de
+     industria también (mismos valores que Figma trae por default en
+     sus presets de grid responsivo, y muy cerca de la spec de
+     Material Design 3 — Compact: 4 columnas/16dp margen, Medium:
+     8 columnas/24-32dp margen). Los anchos de referencia (768/375)
+     son los tamaños de diseño típicos para cada categoría (tablet
+     portrait / iPhone estándar), no anchos "reales" de ningún
+     dispositivo puntual.
+
+     Alimentan el selector de breakpoints del overlay de grilla
+     (#dev-tools, visible solo en localhost) para previsualizar cada
+     grid, y --grid-tablet-margin/--grid-mobile-margin (junto con sus
+     --grid-*-gutter) ya se usan también en los @media reales de Home,
+     Onboarding Tool y YouTube Compass (ver css/styles.css) para achicar
+     --grid-margin/--grid-gutter a esos anchos — Resume y Design System
+     quedan afuera de esa adaptación por ahora. */
+  --grid-tablet-width: 768px;
+  --grid-tablet-columns: 8;
+  --grid-tablet-margin: 32px;
+  --grid-tablet-gutter: 16px;
+
+  --grid-mobile-width: 375px;
+  --grid-mobile-columns: 4;
+  --grid-mobile-margin: 16px;
+  --grid-mobile-gutter: 16px;
 
   /* ---------- Espaciado ----------
      A diferencia de los colores y la tipografía, Figma no tiene un
