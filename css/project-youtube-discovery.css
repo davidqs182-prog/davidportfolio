@@ -1027,3 +1027,66 @@ body {
 .ytd-about__meta-list li + li {
   margin-top: var(--space-4);
 }
+
+/* =====================================================================
+   RESPONSIVE — Tablet / Mobile
+   =====================================================================
+   Cortes: Mobile <768px, Tablet 768–1023px (--grid-margin/--grid-gutter
+   ya se ajustan solos a esos anchos, ver styles.css). El título del
+   hero (.ytd-hero__title-frame + cqi) ya es responsive por diseño — no
+   necesita nada acá. El resto de las secciones (Overview/Problem/
+   Insight/Solution) reusan el mismo patrón de 2 bloques lado a lado que
+   ya no entra cómodo en un viewport angosto. */
+@media (max-width: 767px) {
+  .ytd-hero {
+    padding-bottom: var(--space-64);
+  }
+
+  .ytd-about__headline,
+  .ytd-problem__headline,
+  .ytd-insight__headline,
+  .ytd-solution__headline {
+    font-size: 28px;
+    line-height: 34px;
+  }
+
+  /* Mismo patrón que .project-about__grid en Onboarding: en vez de
+     desarmar el grid, se resetea cada bloque a grid-column:1/-1 (ancho
+     completo) — el propio grid ya los acomoda en filas separadas al no
+     entrar más de uno por fila, row-gap reemplaza los margin-top que
+     antes solo alineaban columnas a la misma altura. */
+  .ytd-about__grid,
+  .ytd-problem__grid,
+  .ytd-insight__grid,
+  .ytd-solution__grid {
+    row-gap: var(--space-24);
+  }
+
+  .ytd-about__content,
+  .ytd-about__meta,
+  .ytd-problem__header,
+  .ytd-problem__visual,
+  .ytd-problem__body,
+  .ytd-insight__header,
+  .ytd-insight__body--primary,
+  .ytd-insight__body--aside,
+  .ytd-insight__card,
+  .ytd-solution__header,
+  .ytd-solution__body--primary,
+  .ytd-solution__body--aside,
+  .ytd-solution__video-card,
+  .ytd-solution__cta {
+    grid-column: 1 / -1;
+  }
+
+  .ytd-problem__visual,
+  .ytd-problem__body,
+  .ytd-insight__body--primary,
+  .ytd-insight__body--aside,
+  .ytd-insight__card,
+  .ytd-solution__body--primary,
+  .ytd-solution__body--aside,
+  .ytd-solution__video-card {
+    margin-top: 0;
+  }
+}

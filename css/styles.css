@@ -569,3 +569,67 @@ body {
   justify-content: flex-start;
   margin-top: var(--space-24);
 }
+
+/* =====================================================================
+   RESPONSIVE — Tablet / Mobile
+   =====================================================================
+   Cortes documentados en tokens.css (Mobile <768px, Tablet 768–1023px).
+   --grid-margin/--grid-gutter responsive acá (no --grid-columns, para
+   no romper los grid-column:X/Y ya ubicados en todo el sitio) — con
+   solo esto, .container/.grid-12 ya ganan márgenes/gutters más chicos
+   en las 4 páginas que cargan este archivo (Home, las 2 de proyecto, y
+   Resume), sin re-maquetar nada. El resto de esta sección es contenido
+   específico de esta página (.hero, .navbar, .project-card) — Resume y
+   Design System no usan esas clases, quedan intactas. */
+@media (max-width: 1023px) {
+  :root {
+    --grid-margin: var(--grid-tablet-margin);
+    --grid-gutter: var(--grid-tablet-gutter);
+  }
+}
+
+@media (max-width: 767px) {
+  :root {
+    --grid-margin: var(--grid-mobile-margin);
+    --grid-gutter: var(--grid-mobile-gutter);
+  }
+
+  /* Navbar: "About"/"Get in Touch" (o el logo solo, en Resume) pasan a
+     su propia fila centrada debajo del logo — a este ancho no entran
+     los tres en una sola fila (bug real encontrado con la vista previa
+     Mobile del dev-tool: los botones se superponían). */
+  .navbar {
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: var(--space-16);
+  }
+
+  .navbar__links {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .hero {
+    padding-block: var(--space-32) var(--space-40);
+  }
+
+  /* .hero__intro en absolute (ver esa regla arriba) se ubica contra el
+     ancho de .hero__stage — que a este ancho ya tocó el piso de 220px
+     del clamp() del avatar. El texto (267px fijo) ya no entra ahí y
+     termina desbordando la pantalla hacia la izquierda (verificado en
+     vivo con la vista previa Mobile). Pasa a flujo normal — dentro de
+     .hero__stage (flex-direction:column) cae naturalmente antes del
+     avatar, que es donde ya está en el HTML. */
+  .hero__intro {
+    position: static;
+    top: auto;
+    right: auto;
+    width: auto;
+    max-width: 280px;
+    margin-bottom: var(--space-16);
+  }
+
+  .project-card {
+    margin-bottom: var(--space-40);
+  }
+}

@@ -1158,3 +1158,143 @@
   line-height: var(--text-body-lg-line);
   color: var(--color-text-black);
 }
+
+/* =====================================================================
+   RESPONSIVE — Tablet / Mobile
+   =====================================================================
+   Cortes: Mobile <768px, Tablet 768–1023px (--grid-margin/--grid-gutter
+   ya se ajustan solos a esos anchos, ver styles.css). Acá solo lo que
+   necesita re-maquetarse de verdad: secciones con alto fijo en px que
+   dejan de tener sentido a un ancho más chico, layouts de 2+ columnas
+   que no entran cómodos en un viewport angosto, y los titulares H1/H2
+   de esta página. */
+@media (max-width: 1023px) {
+  /* .project-hero: el alto fijo de 512px estaba pensado para el video
+     a 800px de ancho en desktop — apenas el video se achica con el
+     viewport, ese alto sobra (deja aire vacío) o falta (el video
+     empieza a pisar el título). Pasa a alto automático + el video
+     vuelve al flujo normal (ya no position:absolute/bottom:0) debajo
+     del título en vez de calcular un alto fijo distinto por breakpoint. */
+  .project-hero {
+    height: auto;
+    padding-block: var(--space-32) var(--space-48);
+  }
+
+  .project-hero__media {
+    position: static;
+    left: auto;
+    bottom: auto;
+    transform: none;
+    margin-top: var(--space-24);
+    margin-inline: auto;
+  }
+
+  /* Banner de dispositivos: 600px de alto era una medida de escritorio
+     — a un ancho más chico, las 3 columnas (ya angostas por el %) se
+     ven desproporcionadamente altas contra su propio contenido. */
+  .project-devices {
+    height: 420px;
+  }
+}
+
+@media (max-width: 767px) {
+  .project-hero {
+    padding-block: var(--space-24) var(--space-32);
+  }
+
+  .project-devices {
+    height: 280px;
+  }
+
+  .project-about__headline {
+    font-size: 28px;
+    line-height: 34px;
+  }
+
+  .project-process__headline,
+  .project-bento__headline,
+  .project-methodology__headline {
+    font-size: 26px;
+    line-height: 32px;
+  }
+
+  /* "About the project": contenido (1/9) + ficha Role/Team/Timeline
+     (10/13) no entran cómodos lado a lado en 4 columnas de mobile —
+     pasan a apilarse. grid-column:1/-1 en vez de desarmar el grid
+     entero: el propio motor de grid ya ubica el segundo bloque en su
+     propia fila al no caber junto al primero, row-gap reemplaza el
+     margin-top que antes solo servía para separar columnas a la misma
+     altura. Mismo patrón para Testimonials y Reflections más abajo. */
+  .project-about__grid,
+  .project-testimonial__grid,
+  .project-reflections__grid {
+    row-gap: var(--space-32);
+  }
+
+  .project-about__content,
+  .project-about__meta,
+  .project-testimonial__media,
+  .project-testimonial__content,
+  .project-testimonial__slide--hardware .project-testimonial__media,
+  .project-testimonial__slide--hardware .project-testimonial__content {
+    grid-column: 1 / -1;
+  }
+
+  /* :nth-child(1)/(2) explícito, no solo .project-reflections__col — la
+     regla base ya usa :nth-child (más específica que una clase sola);
+     sin repetirlo acá, esa regla base gana por especificidad y las 2
+     columnas se quedan apretadas una al lado de la otra aunque estemos
+     en mobile (bug real, encontrado con la vista previa). */
+  .project-reflections__col:nth-child(1),
+  .project-reflections__col:nth-child(2) {
+    grid-column: 1 / -1;
+  }
+
+  .project-about__meta {
+    margin-top: 0;
+  }
+
+  /* Carrusel "Behind the scenes": tarjetas de 420px fijos no entran ni
+     de a una en una pantalla de 375px — pasan a un ancho relativo al
+     viewport (patrón estándar de carrusel mobile: una tarjeta completa
+     + una porción de la siguiente asomando, en vez de una sola tarjeta
+     cortada a la mitad). */
+  .project-process__item {
+    flex: 0 0 82vw;
+  }
+
+  /* Bento grid: el mosaico 2x2 (con aspect-ratio propio del bloque
+     completo, pensado para 2 columnas) no tiene forma de acomodarse
+     bien apilado en una sola columna angosta — pasa a una pila vertical
+     simple, cada tile con el aspect-ratio real de su imagen/video
+     (medidas de los atributos width/height del HTML) en vez de heredar
+     el recorte pensado para el mosaico de escritorio. */
+  .project-bento__grid {
+    display: flex;
+    flex-direction: column;
+    aspect-ratio: unset;
+    max-width: 100%;
+    gap: var(--space-16);
+  }
+
+  .project-bento__tile--tall {
+    aspect-ratio: 576 / 1024;
+  }
+
+  .project-bento__tile--top,
+  .project-bento__tile--bottom-right {
+    aspect-ratio: 16 / 9;
+  }
+
+  .project-bento__tile--bottom-left {
+    aspect-ratio: 9 / 16;
+  }
+
+  /* Ya no es un grid-12 real (ver .project-bento__grid arriba) — la
+     fila de la nota al pie también pasa a bloque simple, así el
+     grid-column:3/13 que trae .project-bento__footnote no la achica a
+     una sola columna. */
+  .project-bento__footnote-row {
+    display: block;
+  }
+}
