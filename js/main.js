@@ -150,18 +150,61 @@
     return FRAME_DIR + "frame_" + String(index).padStart(5, "0") + ".png";
   }
 
-  // Precargamos todos los frames para que la reproducción sea fluida
-  // (si los cargáramos uno por uno durante el scroll, se verían saltos).
-  var preloadedImages = [];
-  for (var i = 0; i < FRAME_COUNT; i++) {
+  // Precargamos todos los frames para que la reproducción sea fluida —
+  // pero con tracking real de cuál ya terminó (frameLoaded) y cola de
+  // concurrencia limitada, orden ascendente estricto (0→120). Antes se
+  // disparaban las 121 descargas (~47MB) todas a la vez sin ningún
+  // seguimiento, y tick()/setFrame() asignaban stageImg.src a ciegas —
+  // si alguien scrolleaba rápido apenas cargaba la página, podía pedir
+  // un frame que seguía en tránsito compitiendo por ancho de banda con
+  // los otros 120, y se veía un salto/lag (bug real, reportado por
+  // David). El usuario siempre arranca en el frame 0 (tope de la
+  // página), así que orden ascendente sirve exacto al caso real de
+  // "usuario nuevo scrollea rápido hacia abajo".
+  var frameLoaded = [];
+  for (var i = 0; i < FRAME_COUNT; i++) frameLoaded.push(false);
+
+  var PRELOAD_CONCURRENCY = 6;
+  var PRELOAD_HIGH_PRIORITY_COUNT = 15;
+  var nextIndexToQueue = 0;
+  var inFlightCount = 0;
+
+  function preloadFrame(index) {
     var img = new Image();
-    img.src = framePath(i);
-    preloadedImages.push(img);
+    if (index < PRELOAD_HIGH_PRIORITY_COUNT) img.fetchPriority = "high";
+    img.onload = function () {
+      frameLoaded[index] = true;
+      inFlightCount--;
+      // Si tick() se había quedado esperando justo este frame, retoma
+      // sola la reproducción — el usuario no tiene que volver a scrollear.
+      if (isPlaying && waitingForFrame === index) tick(playGeneration);
+      pumpPreloadQueue();
+    };
+    img.onerror = function () {
+      console.warn("No se pudo cargar el frame " + index + ": " + framePath(index));
+      inFlightCount--;
+      pumpPreloadQueue();
+    };
+    img.src = framePath(index);
   }
+
+  function pumpPreloadQueue() {
+    while (inFlightCount < PRELOAD_CONCURRENCY && nextIndexToQueue < FRAME_COUNT) {
+      inFlightCount++;
+      preloadFrame(nextIndexToQueue++);
+    }
+  }
+  pumpPreloadQueue();
 
   var currentFrame = 0;
   var direction = 0;
   var isPlaying = false;
+  // Índice del frame que tick() está esperando que termine de cargar
+  // (null si no hay ninguna espera activa), y un contador que invalida
+  // callbacks de tick() obsoletos si la dirección cambia mientras se
+  // está esperando (ver startPlaying más abajo).
+  var waitingForFrame = null;
+  var playGeneration = 0;
   var lastScrollY = window.scrollY;
   // Al cargar la página el hero está a la vista, así que arrancamos
   // asumiendo visible=true en vez de esperar al primer callback del
@@ -181,17 +224,32 @@
     stageImg.src = framePath(currentFrame);
   }
 
-  function tick() {
-    if (!isPlaying) return;
+  function tick(generation) {
+    // generation obsoleto: la dirección cambió mientras este callback
+    // estaba en vuelo (setTimeout o el onload de preloadFrame) — lo
+    // ignoramos, ya hay un tick() más nuevo corriendo.
+    if (generation !== playGeneration || !isPlaying) return;
 
     var nextFrame = currentFrame + direction;
     if (nextFrame < 0 || nextFrame > FRAME_COUNT - 1) {
       isPlaying = false;
+      waitingForFrame = null;
       return;
     }
 
+    // El frame todavía no terminó de bajar — nos quedamos quietos en
+    // el último frame confirmado en vez de mostrar algo roto/en blanco.
+    // preloadFrame() retoma esto solo apenas ese frame puntual cargue.
+    if (!frameLoaded[nextFrame]) {
+      waitingForFrame = nextFrame;
+      return;
+    }
+
+    waitingForFrame = null;
     setFrame(nextFrame);
-    setTimeout(tick, FPS_MS);
+    setTimeout(function () {
+      tick(generation);
+    }, FPS_MS);
   }
 
   // ===== Texto de presentación (máquina de escribir) =====
@@ -248,10 +306,19 @@
       typeIntroText();
     }
 
+    var directionChanged = newDirection !== direction;
     direction = newDirection;
+
     if (!isPlaying) {
       isPlaying = true;
-      tick();
+      playGeneration++;
+      tick(playGeneration);
+    } else if (directionChanged && waitingForFrame !== null) {
+      // Estábamos parados esperando un frame de la dirección vieja —
+      // reevaluamos ya con la dirección nueva en vez de quedarnos
+      // pegados esperando un frame que ya no hace falta.
+      playGeneration++;
+      tick(playGeneration);
     }
   }
 
