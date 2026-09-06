@@ -95,6 +95,18 @@ body {
   font-size: clamp(2.75rem, 15vw, 216.61px);
   line-height: 0.85;
   letter-spacing: -0.02em;
+  /* Entrada con fade + slide-up al cargar la página — mismo efecto que
+     "initial={opacity:0,y:30} whileInView={opacity:1,y:0}
+     transition={duration:0.8, delay:0.3}" de Framer Motion, acá en CSS
+     puro: .is-inview la agrega js/main.js vía IntersectionObserver. */
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
+}
+
+.hero__title.is-inview {
+  opacity: 1;
+  transform: translateY(0);
 }
 
 /* ===== Animación de scroll =====
@@ -127,6 +139,30 @@ body {
   height: auto;
   user-select: none;
   display: block;
+  /* animation: none — oculta temporalmente a pedido de David (el
+     @keyframes se deja definido abajo, solo se desconecta acá, para
+     activarla de nuevo fácil más adelante). Era la entrada al cargar
+     la página, mismo efecto que "initial={opacity:0,scale:0.8}
+     animate={opacity:1,scale:1} transition={duration:0.8, delay:0.4}"
+     de Framer Motion. */
+  animation: none;
+}
+
+@keyframes hero-avatar-intro {
+  from {
+    opacity: 0;
+    transform: scale(0.8);
+  }
+  to {
+    opacity: 1;
+    transform: scale(1);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__avatar {
+    animation: none;
+  }
 }
 
 /* ===== Intro con efecto de máquina de escribir =====
@@ -206,6 +242,24 @@ body {
   font-size: clamp(2.75rem, 15vw, 216.61px);
   line-height: 0.85;
   letter-spacing: -0.02em;
+  /* Mismo efecto de entrada que .hero__title — ver ese comentario. */
+  opacity: 0;
+  transform: translateY(30px);
+  transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
+}
+
+.hero__subtitle.is-inview {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero__title,
+  .hero__subtitle {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
 }
 
 /* ===== Work / tarjetas de proyecto =====

@@ -335,6 +335,48 @@
   window.addEventListener("scroll", onScroll, { passive: true });
 })();
 
+// ===== Entrada con fade + slide-up (títulos y body de sección) =====
+// Mismo efecto que "initial={opacity:0,y:N} whileInView={opacity:1,y:0}
+// transition={duration:0.8,delay:D}" de Framer Motion, en CSS puro +
+// IntersectionObserver (ver .hero__title/.hero__subtitle y
+// .reveal-title/.reveal-body en css/components.css y css/styles.css
+// para los valores reales de duración/delay/desplazamiento — acá solo
+// se agrega la clase que dispara la transición). Nació en el título del
+// hero de Home, se generalizó al pasar a usarse también en los títulos
+// y párrafos de cuerpo de las páginas de proyecto (Onboarding Tool,
+// YouTube Compass) — mismo observer para las dos, un solo lugar que
+// mantener. Se revela una sola vez (se deja de observar apenas entra en
+// pantalla) en vez de repetir la animación cada vez que se vuelve a
+// scrollear a la vista.
+(function () {
+  var revealEls = document.querySelectorAll(
+    ".hero__title, .hero__subtitle, .reveal-title, .reveal-body"
+  );
+  if (!revealEls.length) return;
+
+  if (!("IntersectionObserver" in window)) {
+    revealEls.forEach(function (el) {
+      el.classList.add("is-inview");
+    });
+    return;
+  }
+
+  var revealObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-inview");
+        revealObserver.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.1 }
+  );
+
+  revealEls.forEach(function (el) {
+    revealObserver.observe(el);
+  });
+})();
+
 // ===== Lazy-load de videos de proyecto =====
 // Los <video> de las tarjetas de "Work" tienen adentro <source data-src>
 // en vez de "src" (ni en el video ni en los source), así que el navegador

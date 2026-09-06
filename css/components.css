@@ -316,6 +316,50 @@
   color: var(--color-text-black);
 }
 
+/* ---------- Reveal on scroll (título / body) ----------
+   Entrada con fade + slide-up al entrar en pantalla — mismo patrón que
+   "initial={opacity:0,y:N} whileInView={opacity:1,y:0}
+   transition={duration:0.8,delay:D}" de Framer Motion, en CSS puro:
+   .is-inview la agrega js/main.js vía IntersectionObserver (se revela
+   una sola vez, no se repite si se vuelve a scrollear a la vista).
+   Nació en el título/subtítulo del hero de Home, se sube acá al
+   pasar a usarse también en los títulos y párrafos de cuerpo de las
+   páginas de proyecto — misma utilidad, no una regla nueva por sección.
+   .reveal-title (y:30, delay 0.3) para títulos (h1/h2/h3 de sección);
+   .reveal-body (y:40, delay 0.4 — un toque más tarde y con más
+   desplazamiento, para que el body se sienta "seguir" al título) para
+   los párrafos de cuerpo. */
+.reveal-title,
+.reveal-body {
+  opacity: 0;
+  transition: opacity 0.8s ease-out, transform 0.8s ease-out;
+}
+
+.reveal-title {
+  transform: translateY(30px);
+  transition-delay: 0.3s;
+}
+
+.reveal-body {
+  transform: translateY(40px);
+  transition-delay: 0.4s;
+}
+
+.reveal-title.is-inview,
+.reveal-body.is-inview {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .reveal-title,
+  .reveal-body {
+    transition: none;
+    opacity: 1;
+    transform: none;
+  }
+}
+
 /* =====================================================================
    DEV TOOLS
    =====================================================================
