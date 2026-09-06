@@ -697,12 +697,23 @@ body {
 /* Alternan cada 4s (opacidad, las dos siguen "cargadas" todo el
    tiempo — no hay costo real de por medio, son imágenes, no videos).
    Corte seco, sin degradado — a pedido de David: 0%/50% quedan pegados
-   (49.99%/50%) en vez del ~5% de fundido cruzado que tenía antes. */
+   (49.99%/50%) en vez del ~5% de fundido cruzado que tenía antes.
+
+   will-change: opacity — sin esto, la PRIMERA vez que el navegador
+   tiene que animar la opacidad de la foto 2 recién ahí la promueve a
+   su propia capa de composición, y ese "cold start" pintaba un
+   instante de blanco encima de la foto ya cargada (bug real, no de
+   carga de la imagen — reportado por David, solo la primera vez, ver
+   commit anterior que descartó loading="lazy" como causa). Con
+   will-change el navegador arma esa capa desde que carga la página,
+   antes de que la animación la necesite. */
 .contact__image--1 {
+  will-change: opacity;
   animation: contact-photo-1 8s step-end infinite;
 }
 
 .contact__image--2 {
+  will-change: opacity;
   animation: contact-photo-2 8s step-end infinite;
 }
 
