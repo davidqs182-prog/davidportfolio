@@ -266,13 +266,23 @@
           <p class="contact__role">Product Designer</p>
           <a href="mailto:davidqs182@gmail.com" class="contact__email">davidqs182@gmail.com</a>
         </div>
-        <!-- Dos fotos del mismo show, alternando cada 4s (crossfade por
+        <!-- Dos fotos del mismo show, alternando cada 4s (corte seco por
              opacidad vía CSS, ver .contact__image--1/--2 en styles.css)
              — la primera define el alto real del bloque (sigue en flujo
              normal), la segunda se superpone exacto encima con
              position:absolute. alt vacío en la segunda: es la misma
              escena que ya describe la primera, no hay información
-             nueva que anunciar dos veces a un lector de pantalla. -->
+             nueva que anunciar dos veces a un lector de pantalla.
+
+             La segunda NO lleva loading="lazy" (a diferencia de la
+             primera y de casi todo el resto del sitio) — la animación
+             CSS corre desde que carga la página, no desde que la
+             sección entra en pantalla, así que si alguien scrollea
+             rápido puede llegar justo cuando el ciclo ya pide mostrar
+             la segunda foto. Con lazy, esa primera vez el navegador
+             todavía no había terminado de decodificarla y se veía un
+             flash blanco de un instante (encontrado en vivo por David;
+             de ahí en más queda cacheada y no vuelve a pasar). -->
         <div class="contact__media">
           <img
             class="contact__image contact__image--1"
@@ -288,7 +298,6 @@
             alt=""
             width="1000"
             height="1500"
-            loading="lazy"
           >
         </div>
       </div>
