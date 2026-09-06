@@ -900,6 +900,11 @@ body {
      borde superior del avatar queda ~220px más arriba, justo a la
      altura pedida. */
   margin-top: -180px;
+  /* Mismo gap que .project-card usa antes de .contact en Home (146px,
+     medida puntual de Figma) — sin esto, el carrusel queda pegado
+     directo contra el border-top de la sección de contacto (0px de
+     por medio, medido en vivo). */
+  margin-bottom: 146px;
 }
 
 .about-experience__track {
@@ -935,7 +940,16 @@ body {
   position: sticky;
   left: 0;
   z-index: 3;
-  flex: 0 0 max(var(--grid-margin), calc((100% - var(--grid-max-width)) / 2 + var(--grid-margin)));
+  /* "100%" acá (relativo al ancho del flex item, no del contenedor)
+     dio en vivo la MITAD del valor esperado — bug real de resolución
+     de porcentaje en el ancho de un flex item, encontrado con
+     getBoundingClientRect, no de libro (--process-inset, el mismo
+     cálculo, funciona bien porque ahí es padding-left del contenedor,
+     no width de un item). 100vw en vez de 100% lo evita del todo — la
+     única diferencia es que 100vw incluye el ancho de la scrollbar
+     (~15-17px), imperceptible acá. */
+  flex: 0 0 auto;
+  width: max(var(--grid-margin), calc((100vw - var(--grid-max-width)) / 2 + var(--grid-margin)));
   /* align-self:center (no stretch) + altura fijada por JS (ver
      main.js, "About — Experience: altura del edge/fade") — a pedido
      de David, el blanco opaco no debe cubrir todo el alto del avatar,
@@ -952,10 +966,28 @@ body {
    contenido, no un cálculo de columnas. */
 .about-experience__pin {
   --about-avatar-width: clamp(220px, 43vw, 619px);
+  /* Mismas cuentas de columna que --process-inset (project-onboarding.css)
+     y que .about-experience__edge más arriba, para que el contenido
+     de experience arranque siempre en una línea fija del grid de 12
+     — sin importar cuánto mida el avatar en ese viewport. Empezaba en
+     columna 7 (a pedido de David); a pedido suyo de nuevo, se corrió
+     una columna más (8) porque en columna 7 se alcanzaba a ver un
+     resto suelto de la tarjeta siguiente en el borde derecho del
+     viewport en pantallas anchas. El pin (avatar + fade) ocupa ese
+     ancho completo; ver .about-experience__fade para cómo se reparte
+     lo que sobra del avatar. */
+  --about-content-width: calc(min(100vw, var(--grid-max-width)) - (2 * var(--grid-margin)));
+  --about-col-width: calc((var(--about-content-width) - (11 * var(--grid-gutter))) / 12);
+  --about-col8-width: calc((7 * var(--about-col-width)) + (7 * var(--grid-gutter)));
+  /* Corrida fina a pedido de David, para acercar el borde derecho del
+     avatar a donde marcó (ver about/index.html) — no cambia dónde
+     arranca el contenido (columna 8): el fade se achica lo mismo que
+     el avatar se corre, ver .about-experience__fade. */
+  --about-avatar-shift: 40px;
   position: sticky;
   left: 0;
   z-index: 2;
-  flex: 0 0 auto;
+  flex: 0 0 var(--about-col8-width);
   display: flex;
   align-items: flex-start;
 }
@@ -970,6 +1002,7 @@ body {
   height: auto;
   display: block;
   user-select: none;
+  margin-left: var(--about-avatar-shift);
 }
 
 /* El PNG tiene fondo transparente (David le borró el fondo) — sin
@@ -988,7 +1021,7 @@ body {
    (z-index del .pin ya las gana). */
 .about-experience__avatar-backing {
   position: absolute;
-  left: 0;
+  left: var(--about-avatar-shift);
   top: 50%;
   transform: translateY(-50%);
   width: var(--about-avatar-width);
@@ -999,10 +1032,16 @@ body {
 /* Fade pegado al borde derecho de la imagen: opaco (mismo tono que el
    fondo de la página) junto a la imagen, transparente hacia afuera —
    así las tarjetas que scrollean por detrás se ven desvanecer hacia
-   el avatar en vez de cortarse de golpe. align-self:stretch para que
-   cubra todo el alto de la imagen, no solo una franja. */
+   el avatar en vez de cortarse de golpe. Ancho = lo que sobra entre
+   el avatar (ya corrido --about-avatar-shift) y la columna 8
+   (--about-col8-width del pin, ver ese comentario) — no un valor
+   fijo, para que el contenido siga arrancando siempre en la misma
+   columna sin importar el ancho del avatar en cada viewport. max(0px,
+   ...) por si el avatar algún día midiera más que ese ancho (ej.
+   viewports muy angostos, esta página todavía no tiene tratamiento
+   mobile). */
 .about-experience__fade {
-  flex: 0 0 160px;
+  flex: 0 0 max(0px, calc(var(--about-col8-width) - var(--about-avatar-width) - var(--about-avatar-shift)));
   /* align-self:center (no stretch) + altura fijada por JS — mismo
      motivo que .about-experience__edge, ver ese comentario. */
   align-self: center;

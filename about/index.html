@@ -94,46 +94,52 @@
           <div class="about-experience__fade" aria-hidden="true"></div>
         </div>
 
+        <!-- Mismo efecto de carga inicial que en los títulos/eyebrows
+             de las páginas de proyecto (reveal-title en fecha+rol,
+             reveal-body en empresa+bullets — ver ese patrón en
+             project-onboarding/index.html). Un solo observer genérico
+             en main.js ya cubre estas clases en cualquier página. -->
         <ul class="about-experience__list">
           <li class="about-experience__item">
-            <p class="about-experience__dates">2023 – Present</p>
-            <h3 class="about-experience__role">Product Designer</h3>
-            <p class="about-experience__company">Fischbach Group</p>
-            <ul class="about-experience__bullets">
+            <p class="about-experience__dates reveal-title">2023 – Present</p>
+            <h3 class="about-experience__role reveal-title">Product Designer</h3>
+            <p class="about-experience__company reveal-body">Fischbach Group</p>
+            <ul class="about-experience__bullets reveal-body">
               <li>— Design of large-scale internal products: native Leo app (iOS/Android), Planner (staff and resource management), and Onboarding (employee onboarding).</li>
               <li>— Collaborate cross-functionally with engineering and stakeholders across a multi-entity organization to ship native and web products.</li>
             </ul>
           </li>
           <li class="about-experience__item">
-            <p class="about-experience__dates">2021 – 2023</p>
-            <h3 class="about-experience__role">Senior Product Designer &amp; Strategy Lead</h3>
-            <p class="about-experience__company">Impact Technology</p>
-            <ul class="about-experience__bullets">
+            <p class="about-experience__dates reveal-title">2021 – 2023</p>
+            <h3 class="about-experience__role reveal-title">Product Designer &amp; Strategy Lead</h3>
+            <p class="about-experience__company reveal-body">Impact Technology</p>
+            <ul class="about-experience__bullets reveal-body">
               <li>— End-to-end design and strategy for digital products (Leo, Ökoloco, Institude Wissen, VOCHECKER).</li>
               <li>— Research, prototyping, and close collaboration with development.</li>
               <li>— Led design strategy across 4 concurrent products, partnering directly with clients, PMs, and engineering teams from concept through launch.</li>
             </ul>
           </li>
           <li class="about-experience__item">
-            <p class="about-experience__dates">2019 – 2021</p>
-            <h3 class="about-experience__role">Digital Marketing Manager &amp; UX Strategist</h3>
-            <p class="about-experience__company">Colono Construcción</p>
-            <ul class="about-experience__bullets">
+            <p class="about-experience__dates reveal-title">2019 – 2021</p>
+            <h3 class="about-experience__role reveal-title">Digital Marketing Manager &amp; UX Strategist</h3>
+            <p class="about-experience__company reveal-body">Colono Construcción</p>
+            <ul class="about-experience__bullets reveal-body">
               <li>— Managed advertising campaigns across Google, Facebook, Instagram, and TikTok.</li>
               <li>— Optimized web experience to align with each campaign, focused on conversion and KPIs.</li>
             </ul>
           </li>
           <li class="about-experience__item">
-            <p class="about-experience__dates">2017 – 2018</p>
-            <h3 class="about-experience__role">UX Researcher &amp; Product Catalog Designer</h3>
-            <p class="about-experience__company">Electro Caribe S&amp;C</p>
-            <ul class="about-experience__bullets">
+            <p class="about-experience__dates reveal-title">2017 – 2018</p>
+            <h3 class="about-experience__role reveal-title">UX Researcher &amp; Product Catalog Designer</h3>
+            <p class="about-experience__company reveal-body">Electro Caribe S&amp;C</p>
+            <ul class="about-experience__bullets reveal-body">
               <li>— User research and redesign of electrical product lines (industrial, commercial, home).</li>
               <li>— Digital and printed catalogs, plus training for key stakeholders.</li>
             </ul>
           </li>
         </ul>
       </div>
+
     </section>
 
     <!-- Get in touch: mismo bloque de texto que en Home/project-onboarding
