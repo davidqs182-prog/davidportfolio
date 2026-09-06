@@ -748,59 +748,29 @@ body {
   inset: 0;
 }
 
-/* Alternan cada 4s (opacidad, las dos siguen "cargadas" todo el
-   tiempo — no hay costo real de por medio, son imágenes, no videos).
-   Corte seco, sin degradado — a pedido de David: 0%/50% quedan pegados
-   (49.99%/50%) en vez del ~5% de fundido cruzado que tenía antes.
-
-   will-change: opacity — sin esto, la PRIMERA vez que el navegador
-   tiene que animar la opacidad de la foto 2 recién ahí la promueve a
-   su propia capa de composición, y ese "cold start" pintaba un
-   instante de blanco encima de la foto ya cargada (bug real, no de
-   carga de la imagen — reportado por David, solo la primera vez, ver
-   commit anterior que descartó loading="lazy" como causa). Con
-   will-change el navegador arma esa capa desde que carga la página,
-   antes de que la animación la necesite. */
+/* Alternan cada 4s — pero el cambio de opacidad lo maneja JS
+   (js/main.js), no dos @keyframes por separado. Se probaron 3 causas
+   de un flash blanco de un instante en el primer cambio (carga
+   diferida, "cold start" de la capa de composición, decode del bitmap)
+   y David seguía viéndolo — la causa real es más de fondo: acá había
+   DOS animaciones CSS independientes, una por foto, y aunque en teoría
+   quedan perfectamente sincronizadas (mismo timeline del documento),
+   si el navegador no las pinta en el mismo frame exacto puede haber un
+   instante con las dos transparentes a la vez, dejando ver el fondo de
+   la página (--color-bg, casi blanco) por debajo. Un solo cambio de
+   `style.opacity` en las dos fotos, dentro de la misma función
+   síncrona de JS, es atómico por construcción — el navegador nunca
+   puede pintar un estado a medio aplicar. will-change se mantiene
+   (sigue siendo una buena señal de rendimiento, aunque ya no sea la
+   causa principal). */
 .contact__image--1 {
   will-change: opacity;
-  animation: contact-photo-1 8s step-end infinite;
+  opacity: 1;
 }
 
 .contact__image--2 {
   will-change: opacity;
-  animation: contact-photo-2 8s step-end infinite;
-}
-
-@keyframes contact-photo-1 {
-  0%,
-  49.99% {
-    opacity: 1;
-  }
-  50%,
-  100% {
-    opacity: 0;
-  }
-}
-
-@keyframes contact-photo-2 {
-  0%,
-  49.99% {
-    opacity: 0;
-  }
-  50%,
-  100% {
-    opacity: 1;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .contact__image--1,
-  .contact__image--2 {
-    animation: none;
-  }
-  .contact__image--2 {
-    opacity: 0;
-  }
+  opacity: 0;
 }
 
 /* =====================================================================

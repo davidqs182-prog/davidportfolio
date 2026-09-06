@@ -122,7 +122,7 @@
   });
 })();
 
-// ===== Animación de scroll (hero) =====
+// ===== Animación de scroll (hero) — Versión 2, video en vez de PNGs =====
 // Comportamiento: el scroll actúa como "disparador" de dirección, no como
 // control de posición exacta. Al detectar scroll hacia abajo, la animación
 // se reproduce hacia adelante como un video (30fps) hasta llegar al último
@@ -134,6 +134,21 @@
 // antes — lo que cambia es que si scrolleás mucho más abajo (por ejemplo
 // hasta "Work") y de ahí subís, la animación ya no salta de frame sin que
 // la estés viendo.
+//
+// A PRUEBA: en vez de 121 PNG sueltos (Versión 1, ~47MB, siguen en
+// assets/animations/hero-guitar-scroll/frames/ sin tocar), #stageImg ahora
+// es un único <video> (VP9 + alpha, ~8MB, ver
+// assets/animations/hero-guitar-scroll/README.md) — "cambiar de frame" ya
+// no es reasignar un src, es saltar con video.currentTime a la posición
+// exacta. El video está codificado con TODOS los frames como keyframe (sin
+// eso, saltar hacia atrás obligaría a decodificar de nuevo desde el último
+// keyframe cada vez — probado en vivo, con un solo keyframe el seek hacia
+// atrás se sentía con más lag). Como ahora es UN solo archivo (no 121
+// descargas compitiendo por ancho de banda), ya no hace falta la cola de
+// precarga con concurrencia limitada de la Versión 1 — alcanza con esperar
+// a que el propio <video> avise que puede reproducirse sin cortes
+// (canplaythrough), gating mucho más simple para lograr el mismo objetivo
+// (nunca mostrar un frame que no esté listo).
 (function () {
   var stageImg = document.getElementById("stageImg");
 
@@ -143,63 +158,32 @@
   var heroStage = document.querySelector(".hero__stage") || stageImg;
 
   var FRAME_COUNT = 121;
-  var FRAME_DIR = "assets/animations/hero-guitar-scroll/frames/";
-  var FPS_MS = 1000 / 30;
+  var FPS = 30;
+  var FPS_MS = 1000 / FPS;
 
-  function framePath(index) {
-    return FRAME_DIR + "frame_" + String(index).padStart(5, "0") + ".png";
-  }
+  // readyState 4 = HAVE_ENOUGH_DATA — por si el navegador ya tenía el
+  // video cacheado y dispara canplaythrough antes de que este script
+  // llegue a escuchar el evento.
+  var videoReady = stageImg.readyState >= 4;
 
-  // Precargamos todos los frames para que la reproducción sea fluida —
-  // pero con tracking real de cuál ya terminó (frameLoaded) y cola de
-  // concurrencia limitada, orden ascendente estricto (0→120). Antes se
-  // disparaban las 121 descargas (~47MB) todas a la vez sin ningún
-  // seguimiento, y tick()/setFrame() asignaban stageImg.src a ciegas —
-  // si alguien scrolleaba rápido apenas cargaba la página, podía pedir
-  // un frame que seguía en tránsito compitiendo por ancho de banda con
-  // los otros 120, y se veía un salto/lag (bug real, reportado por
-  // David). El usuario siempre arranca en el frame 0 (tope de la
-  // página), así que orden ascendente sirve exacto al caso real de
-  // "usuario nuevo scrollea rápido hacia abajo".
-  var frameLoaded = [];
-  for (var i = 0; i < FRAME_COUNT; i++) frameLoaded.push(false);
+  stageImg.addEventListener("canplaythrough", function onReady() {
+    videoReady = true;
+    stageImg.removeEventListener("canplaythrough", onReady);
+    // Si tick() se había quedado esperando, retoma sola la reproducción
+    // — el usuario no tiene que volver a scrollear.
+    if (isPlaying && waitingForFrame !== null) tick(playGeneration);
+  });
 
-  var PRELOAD_CONCURRENCY = 6;
-  var PRELOAD_HIGH_PRIORITY_COUNT = 15;
-  var nextIndexToQueue = 0;
-  var inFlightCount = 0;
-
-  function preloadFrame(index) {
-    var img = new Image();
-    if (index < PRELOAD_HIGH_PRIORITY_COUNT) img.fetchPriority = "high";
-    img.onload = function () {
-      frameLoaded[index] = true;
-      inFlightCount--;
-      // Si tick() se había quedado esperando justo este frame, retoma
-      // sola la reproducción — el usuario no tiene que volver a scrollear.
-      if (isPlaying && waitingForFrame === index) tick(playGeneration);
-      pumpPreloadQueue();
-    };
-    img.onerror = function () {
-      console.warn("No se pudo cargar el frame " + index + ": " + framePath(index));
-      inFlightCount--;
-      pumpPreloadQueue();
-    };
-    img.src = framePath(index);
-  }
-
-  function pumpPreloadQueue() {
-    while (inFlightCount < PRELOAD_CONCURRENCY && nextIndexToQueue < FRAME_COUNT) {
-      inFlightCount++;
-      preloadFrame(nextIndexToQueue++);
-    }
-  }
-  pumpPreloadQueue();
+  // Fuerza el frame 0 en cuanto hay metadata — algunos navegadores no
+  // pintan ningún frame hasta el primer seek/play() explícito.
+  stageImg.addEventListener("loadedmetadata", function () {
+    stageImg.currentTime = 0;
+  });
 
   var currentFrame = 0;
   var direction = 0;
   var isPlaying = false;
-  // Índice del frame que tick() está esperando que termine de cargar
+  // Frame que tick() está esperando que el video esté listo para mostrar
   // (null si no hay ninguna espera activa), y un contador que invalida
   // callbacks de tick() obsoletos si la dirección cambia mientras se
   // está esperando (ver startPlaying más abajo).
@@ -221,13 +205,13 @@
   function setFrame(nextFrame) {
     nextFrame = Math.min(FRAME_COUNT - 1, Math.max(0, nextFrame));
     currentFrame = nextFrame;
-    stageImg.src = framePath(currentFrame);
+    stageImg.currentTime = currentFrame / FPS;
   }
 
   function tick(generation) {
     // generation obsoleto: la dirección cambió mientras este callback
-    // estaba en vuelo (setTimeout o el onload de preloadFrame) — lo
-    // ignoramos, ya hay un tick() más nuevo corriendo.
+    // estaba en vuelo (setTimeout o el canplaythrough) — lo ignoramos,
+    // ya hay un tick() más nuevo corriendo.
     if (generation !== playGeneration || !isPlaying) return;
 
     var nextFrame = currentFrame + direction;
@@ -237,10 +221,10 @@
       return;
     }
 
-    // El frame todavía no terminó de bajar — nos quedamos quietos en
-    // el último frame confirmado en vez de mostrar algo roto/en blanco.
-    // preloadFrame() retoma esto solo apenas ese frame puntual cargue.
-    if (!frameLoaded[nextFrame]) {
+    // El video todavía no está listo — nos quedamos quietos en el
+    // último frame confirmado en vez de mostrar algo roto/en blanco.
+    // El listener de canplaythrough retoma esto solo apenas esté listo.
+    if (!videoReady) {
       waitingForFrame = nextFrame;
       return;
     }
@@ -333,6 +317,43 @@
   }
 
   window.addEventListener("scroll", onScroll, { passive: true });
+})();
+
+// ===== Alternado de fotos de Contact (JS en vez de 2 animaciones CSS) =====
+// Antes cada foto tenía su propia @keyframes de opacidad (mismo timeline
+// del documento, en teoría perfectamente sincronizadas) — pero David
+// seguía viendo un flash blanco de un instante en el primer cambio
+// incluso después de descartar carga diferida, "cold start" de la capa
+// de composición y decode del bitmap como causa. La explicación que
+// queda: dos animaciones CSS independientes pueden, en algún frame, no
+// pintarse exactamente juntas — y con un corte seco (sin fundido que
+// tape la costura) eso alcanza para dejar ver el fondo de la página por
+// debajo. Acá el cambio de opacidad de las DOS fotos ocurre en la misma
+// función síncrona de JS — el navegador nunca puede pintar un estado a
+// medio aplicar, es atómico por construcción.
+(function () {
+  var img1 = document.querySelector(".contact__image--1");
+  var img2 = document.querySelector(".contact__image--2");
+  if (!img1 || !img2) return;
+
+  // decode() por adelantado igual — no hace daño, sigue siendo buena
+  // práctica aunque ya no sea la causa principal del flash.
+  [img1, img2].forEach(function (img) {
+    if (typeof img.decode === "function") img.decode().catch(function () {});
+  });
+
+  var prefersReducedMotion = window.matchMedia
+    ? window.matchMedia("(prefers-reduced-motion: reduce)").matches
+    : false;
+  if (prefersReducedMotion) return;
+
+  var showingSecond = false;
+  function swap() {
+    showingSecond = !showingSecond;
+    img1.style.opacity = showingSecond ? "0" : "1";
+    img2.style.opacity = showingSecond ? "1" : "0";
+  }
+  setInterval(swap, 4000);
 })();
 
 // ===== Entrada con fade + slide-up (títulos y body de sección) =====

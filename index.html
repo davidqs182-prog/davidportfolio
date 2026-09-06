@@ -55,16 +55,28 @@
 
       <div class="hero__stage">
         <p class="hero__intro" aria-label="Hi! I am David Quirós, a product designer based in Germany."><span class="hero__intro-seg" data-seg="0" aria-hidden="true"></span><span class="hero__intro-seg hero__intro-name" data-seg="1" aria-hidden="true"></span><span class="hero__intro-seg" data-seg="2" aria-hidden="true"></span><span class="hero__intro-seg hero__intro-strike" data-seg="3" aria-hidden="true"></span><span class="hero__intro-seg" data-seg="4" aria-hidden="true"></span><span class="hero__intro-cursor" aria-hidden="true"></span></p>
-        <img
+        <!-- Versión 2 de la animación (a prueba): un solo .webm con
+             canal alpha (VP9, todos los frames como keyframe para que
+             el seek sea instantáneo en cualquier dirección — ver
+             assets/animations/hero-guitar-scroll/README.md) en vez de
+             121 PNG sueltos. 8MB en total contra los ~47MB de la
+             Versión 1 (los frames PNG originales siguen en el repo,
+             sin tocar, por si se vuelve a esa versión). El resto de la
+             lógica de scroll/dirección es la misma, ver js/main.js. -->
+        <video
           id="stageImg"
           class="hero__avatar"
-          src="assets/animations/hero-guitar-scroll/frames/frame_00000.png"
-          alt="Animación de David Quirós tocando guitarra"
-          draggable="false"
           width="828"
           height="1108"
+          aria-label="Animación de David Quirós tocando guitarra"
+          muted
+          playsinline
+          disablepictureinpicture
+          preload="auto"
           fetchpriority="high"
         >
+          <source src="assets/animations/hero-guitar-scroll/hero-guitar-scroll-v2.webm" type="video/webm">
+        </video>
       </div>
 
       <h2 class="hero__subtitle" id="work">Work</h2>
