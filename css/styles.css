@@ -213,7 +213,7 @@ body {
    colgando de una feria, proyecto "Leo"): la imagen ocupa el ancho
    completo del container, sin bordes redondeados. */
 .work-list {
-  padding-block: 0 var(--space-60);
+  padding-block: 0;
 }
 
 /* 146px es una medida puntual del gap entre tarjetas en el Figma, no
@@ -230,10 +230,6 @@ body {
   max-width: 1080px;
   margin-inline: auto;
   margin-bottom: 146px;
-}
-
-.project-card:last-child {
-  margin-bottom: 0;
 }
 
 .project-card__image {
@@ -571,6 +567,178 @@ body {
 }
 
 /* =====================================================================
+   "Get in touch"
+   =====================================================================
+   Layout de la Opción B comparada antes (ref. Waka Waka en Mobbin:
+   ficha a la izquierda, foto grande a la derecha), con el texto de la
+   Opción A (nombre + rol + email grande, subrayado — ref. Vucko) en vez
+   de la lista Email/Phone/Location — David eligió esta combinación
+   después de ver las 2 en vivo. Sin formulario: el email ya es el CTA
+   (mailto:), sin depender de un backend que este sitio estático no
+   tiene. No se cataloga en design-system.html — no suma ningún token,
+   color, tamaño o ícono nuevo al sistema, solo una composición puntual
+   de esta página con lo que ya existía (mismo criterio que el hero o
+   project-card, tampoco catalogados ahí).
+
+   .contact__info/.contact__media: 2/7 y 7/12 — 10 de las 12 columnas
+   del grid (2 a 11, con la 1 y la 12 de margen simétrico a los lados,
+   mismo criterio que .project-testimonial__media/__content en
+   Onboarding), partidas exacto 5 y 5 — a pedido de David, en vez de las
+   5/6 con una columna de aire en el medio que tenía antes. */
+.contact {
+  padding-block: var(--space-64);
+  border-top: 1px solid var(--color-gray-300);
+}
+
+.contact__grid {
+  align-items: stretch;
+}
+
+/* Etiqueta chica arriba del nombre (ref. Vucko, la misma que llevaba la
+   Opción A comparada antes) — margin-bottom propio además del gap del
+   flex padre (--space-8) para que quede más separada de "David Quirós"
+   que lo que están entre sí nombre/rol/email (mismo criterio de
+   jerarquía que un eyebrow antes de un headline).
+
+   "Inter" literal, no var(--font-body) — esta sección se repite tal
+   cual en Home y en las 2 páginas de proyecto (ver .contact más abajo
+   para el resto de la explicación: por qué la tipografía queda fija en
+   vez de heredar la identidad de cada página). */
+.contact__label {
+  margin: 0;
+  margin-bottom: var(--space-16);
+  font-family: "Inter", sans-serif;
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  color: var(--color-gray-600);
+}
+
+/* container-type: inline-size — el bloque de texto (nombre/rol/email)
+   necesita achicarse según el ancho REAL de esta columna, no solo del
+   viewport: "davidqs182@gmail.com" a --text-h1-size (45px) mide ~525px,
+   más ancho que las 5 columnas que le tocan (~365-530px según el
+   viewport) — sin esto, el email se desbordaba sobre la foto en
+   cualquier ancho de escritorio por debajo de ~1440px (bug real,
+   encontrado en vivo, no a ojo). Mismo mecanismo de cqi que ya usa
+   .ytd-hero__title-frame en project-youtube-discovery.css. */
+.contact__info {
+  grid-column: 2 / 7;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--space-8);
+  container-type: inline-size;
+}
+
+/* clamp() en vez de un cqi puro: el nombre/rol (más cortos) no
+   necesitan llenar el 100% del ancho como el título de YouTube Compass
+   — acá el email (la línea más larga) es quien de verdad define el
+   límite, así que el clamp cubre "achicarse en columnas angostas" y
+   "no pasar de --text-h1-size en columnas anchas" con una sola regla
+   para las 3 líneas, sin que cada una tenga su propio tamaño. */
+/* "Work Sans" literal, no var(--font-display) — esta misma sección se
+   repite en las 2 páginas de proyecto (project-onboarding.css redefine
+   --font-display a DIN Next LT Pro, project-youtube-discovery.css a
+   YouTubeDisplay), pero David pidió que "David Quirós / Product
+   Designer / email" se vea siempre igual, no con la identidad de cada
+   proyecto — es la firma personal, no contenido del case study. Mismo
+   criterio que .navbar--project .btn en project-onboarding.css (esos
+   botones tampoco adoptan DIN Next). */
+.contact__name,
+.contact__role,
+.contact__email {
+  display: block;
+  margin: 0;
+  font-family: "Work Sans", sans-serif;
+  font-weight: 700;
+  font-size: clamp(22px, 8.5cqi, var(--text-h1-size));
+  line-height: 1.15;
+  color: var(--color-text-black);
+}
+
+.contact__email {
+  width: fit-content;
+  max-width: 100%;
+  margin-top: var(--space-24);
+  text-decoration: none;
+  border-bottom: 2px solid var(--color-text-black);
+  transition: opacity 0.15s ease;
+}
+
+.contact__email:hover {
+  opacity: 0.6;
+}
+
+.contact__media {
+  position: relative;
+  grid-column: 7 / 12;
+}
+
+/* Fotos reales (1000x1500, 2/3 vertical) — object-fit:cover +
+   height:100% para que llenen lo que mida .contact__info al lado
+   (align-items:stretch en el grid padre), en vez de imponer un alto
+   fijo en px. La primera queda en flujo normal (define el alto real
+   del bloque); la segunda se superpone exacto encima con
+   position:absolute — mismo motivo que .ytd-insight__card-media en
+   project-youtube-discovery.css. */
+.contact__image {
+  display: block;
+  width: 100%;
+  height: 100%;
+  min-height: 360px;
+  object-fit: cover;
+}
+
+.contact__image--2 {
+  position: absolute;
+  inset: 0;
+}
+
+/* Alternan cada 4s (opacidad, las dos siguen "cargadas" todo el
+   tiempo — no hay costo real de por medio, son imágenes, no videos).
+   Corte seco, sin degradado — a pedido de David: 0%/50% quedan pegados
+   (49.99%/50%) en vez del ~5% de fundido cruzado que tenía antes. */
+.contact__image--1 {
+  animation: contact-photo-1 8s step-end infinite;
+}
+
+.contact__image--2 {
+  animation: contact-photo-2 8s step-end infinite;
+}
+
+@keyframes contact-photo-1 {
+  0%,
+  49.99% {
+    opacity: 1;
+  }
+  50%,
+  100% {
+    opacity: 0;
+  }
+}
+
+@keyframes contact-photo-2 {
+  0%,
+  49.99% {
+    opacity: 0;
+  }
+  50%,
+  100% {
+    opacity: 1;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .contact__image--1,
+  .contact__image--2 {
+    animation: none;
+  }
+  .contact__image--2 {
+    opacity: 0;
+  }
+}
+
+/* =====================================================================
    RESPONSIVE — Tablet / Mobile
    =====================================================================
    Cortes documentados en tokens.css (Mobile <768px, Tablet 768–1023px).
@@ -631,5 +799,18 @@ body {
 
   .project-card {
     margin-bottom: var(--space-40);
+  }
+
+  /* "Get in touch": info (1/6) + foto (7/13) no entran cómodos lado a
+     lado en 4 columnas de mobile — mismo patrón de apilado que ya usan
+     project-onboarding.css/project-youtube-discovery.css (grid-column
+     a ancho completo + row-gap en el padre en vez de margin-top suelto). */
+  .contact__grid {
+    row-gap: var(--space-32);
+  }
+
+  .contact__info,
+  .contact__media {
+    grid-column: 1 / -1;
   }
 }

@@ -239,7 +239,7 @@
         >
         <h3 class="project-card__title">Leo, native and web app</h3>
         <p class="project-card__description">
-          Leo is a web app for managing construction and housing renovation projects
+          Leo is an app for managing construction and housing renovation projects
           that digitizes the entire project lifecycle — preparation, planning,
           execution, and closeout — connecting clients, contractors, and subcontractors
           in real time, from team management to invoicing.
@@ -248,6 +248,49 @@
           <a href="#" class="btn btn--dark btn--md">Coming soon…</a>
         </div>
       </article>
+    </section>
+
+    <!-- ===== "Get in touch" =====
+         Layout de la Opción B comparada antes (ref. Waka Waka en
+         Mobbin: ficha a la izquierda, foto grande a la derecha), con el
+         texto de la Opción A (nombre + rol + email grande, subrayado —
+         ref. Vucko) en vez de la lista Email/Phone/Location. Sin
+         formulario: el email ya es el CTA (mailto:), no depende de
+         backend. -->
+    <section class="contact container" id="contact">
+      <div class="contact__grid grid-12">
+        <div class="contact__info">
+          <p class="contact__label">(Say hello)</p>
+          <p class="contact__name">David Quirós</p>
+          <p class="contact__role">Product Designer</p>
+          <a href="mailto:davidqs182@gmail.com" class="contact__email">davidqs182@gmail.com</a>
+        </div>
+        <!-- Dos fotos del mismo show, alternando cada 4s (crossfade por
+             opacidad vía CSS, ver .contact__image--1/--2 en styles.css)
+             — la primera define el alto real del bloque (sigue en flujo
+             normal), la segunda se superpone exacto encima con
+             position:absolute. alt vacío en la segunda: es la misma
+             escena que ya describe la primera, no hay información
+             nueva que anunciar dos veces a un lector de pantalla. -->
+        <div class="contact__media">
+          <img
+            class="contact__image contact__image--1"
+            src="assets/images/contact-portrait.jpg"
+            alt="David Quirós tocando guitarra y cantando en un show en vivo"
+            width="1000"
+            height="1500"
+            loading="lazy"
+          >
+          <img
+            class="contact__image contact__image--2"
+            src="assets/images/contact-portrait-2.jpg"
+            alt=""
+            width="1000"
+            height="1500"
+            loading="lazy"
+          >
+        </div>
+      </div>
     </section>
   </main>
 
