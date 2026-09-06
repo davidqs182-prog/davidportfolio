@@ -1,0 +1,203 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3EV32X3877"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-3EV32X3877');
+  </script>
+  <!-- End Google tag (gtag.js) -->
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-TLW9D86D');</script>
+  <!-- End Google Tag Manager -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>About — David Quirós</title>
+  <link rel="canonical" href="https://pixel-personas.com/about/">
+  <link rel="icon" type="image/png" href="../assets/Logo/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="../css/tokens.css">
+  <link rel="stylesheet" href="../css/components.css">
+  <link rel="stylesheet" href="../css/styles.css">
+</head>
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLW9D86D"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <header class="navbar container">
+    <a href="/" class="btn btn--outline btn--md">
+      <span class="material-symbols-rounded icon-back" aria-hidden="true">arrow_back</span>
+      Back to home
+    </a>
+    <nav class="navbar__links">
+      <a href="#contact" class="btn btn--dark btn--md">Get in Touch</a>
+    </nav>
+  </header>
+
+  <main>
+    <!-- Primer paso de la página de About, a pedido de David: mismo
+         tratamiento que el hero de Home — "About" reusa .hero__title
+         tal cual (mismo tamaño/estilo/posición que "Product Designer").
+         El avatar ya no vive acá (bajó a .about-experience, ver abajo)
+         — Navbar: en vez del logo de Home, un botón "Back to home"
+         (patrón <a class="btn btn--outline">, mismo componente ya
+         usado en otras páginas). -->
+    <section class="hero container">
+      <h1 class="hero__title">About</h1>
+    </section>
+
+    <!-- Experience: carrusel horizontal con el avatar "clavado"
+         (position:sticky) a la izquierda mientras las tarjetas de
+         experience (de la más reciente a la más antigua — mismo
+         contenido/orden que la sección Experience de resume.html)
+         siguen desplazándose por detrás. A pedido de David: "a partir
+         de la columna 10, junto al avatar, se muestra en orden cada
+         sección de experience... cuando hago swipe hacia la izquierda
+         el avatar se queda fijo... al lado derecho de la imagen hay
+         un fade blanco sobre el que las secciones siguen scrolleando
+         bajo ella." El avatar queda fijo desde el arranque porque su
+         posición natural en el track ya está pegada al borde
+         izquierdo (scrollLeft:0 = columna 1) — position:sticky no
+         necesita "viajar" para clavarse ahí. Full-bleed (fuera de
+         .container) para poder scrollear más allá del borde derecho
+         de la pantalla — mismo mecanismo (scroll nativo,
+         overflow-x:auto, sin JS de drag) que
+         .project-process__carousel / .project-testimonial__track en
+         project-onboarding.css. -->
+    <section class="about-experience">
+      <div class="about-experience__track">
+        <!-- Tapa la columna 1 con un elemento real (sticky, mismo
+             fondo que la página) en vez de padding invisible — ver
+             comentario en styles.css. -->
+        <div class="about-experience__edge" aria-hidden="true"></div>
+
+        <div class="about-experience__pin">
+          <div class="about-experience__avatar-backing" aria-hidden="true"></div>
+          <img
+            class="about-experience__avatar"
+            src="../assets/images/about-avatar.png"
+            alt="David Quirós sonriendo, con sombrero y lentes de sol, sosteniendo una tabla de surf"
+            draggable="false"
+          >
+          <div class="about-experience__fade" aria-hidden="true"></div>
+        </div>
+
+        <ul class="about-experience__list">
+          <li class="about-experience__item">
+            <p class="about-experience__dates">2023 – Present</p>
+            <h3 class="about-experience__role">Product Designer</h3>
+            <p class="about-experience__company">Fischbach Group</p>
+            <ul class="about-experience__bullets">
+              <li>— Design of large-scale internal products: native Leo app (iOS/Android), Planner (staff and resource management), and Onboarding (employee onboarding).</li>
+              <li>— Collaborate cross-functionally with engineering and stakeholders across a multi-entity organization to ship native and web products.</li>
+            </ul>
+          </li>
+          <li class="about-experience__item">
+            <p class="about-experience__dates">2021 – 2023</p>
+            <h3 class="about-experience__role">Senior Product Designer &amp; Strategy Lead</h3>
+            <p class="about-experience__company">Impact Technology</p>
+            <ul class="about-experience__bullets">
+              <li>— End-to-end design and strategy for digital products (Leo, Ökoloco, Institude Wissen, VOCHECKER).</li>
+              <li>— Research, prototyping, and close collaboration with development.</li>
+              <li>— Led design strategy across 4 concurrent products, partnering directly with clients, PMs, and engineering teams from concept through launch.</li>
+            </ul>
+          </li>
+          <li class="about-experience__item">
+            <p class="about-experience__dates">2019 – 2021</p>
+            <h3 class="about-experience__role">Digital Marketing Manager &amp; UX Strategist</h3>
+            <p class="about-experience__company">Colono Construcción</p>
+            <ul class="about-experience__bullets">
+              <li>— Managed advertising campaigns across Google, Facebook, Instagram, and TikTok.</li>
+              <li>— Optimized web experience to align with each campaign, focused on conversion and KPIs.</li>
+            </ul>
+          </li>
+          <li class="about-experience__item">
+            <p class="about-experience__dates">2017 – 2018</p>
+            <h3 class="about-experience__role">UX Researcher &amp; Product Catalog Designer</h3>
+            <p class="about-experience__company">Electro Caribe S&amp;C</p>
+            <ul class="about-experience__bullets">
+              <li>— User research and redesign of electrical product lines (industrial, commercial, home).</li>
+              <li>— Digital and printed catalogs, plus training for key stakeholders.</li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Get in touch: mismo bloque de texto que en Home/project-onboarding
+         (ver css/styles.css .contact) — sin la columna de fotos: esas
+         fotos son del contexto de Home, no tiene sentido repetirlas
+         acá (a pedido de David: "la seccion de contacto se debe ver
+         como la de la pagina de proyectos"). El botón "Get in Touch"
+         del navbar apunta a #contact. -->
+    <section class="contact container" id="contact">
+      <div class="contact__grid grid-12">
+        <div class="contact__info">
+          <p class="contact__label">(Say hello)</p>
+          <p class="contact__name">David Quirós</p>
+          <p class="contact__role">Product Designer</p>
+          <a href="mailto:davidqs182@gmail.com" class="contact__email">davidqs182@gmail.com</a>
+        </div>
+      </div>
+    </section>
+  </main>
+
+  <!-- Herramienta de guía (no es parte del diseño del sitio, solo
+       visible en localhost — ver js/main.js): overlay del grid +
+       selector de breakpoint (Desktop/Tablet/Mobile). Estilos y
+       lógica centralizados en css/components.css y js/main.js. -->
+  <div id="grid-overlay" aria-hidden="true">
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+    <div class="grid-overlay__col"></div>
+  </div>
+
+  <div id="dev-tools">
+    <div id="dev-tools__breakpoints">
+      <button data-breakpoint="desktop" class="is-active" type="button">
+        <span class="material-symbols-rounded" aria-hidden="true">desktop_windows</span>
+        Desktop
+      </button>
+      <button data-breakpoint="tablet" type="button">
+        <span class="material-symbols-rounded" aria-hidden="true">tablet_mac</span>
+        Tablet
+      </button>
+      <button data-breakpoint="mobile" type="button">
+        <span class="material-symbols-rounded" aria-hidden="true">smartphone</span>
+        Mobile
+      </button>
+    </div>
+    <button id="grid-overlay-toggle" type="button">
+      <span class="material-symbols-rounded" aria-hidden="true">grid_on</span>
+      Grid
+    </button>
+  </div>
+
+  <div id="dev-preview" aria-hidden="true">
+    <iframe id="dev-preview-frame" title="Vista previa responsiva"></iframe>
+  </div>
+
+  <script src="../js/main.js"></script>
+</body>
+</html>

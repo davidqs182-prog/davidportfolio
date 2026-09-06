@@ -27,6 +27,17 @@ while ($listener.IsListening) {
     $path = $request.Url.LocalPath
     if ($path -eq "/") { $path = "/index.html" }
     $filePath = Join-Path $Root ($path.TrimStart("/"))
+    # URLs limpias sin .html: si el path pedido no es un archivo pero
+    # existe una carpeta del mismo nombre con un index.html adentro
+    # (ej. /project-onboarding -> project-onboarding/index.html), la
+    # servimos igual que GitHub Pages serviría esa misma estructura de
+    # carpetas — así el comportamiento local coincide con el real.
+    if (-not (Test-Path $filePath -PathType Leaf)) {
+      $indexInFolder = Join-Path $filePath "index.html"
+      if (Test-Path $indexInFolder -PathType Leaf) {
+        $filePath = $indexInFolder
+      }
+    }
     if (Test-Path $filePath -PathType Leaf) {
       $ext = [System.IO.Path]::GetExtension($filePath)
       $contentType = $mime[$ext]

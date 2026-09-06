@@ -1017,3 +1017,32 @@ initCarouselArrows(
   );
   solutionObserver.observe(section);
 })();
+
+// ===== About — Experience: alto de los parches blancos igual al del
+// contenido =====
+// A pedido de David: los 3 parches opacos que tapan lo que scrollea
+// detrás del avatar (.about-experience__edge, __fade y
+// __avatar-backing, ver styles.css) no deben cubrir todo el alto del
+// avatar — solo el alto real de las tarjetas de experience (arriba de
+// eso, el avatar se superpone a "ABOUT" y ese título tiene que verse
+// por las zonas transparentes del PNG, no taparse). Se mide en JS
+// porque .about-experience__list no tiene una altura fija: depende de
+// cuántos bullets tiene cada tarjeta y cambia de un breakpoint a otro
+// (el texto envuelve distinto en pantallas angostas).
+(function () {
+  var list = document.querySelector(".about-experience__list");
+  var edge = document.querySelector(".about-experience__edge");
+  var fade = document.querySelector(".about-experience__fade");
+  var avatarBacking = document.querySelector(".about-experience__avatar-backing");
+  if (!list || (!edge && !fade && !avatarBacking)) return;
+
+  function syncHeight() {
+    var height = list.getBoundingClientRect().height + "px";
+    if (edge) edge.style.height = height;
+    if (fade) fade.style.height = height;
+    if (avatarBacking) avatarBacking.style.height = height;
+  }
+
+  syncHeight();
+  window.addEventListener("resize", syncHeight);
+})();

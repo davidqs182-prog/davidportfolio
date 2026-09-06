@@ -876,3 +876,194 @@ body {
     grid-column: 1 / -1;
   }
 }
+
+/* ===== About — Experience (carrusel horizontal con avatar clavado) =====
+   Ver comentario en about/index.html para el pedido original de David.
+   El avatar queda "clavado" (position:sticky) desde el arranque porque
+   su posición natural en el track ya está pegada al borde izquierdo
+   del scroll (columna 1) — no necesita "viajar" para clavarse ahí. Las
+   tarjetas de experience, que le siguen en el mismo flujo, sí se
+   desplazan por detrás cuando el usuario hace swipe; el fade blanco a
+   la derecha del avatar (mismo --color-bg que el fondo de la página)
+   suaviza esa transición en vez de un corte duro. */
+.about-experience {
+  width: 100%;
+  /* Negativo a propósito, a pedido de David: la punta de la tabla de
+     surf (el pixel real más alto del PNG, no el borde del recuadro
+     transparente — medido con canvas/getImageData, ~6.6% del alto)
+     tiene que superponerse con "ABOUT" a la altura de su travesaño,
+     con el avatar por encima del texto (mismo recurso que
+     .hero__stage en Home: título detrás, personaje adelante — pin
+     tiene z-index:2, .hero__title z-index:0). Medido en vivo, no a
+     ojo: sin este solape, el gap natural después del hero es ~100px
+     (padding-bottom:60px de .hero + este margin); con -180px el
+     borde superior del avatar queda ~220px más arriba, justo a la
+     altura pedida. */
+  margin-top: -180px;
+}
+
+.about-experience__track {
+  display: flex;
+  /* Centrado con el avatar (a pedido de David) — el pin es mucho más
+     alto que cualquier tarjeta de experience, así que con
+     align-items:center el bloque de texto queda a la altura media del
+     avatar en vez de pegado arriba. */
+  align-items: center;
+  overflow-x: auto;
+  scrollbar-width: none;
+  /* El margen izquierdo (columna 1) ya no es padding invisible — ver
+     .about-experience__edge, es un elemento real que ocupa ese
+     espacio. El derecho sí sigue siendo padding (ahí no hubo
+     problema): mismo cálculo que --process-inset en
+     project-onboarding.css para que el scroll llegue hasta el borde
+     de la columna 12 en cualquier ancho de viewport. */
+  padding-right: max(var(--grid-margin), calc((100% - var(--grid-max-width)) / 2 + var(--grid-margin)));
+}
+
+.about-experience__track::-webkit-scrollbar {
+  display: none;
+}
+
+/* Antes esta franja (columna 1 hasta donde arranca el avatar) era
+   padding-left del track — a David se le veía "colarse" ahí el texto
+   de la tarjeta más nueva al hacer swipe rápido (glitch de repintado
+   de Chrome con position:sticky + overflow-x:auto, no reproducible
+   siempre). Reemplazarlo por un elemento real, sticky, con el mismo
+   fondo de la página, lo tapa pase lo que pase — ya no depende de que
+   "no haya nada ahí", hay algo opaco de verdad. */
+.about-experience__edge {
+  position: sticky;
+  left: 0;
+  z-index: 3;
+  flex: 0 0 max(var(--grid-margin), calc((100% - var(--grid-max-width)) / 2 + var(--grid-margin)));
+  /* align-self:center (no stretch) + altura fijada por JS (ver
+     main.js, "About — Experience: altura del edge/fade") — a pedido
+     de David, el blanco opaco no debe cubrir todo el alto del avatar,
+     solo el alto real de las tarjetas de experience. */
+  align-self: center;
+  background-color: var(--color-bg);
+}
+
+/* El pin es imagen + fade pegados uno al otro (sin franja extra de
+   fondo sólido alrededor) — así el fade queda literalmente al lado
+   derecho de la imagen, como pidió David, y su gradiente (ver
+   .about-experience__fade) es lo único que tapa progresivamente las
+   tarjetas que scrollean por detrás; ancho automático según el
+   contenido, no un cálculo de columnas. */
+.about-experience__pin {
+  --about-avatar-width: clamp(220px, 43vw, 619px);
+  position: sticky;
+  left: 0;
+  z-index: 2;
+  flex: 0 0 auto;
+  display: flex;
+  align-items: flex-start;
+}
+
+.about-experience__avatar {
+  /* position:relative (sin z-index propio, se resuelve por orden en
+     el DOM) para pintar por encima de .about-experience__avatar-backing
+     — ver ese comentario. */
+  position: relative;
+  width: var(--about-avatar-width);
+  max-width: 100%;
+  height: auto;
+  display: block;
+  user-select: none;
+}
+
+/* El PNG tiene fondo transparente (David le borró el fondo) — sin
+   algo opaco detrás, las tarjetas de experience se verían "a través"
+   de esas zonas transparentes en vez de quedar tapadas. Antes este
+   fondo vivía como background-color de la imagen completa, pero eso
+   tapaba también "ABOUT" en la franja de arriba, donde el avatar se
+   superpone al título a propósito (David quiere que ABOUT se vea
+   detrás ahí, no un rectángulo sólido). Ahora es un parche aparte,
+   del mismo alto que el contenido scrolleable (altura fijada por JS,
+   igual que .about-experience__edge/__fade — ver main.js) y
+   centrado en el pin igual que ellos: solo tapa donde de verdad hace
+   falta. Va ANTES que la imagen en el HTML para pintar por debajo de
+   ella (misma imagen, position:relative, sin z-index — ver ese
+   comentario), pero por encima de las tarjetas que scrollean detrás
+   (z-index del .pin ya las gana). */
+.about-experience__avatar-backing {
+  position: absolute;
+  left: 0;
+  top: 50%;
+  transform: translateY(-50%);
+  width: var(--about-avatar-width);
+  max-width: 100%;
+  background-color: var(--color-bg);
+}
+
+/* Fade pegado al borde derecho de la imagen: opaco (mismo tono que el
+   fondo de la página) junto a la imagen, transparente hacia afuera —
+   así las tarjetas que scrollean por detrás se ven desvanecer hacia
+   el avatar en vez de cortarse de golpe. align-self:stretch para que
+   cubra todo el alto de la imagen, no solo una franja. */
+.about-experience__fade {
+  flex: 0 0 160px;
+  /* align-self:center (no stretch) + altura fijada por JS — mismo
+     motivo que .about-experience__edge, ver ese comentario. */
+  align-self: center;
+  background: linear-gradient(to right, var(--color-bg) 0%, transparent 100%);
+  pointer-events: none;
+}
+
+.about-experience__list {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-24);
+  list-style: none;
+}
+
+.about-experience__item {
+  flex: 0 0 360px;
+  padding-block: var(--space-24);
+}
+
+.about-experience__dates {
+  font-family: var(--font-body);
+  font-size: var(--text-body-sm-size);
+  line-height: var(--text-body-sm-line);
+  color: var(--color-gray-550);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  margin-bottom: var(--space-8);
+}
+
+.about-experience__role {
+  font-family: var(--font-display);
+  font-weight: 600;
+  font-size: var(--text-h4-size);
+  line-height: var(--text-h4-line);
+  color: var(--color-text);
+  margin-bottom: var(--space-4);
+}
+
+.about-experience__company {
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--color-gray-550);
+}
+
+/* Mismo patrón que .resume-entry__bullets (resume.css) — el guión "—"
+   ya viene como parte del texto, por eso list-style:none en vez de un
+   bullet del navegador. */
+.about-experience__bullets {
+  margin: 0;
+  margin-top: var(--space-12);
+  padding: 0;
+  list-style: none;
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-8);
+}
+
+.about-experience__bullets li {
+  font-family: var(--font-body);
+  font-size: var(--text-body-size);
+  line-height: var(--text-body-line);
+  color: var(--color-text-black);
+}
