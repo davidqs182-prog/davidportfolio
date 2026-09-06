@@ -1,6 +1,16 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
+  <!-- Evita que el navegador restaure la posición de scroll anterior al
+       recargar Home — siempre debe arrancar desde arriba. Tiene que
+       correr lo antes posible (antes incluso de GTM/gtag), porque para
+       cuando corre js/main.js (al final de <body>) el navegador ya
+       pudo haber restaurado el scroll. -->
+  <script>
+    if ("scrollRestoration" in history) {
+      history.scrollRestoration = "manual";
+    }
+  </script>
   <!-- Google tag (gtag.js) -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-3EV32X3877"></script>
   <script>
