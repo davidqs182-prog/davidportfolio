@@ -806,6 +806,33 @@ body {
     width: auto;
     max-width: 280px;
     margin-bottom: var(--space-16);
+    /* Oculto temporalmente en mobile a pedido de David — se superpone
+       con el título en ciertos anchos. El flujo estático de arriba
+       queda intacto por si se retoma más adelante, esto solo lo tapa. */
+    display: none;
+  }
+
+  /* Avatar al doble de tamaño en mobile, a pedido de David — calc()
+     sobre el clamp() original (no valores nuevos sueltos) para
+     conservar la misma curva de escalado fluido, solo al doble. */
+  .hero__avatar {
+    width: calc(clamp(220px, 43vw, 619px) * 2);
+  }
+
+  /* Los márgenes negativos de .hero__stage compensan el aire
+     transparente del PNG alrededor del personaje. Duplicarlos junto
+     con el avatar (probado primero) resultó demasiado — "Work" quedaba
+     encima de las piernas, no debajo de los pies. Medido en vivo contra
+     Desktop a un ancho de avatar equivalente (~442px, el mismo que da
+     el avatar duplicado en el piso del rango mobile): ahí
+     margin-top/-bottom valen -66.82px/-54px, NO el doble de los
+     valores originales — el aire transparente no escala 1:1 con el
+     ancho como se asumió. Se dejan fijos en vez de otro clamp() nuevo:
+     el rango de ancho en mobile (440-660px) es angosto, un valor plano
+     ya cae bien en todo el rango. */
+  .hero__stage {
+    margin-top: -66px;
+    margin-bottom: -54px;
   }
 
   .project-card {
