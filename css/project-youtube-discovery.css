@@ -511,14 +511,16 @@ body {
   object-fit: cover;
 }
 
-/* Los 2 videos se turnan por opacidad, no por cambiar el src — los dos
+/* Los 3 videos se turnan por opacidad, no por cambiar el src — los tres
    quedan reproduciéndose en loop de fondo todo el tiempo, y la
    animación solo decide cuál se ve. Mismo ciclo de 10s y mismos cortes
-   (33.333%/66.666%) que .ytd-insight__card-story-fill: video 1 se ve
-   durante la barrita 1 (0%-33.333%) Y la 3 (66.666%-100%, todavía no
-   hay un tercer video), video 2 solo durante la barrita 2. ~1% de
+   (33.333%/66.666%) que .ytd-insight__card-story-fill: video 1 durante
+   la barrita 1, video 2 durante la 2, video 3 durante la 3. ~1% de
    fundido cruzado en cada corte (mismo criterio que el fade de
-   .ytd-insight__card-peak-compass) para que no sea un corte seco. */
+   .ytd-insight__card-peak-compass) para que no sea un corte seco —
+   incluido el "cuarto" corte, el del final de la barrita 3 de vuelta
+   al inicio de la 1 (99%-100%/0%): sin ese fundido ahí, el loop se
+   vería como un salto seco cada 10s en vez de un ciclo continuo. */
 .ytd-insight__card-media--1 {
   animation: ytd-insight-card-media-1 10s linear infinite;
 }
@@ -527,16 +529,19 @@ body {
   animation: ytd-insight-card-media-2 10s linear infinite;
 }
 
+.ytd-insight__card-media--3 {
+  animation: ytd-insight-card-media-3 10s linear infinite;
+}
+
 @keyframes ytd-insight-card-media-1 {
   0%,
   32.333% {
     opacity: 1;
   }
   33.333%,
-  65.666% {
+  99% {
     opacity: 0;
   }
-  66.666%,
   100% {
     opacity: 1;
   }
@@ -557,12 +562,28 @@ body {
   }
 }
 
+@keyframes ytd-insight-card-media-3 {
+  0%,
+  65.666% {
+    opacity: 0;
+  }
+  66.666%,
+  99% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .ytd-insight__card-media--1,
-  .ytd-insight__card-media--2 {
+  .ytd-insight__card-media--2,
+  .ytd-insight__card-media--3 {
     animation: none;
   }
-  .ytd-insight__card-media--2 {
+  .ytd-insight__card-media--2,
+  .ytd-insight__card-media--3 {
     opacity: 0;
   }
 }
@@ -887,11 +908,6 @@ body {
   margin-top: var(--space-16);
 }
 
-.ytd-solution__body--aside {
-  grid-column: 8 / 13;
-  margin-top: var(--space-16);
-}
-
 /* 8 columnas centrada (3/11, misma fórmula que .ytd-insight__card). */
 .ytd-solution__video-card {
   grid-column: 3 / 11;
@@ -946,13 +962,234 @@ body {
   object-fit: cover;
 }
 
-/* Centrado bajo el video con justify-self (mismo grid-column que la
-   tarjeta del video, para quedar alineado con su ancho en vez de con
-   el de las columnas de texto). */
+/* A pedido de David: bajo el primer párrafo (body--primary), no
+   centrado bajo el video como antes — misma columna que ese párrafo.
+   align-self:start por las dudas: el auto-placement de CSS Grid puede
+   meter un item sin grid-row explícito en la misma fila que otro
+   elemento que no se solape en columnas (algoritmo "sparse"), y
+   align-items:stretch (default del grid) lo estiraría a la altura de
+   ese vecino — ya pasó una vez acá (con el párrafo --aside, ya
+   eliminado) y se veía como un blob circular en vez de un botón. */
 .ytd-solution__cta {
+  grid-column: 2 / 8;
+  justify-self: start;
+  align-self: start;
+  margin-top: var(--space-24);
+}
+
+/* ===== "TV: Real time comments" (sección nueva, a pedido de David) =====
+   Fondo con 3 óvalos pastel muy desenfocados sobre blanco — mismos 3
+   colores/posiciones aproximadas que el SVG real del hero de
+   blog.youtube/creator-and-artist-stories/ (extraído en vivo:
+   https://blog.youtube/static/blog_youtube/images/category/creator-and-artists-stories-hero-desktop.svg),
+   reimplementado acá como radial-gradient en vez de copiar el SVG (no
+   es un asset de este sitio, y el efecto es fácil de igualar con
+   gradientes puros): #FFFFB3 amarillo, #E4C7FF lila, #CAF8FF celeste. */
+.ytd-comments {
+  padding-block: var(--space-96);
+  background:
+    radial-gradient(circle at 22% 30%, #ffffb3 0%, transparent 55%),
+    radial-gradient(circle at 65% 15%, #e4c7ff 0%, transparent 50%),
+    radial-gradient(circle at 82% 75%, #caf8ff 0%, transparent 55%),
+    #ffffff;
+  /* Declarada acá (no en __track) por el mismo motivo que
+     --testimonial-inset en project-onboarding.css: por si algo
+     hermano del track llegara a necesitarla también. */
+  --comments-inset: max(var(--grid-margin), calc((100% - var(--grid-max-width)) / 2 + var(--grid-margin)));
+  /* Ancho de 1 columna + su gutter, mismo cálculo usado (y revertido)
+     para el intento de peek anterior — acá se reusa para el intento
+     nuevo: quitarle 1 columna al costado DERECHO del contenedor sin
+     tocar el tamaño de los elementos internos (ver .ytd-comments__grid
+     y el @media (min-width:768px) más abajo). */
+  --comments-col-width: calc((min(100%, var(--grid-max-width)) - 2 * var(--grid-margin) - (var(--grid-columns) - 1) * var(--grid-gutter)) / var(--grid-columns));
+  --comments-right-extra: calc(var(--comments-col-width) + var(--grid-gutter));
+}
+
+/* Carrusel: mismo mecanismo (scroll nativo + scroll-snap) que
+   .project-testimonial__track en project-onboarding.css, con la misma
+   fórmula de "inset" que ese track — a pedido de David, para reducir
+   la distancia entre slides: el padding inset (en vez de que cada
+   slide ocupe el 100% del ancho del viewport) hace que en reposo ya
+   se alcance a ver el arranque del siguiente slide asomando.
+
+   OJO: se probó agrandar este inset (sumándole el ancho de una
+   columna + gutter) para que el asomo mostrara el título en vez de
+   solo el margen vacío de la columna 1 — pero eso angosta el propio
+   ancho del slide (viewport - 2×inset), así que el video/texto de
+   AMBOS slides (no solo el que se asoma) terminan midiendo menos que
+   las 8 columnas "normales" de composición — a pedido de David, se
+   revirtió: se prioriza mantener el tamaño real de la composición
+   (video/texto igual que siempre) sobre que el asomo muestre texto
+   legible. Con solo el margen, el asomo sigue reduciendo la distancia
+   de scroll entre slides, solo que se nota menos a simple vista. */
+.ytd-comments__track {
+  display: flex;
+  overflow-x: auto;
+  /* Explícito: sin esto, el navegador computa overflow-y como "auto"
+     también (regla CSS poco conocida — no se puede tener un eje en
+     "visible" y el otro no), recortando el track verticalmente sin
+     querer cuando su contenido mide más alto que su propia caja. Eso
+     rompía silenciosamente el IntersectionObserver del lazy-load de
+     video (js/main.js) — el ratio de intersección se calculaba contra
+     ese recorte vertical accidental, no contra el tamaño real del
+     slide. */
+  overflow-y: visible;
+  scroll-snap-type: x mandatory;
+  scrollbar-width: none;
+  padding-left: var(--comments-inset);
+  padding-right: var(--comments-inset);
+  scroll-padding-left: var(--comments-inset);
+  scroll-padding-right: var(--comments-inset);
+}
+
+.ytd-comments__track::-webkit-scrollbar {
+  display: none;
+}
+
+.ytd-comments__slide {
+  flex: 0 0 100%;
+  scroll-snap-align: start;
+}
+
+/* PRUEBA a pedido de David: quitarle 1 columna al costado derecho del
+   "contenedor" (el track, que es lo que determina el ancho real de
+   cada slide) sin cambiar el tamaño actual de header/body/video. Solo
+   en desktop/tablet — en mobile el título ya arranca en la columna 1
+   (grid-column:1/-1 en el media query de abajo), no hace falta nada
+   de esto ahí.
+
+   La trampa: --comments-inset solo en padding-right (sin tocarlo en
+   padding-left) angosta el propio ancho del slide únicamente del lado
+   derecho, corriendo el arranque del slide 2 esa misma distancia hacia
+   la izquierda — más peek, sin mover el slide 1 de lugar. Pero como
+   .ytd-comments__grid normalmente ocupa el 100% de ese slide ahora más
+   angosto, también se angostaría el video/texto — por eso se le fija
+   un ancho explícito (no relativo al slide) igual al que YA tenía,
+   calculado directo contra el viewport en vez de contra el propio
+   slide. Al quedar flush-left (sin cambios de margen) y con ese ancho
+   fijo, el grid "desborda" del borde derecho de su propio slide (ahora
+   más angosto) hacia el espacio que le sobró — ese desborde cae justo
+   sobre el padding-right extra del track, que es aire, no contenido
+   de otro slide — así que no se nota ningún corte ni cambio visual en
+   el slide 1 ni en el 2. */
+@media (min-width: 768px) {
+  .ytd-comments__track {
+    padding-right: calc(var(--comments-inset) + var(--comments-right-extra));
+    scroll-padding-right: calc(var(--comments-inset) + var(--comments-right-extra));
+  }
+
+  .ytd-comments__grid {
+    width: calc(100vw - 2 * var(--comments-inset));
+  }
+}
+
+/* Mismo patrón que .project-testimonial__dots, en oscuro (--ytd-black)
+   en vez de blanco porque acá el fondo es el degradé pastel claro, no
+   uno oscuro. */
+.ytd-comments__dots {
+  display: flex;
+  justify-content: center;
+  gap: var(--space-12);
+  padding-top: var(--space-40);
+}
+
+.ytd-comments__dot {
+  width: 8px;
+  height: 8px;
+  padding: 0;
+  border: none;
+  border-radius: 50%;
+  background-color: rgba(33, 33, 33, 0.3);
+  cursor: pointer;
+  transition: background-color 0.2s ease, transform 0.2s ease;
+}
+
+.ytd-comments__dot:hover {
+  background-color: rgba(33, 33, 33, 0.55);
+}
+
+.ytd-comments__dot.is-active {
+  background-color: var(--ytd-black);
+  transform: scale(1.25);
+}
+
+.ytd-comments__header {
+  grid-column: 2 / 8;
+}
+
+/* Mismo tratamiento visual que .ytd-solution__headline (ver ese
+   comentario) — reimplementado bajo su propia clase, no reusado
+   directo, mismo criterio del resto de esta página. */
+.ytd-comments__headline {
+  margin-top: var(--space-16);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-h1-size);
+  line-height: var(--text-h1-line);
+  letter-spacing: 0;
+  color: var(--ytd-black);
+}
+
+/* 8 columnas centradas (3/11, misma fórmula que .ytd-solution__video-card
+   / .ytd-insight__card) — sin el borde degradado tipo "Gemini" de esos
+   dos: este video ya tiene su propio "marco" (el bezel del mockup de
+   TV, parte del recorte), otro borde encima se sentía redundante. */
+.ytd-comments__video-wrap {
   grid-column: 3 / 11;
-  justify-self: center;
-  margin-top: var(--space-32);
+  margin-top: var(--space-64);
+}
+
+.ytd-comments__video {
+  display: block;
+  width: 100%;
+  height: auto;
+}
+
+/* Mismo patrón "primary/aside" que .ytd-solution__body — dos párrafos
+   lado a lado, arrancando a la misma altura. */
+.ytd-comments__body {
+  max-width: 600px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--ytd-black);
+}
+
+.ytd-comments__body--primary {
+  grid-column: 2 / 8;
+  margin-top: var(--space-16);
+}
+
+.ytd-comments__body--aside {
+  grid-column: 8 / 13;
+  margin-top: var(--space-16);
+}
+
+/* Bajo el body, en la misma columna (2/8) — no centrado bajo el video
+   como .ytd-solution__cta, a pedido de David acá va pegado al texto. */
+.ytd-comments__cta {
+  grid-column: 2 / 8;
+  justify-self: start;
+  margin-top: var(--space-24);
+}
+
+@media (max-width: 767px) {
+  .ytd-comments__header,
+  .ytd-comments__body--primary,
+  .ytd-comments__body--aside,
+  .ytd-comments__cta,
+  .ytd-comments__video-wrap {
+    grid-column: 1 / -1;
+  }
+
+  .ytd-comments__body--primary,
+  .ytd-comments__body--aside {
+    margin-top: 0;
+  }
+
+  .ytd-comments__video-wrap {
+    margin-top: var(--space-32);
+  }
 }
 
 .ytd-about__content {
@@ -1073,7 +1310,6 @@ body {
   .ytd-insight__card,
   .ytd-solution__header,
   .ytd-solution__body--primary,
-  .ytd-solution__body--aside,
   .ytd-solution__video-card,
   .ytd-solution__cta {
     grid-column: 1 / -1;
@@ -1085,7 +1321,6 @@ body {
   .ytd-insight__body--aside,
   .ytd-insight__card,
   .ytd-solution__body--primary,
-  .ytd-solution__body--aside,
   .ytd-solution__video-card {
     margin-top: 0;
   }

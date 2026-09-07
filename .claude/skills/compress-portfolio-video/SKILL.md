@@ -1,6 +1,6 @@
 ---
 name: compress-portfolio-video
-description: Comprime y optimiza para la web cualquier video que el usuario entregue para el portafolio de David Quirós (por ejemplo, para una tarjeta de proyecto en la sección "Work"). Usar SIEMPRE que el usuario mencione, adjunte o pida usar un archivo de video para el sitio — un demo de app, una animación de producto, un mockup, una grabación de pantalla — incluso si no dice explícitamente "comprime" u "optimiza". También usar si el usuario reporta que un video ya existente en el sitio se ve borroso, pesado, tarda en cargar, o tiene glitches/artefactos visuales al reproducirse.
+description: Comprime y optimiza para la web cualquier video que el usuario entregue para el portafolio de David Quirós (por ejemplo, para una tarjeta de proyecto en la sección "Work"). Usar SIEMPRE que el usuario mencione, adjunte o pida usar un archivo de video para el sitio — un demo de app, una animación de producto, un mockup, una grabación de pantalla — incluso si no dice explícitamente "comprime" u "optimiza". También usar si el usuario reporta que un video ya existente en el sitio se ve borroso, pesado, tarda en cargar, o tiene glitches/artefactos visuales al reproducirse. Incluye el flujo para video CON transparencia (mockups flotantes tipo laptop/celular sobre fondo removido, grabaciones con fondo verde/chroma key) — usar también ante pedidos de "quitar el fondo", "fondo verde", "canal alfa" o "transparencia" en un video.
 ---
 
 # Comprimir video para el portafolio
@@ -57,6 +57,89 @@ ffprobe -v error -select_streams v:0 -show_entries stream=level -of default=nopr
 Debe imprimir `42` (Level 4.2). Si imprime otra cosa (sobre todo algo
 más alto, como `60`), algo salió mal — no lo ignores ni sigas adelante
 igual.
+
+## Videos con transparencia (canal alfa / chroma key)
+
+Distinto del flujo estándar de arriba — aplica cuando el video es un
+mockup "flotante" (laptop, celular, TV) cuyo fondo hay que quitar para
+que se vea suelto sobre el fondo real de la página, no un rectángulo
+opaco. Ejemplo ya resuelto en el sitio:
+`assets/animations/youtube-compass-card/collections-laptop-mockup.webm`.
+
+- **Solo WebM/VP9, sin equivalente MP4.** H.264 no soporta canal alfa
+  — no hay fallback de compatibilidad posible, así que el `<video>` va
+  con un solo `<source>` y **sin atributo `poster`** (no hay forma de
+  generar un poster JPG/PNG con transparencia real que sirva de
+  placeholder). Mismo patrón que `hands-tablet-mockup.webm` en
+  Onboarding.
+- **Pedirle al usuario que grabe con fondo verde de verdad** si el
+  fondo original es blanco o un color que se parece al contenido real
+  (paredes claras, UI clara) — un fondo verde saturado separa mucho
+  mejor vía chroma key que intentar recortar un blanco que se confunde
+  con el contenido.
+- **Medí el recorte, no lo asumas de un solo frame.** El pan/zoom de la
+  grabación (o simplemente que la base de un mockup de laptop es más
+  ancha que la pantalla) hace que un recorte fijo medido a ojo en un
+  timestamp quede corto en otro. Usar el filtro `bbox` de ffmpeg sobre
+  **todo el clip**, no un frame suelto, para encontrar el rectángulo
+  real que ocupa el contenido:
+
+  ```bash
+  ffmpeg -i "<fuente>" -vf "colorkey=<color-en-hex>:<similarity>:<blend>,format=rgba,alphaextract,bbox=0" -f null - 2> bbox.log
+  grep -o "x1:[0-9]* x2:[0-9]* y1:[0-9]* y2:[0-9]*" bbox.log
+  ```
+
+  Tomar el `min(x1)`/`max(x2)`/`min(y1)`/`max(y2)` de todo el log (no
+  solo el primer frame) como los bordes reales a recortar, con un
+  pequeño margen de seguridad.
+
+- **Encoder:**
+
+  ```bash
+  ffmpeg -i "<fuente>" -vf "crop=<w>:<h>:<x>:<y>,fps=30,colorkey=<color>:<similarity>:<blend>" \
+    -c:v libvpx-vp9 -crf 24 -b:v 0 -deadline good -cpu-used 2 -pix_fmt yuva420p -an \
+    "<nombre>.webm"
+  ```
+
+  Verificar que el alfa quedó embebido: `ffprobe -show_streams ... | grep -i alpha`
+  debe imprimir `alpha_mode: 1`.
+
+### La lección que costó cara: verificar SIEMPRE en un navegador real, nunca extrayendo frames con ffmpeg
+
+**Nunca uses `ffmpeg -frames:v 1 output.png` (ni componerlo sobre un
+fondo de color con `overlay`) para juzgar si el canal alfa quedó bien.**
+En este build de ffmpeg, decodificar un WebM/VP9 con alfa y extraer un
+frame a PNG **no preserva el canal alfa de forma confiable** — el
+resultado se ve como si el fondo nunca se hubiera quitado (o con un
+"fringe" de color alrededor del mockup) aunque el archivo esté
+perfecto. Esto llevó, en una sesión real, a una ronda entera de
+"debugging" inútil (probar CRF más alto, `-lossless 1`, todos los
+frames como keyframe, pre-renderizar a PNG y volver a codificar) contra
+un bug que **no existía** — el archivo se reproducía perfecto en un
+navegador real desde el principio; el problema era el método de
+verificación, no el video.
+
+**Cómo verificar de verdad**, en el navegador (Claude Browser / Chrome):
+
+1. Abrir el archivo servido (por la página real, o una página de
+   prueba mínima) y esperar a que cargue del todo (`video.readyState
+   === 4`, no alcanza con `currentSrc` seteado).
+2. Muestrear los píxeles directo del `<video>` vía `<canvas>` +
+   `drawImage(video, 0, 0)` + `getImageData(...)`, leyendo el canal
+   **alfa** (no solo RGB) en los bordes del mockup: `0`/cercano a `0`
+   en el fondo (transparente), `255` en el contenido. Un solo píxel de
+   antialiasing con alfa intermedio en el borde es normal; una franja
+   ancha de alfa alto donde debería ser fondo es el bug real.
+3. Repetir el muestreo en **varios timestamps** a lo largo del clip
+   (no solo t=0) — el chroma key puede fallar en frames puntuales
+   según el contenido de fondo en ese momento (sombras, iluminación
+   distinta), no solo por parámetros de encoding.
+
+Si hace falta ver el resultado con los propios ojos (no solo datos de
+píxeles), tomar el screenshot del navegador — nunca un frame extraído
+con ffmpeg — y opcionalmente pintar el `<canvas>` sobre un fondo
+saturado (magenta) antes de capturarlo, para que cualquier resto de
+fondo sin quitar se note a simple vista.
 
 ## Ubicar ffmpeg
 

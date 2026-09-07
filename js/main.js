@@ -931,10 +931,10 @@ initCarouselArrows(
 // Mismo criterio que el de "El problema" arriba (arranca solo al 40%
 // visible de la SECCIÓN, no de la tarjeta), pero estos SÍ tienen loop —
 // son los videos de fondo/ambiente que se turnan por opacidad según la
-// barrita activa (ver .ytd-insight__card-media--1/--2 en
-// project-youtube-discovery.css). Los DOS arrancan a reproducirse
+// barrita activa (ver .ytd-insight__card-media--1/--2/--3 en
+// project-youtube-discovery.css). Los TRES arrancan a reproducirse
 // juntos, aunque solo uno se vea a la vez — es opacidad, no display,
-// la que los intercala, así que ambos necesitan estar corriendo de
+// la que los intercala, así que los tres necesitan estar corriendo de
 // fondo para que el que "entra" ya esté en marcha, no arrancando desde
 // cero. querySelectorAll en vez de querySelector porque ahora hay más
 // de un <video> con esta clase base.
@@ -1017,6 +1017,75 @@ initCarouselArrows(
   );
   solutionObserver.observe(section);
 })();
+
+// ===== Carrusel "Real time comments" / "One topic, endless content"
+// (project-youtube-discovery.html) =====
+// 2 grabaciones de pantalla de David (una por slide del carrusel), cada
+// una pesada (~20MB, WebM/VP9 con canal alfa). Al principio se cargaban
+// las DOS de una apenas la SECCIÓN entraba en viewport (igual que los
+// videos de fondo de "Key insight", que sí se ven ambos a la vez) —
+// pero acá solo se ve un slide por vez, así que las dos descargas
+// pesadas competían por ancho de banda entre sí y demoraban también al
+// video que SÍ estaba visible. Ahora cada slide observa su propio
+// video por separado, con threshold:0.4 — el video de cada slide
+// recién se carga cuando ESE slide entra en vista de verdad (scroll
+// vertical de la página Y horizontal del carrusel).
+//
+// OJO: acá se usa el root implícito (viewport), NO { root: track }
+// como initCarouselDots — ese helper necesita saber la posición
+// horizontal dentro del track para elegir qué dot resaltar, sin
+// importar si la sección ya se scrolleó a la vista. Acá el objetivo es
+// distinto (";se ve esto de verdad ahora mismo?"), y con root:track
+// el primer slide se cargaba apenas cargaba la página, aunque la
+// sección todavía estuviera fuera de pantalla — el root implícito sí
+// tiene en cuenta el overflow-x:auto del track (así que el slide 2
+// sigue sin cargar hasta que se scrollea horizontalmente hacia él) Y
+// el scroll vertical real de la página (así que el slide 1 tampoco
+// carga antes de tiempo).
+(function () {
+  var track = document.querySelector(".ytd-comments__track");
+  var slides = Array.prototype.slice.call(
+    document.querySelectorAll(".ytd-comments__slide")
+  );
+  if (!track || !slides.length) return;
+
+  function loadAndPlay(video) {
+    var pendingSources = video.querySelectorAll("source[data-src]");
+    pendingSources.forEach(function (source) {
+      source.src = source.dataset.src;
+      source.removeAttribute("data-src");
+    });
+    video.load();
+    video.play().catch(function () {
+      // Autoplay bloqueado: el poster se queda como imagen estática.
+    });
+  }
+
+  if (!("IntersectionObserver" in window)) {
+    slides.forEach(function (slide) {
+      var video = slide.querySelector(".ytd-comments__video");
+      if (video) loadAndPlay(video);
+    });
+    return;
+  }
+
+  var slideObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        var video = entry.target.querySelector(".ytd-comments__video");
+        if (video) loadAndPlay(video);
+        slideObserver.unobserve(entry.target);
+      });
+    },
+    { threshold: 0.4 }
+  );
+  slides.forEach(function (slide) {
+    slideObserver.observe(slide);
+  });
+})();
+
+initCarouselDots(".ytd-comments__track", ".ytd-comments__slide", ".ytd-comments__dot");
 
 // ===== About — Experience: alto de los parches blancos igual al del
 // contenido =====

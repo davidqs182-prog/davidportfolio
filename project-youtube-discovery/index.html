@@ -217,10 +217,10 @@
           <div class="ytd-insight__card">
             <div class="ytd-insight__card-border">
               <div class="ytd-insight__card-border-inner">
-                <!-- Dos videos apilados (mismo hueco, object-fit:cover),
+                <!-- Tres videos apilados (mismo hueco, object-fit:cover),
                      mostrados por turnos según qué barrita de arriba se
                      está llenando — igual que Instagram Stories, cada
-                     segmento es contenido distinto. Los dos quedan
+                     segmento es contenido distinto. Los tres quedan
                      SIEMPRE reproduciéndose en loop de fondo (muted,
                      sin costo real) y es la opacidad la que los
                      muestra/oculta en el momento justo — mismo ciclo de
@@ -230,11 +230,10 @@
                      quede sincronizado. Arrancan a cargar/reproducir
                      solo cuando la sección entra en pantalla (ver
                      js/main.js). Sin audio (-an en ffmpeg). -->
-                <!-- Video 1 (barrita 1 y, por ahora, también la 3 — no
-                     hay todavía un tercer video): mismo video generado
-                     con la cuenta de Gemini de David (plantilla "Mundo
-                     diminuto") que ya usamos en la tarjeta de la home —
-                     mismos archivos, no duplicados. -->
+                <!-- Video 1 (barrita 1): generado con la cuenta de Gemini
+                     de David (plantilla "Mundo diminuto") que ya usamos
+                     en la tarjeta de la home — mismos archivos, no
+                     duplicados. -->
                 <video
                   class="ytd-insight__card-media ytd-insight__card-media--1"
                   poster="../assets/animations/youtube-compass-card/youtube-compass-preview-2-poster.jpg"
@@ -265,6 +264,28 @@
                 >
                   <source data-src="../assets/animations/youtube-compass-card/youtube-compass-preview-4.webm" type="video/webm">
                   <source data-src="../assets/animations/youtube-compass-card/youtube-compass-preview-4.mp4" type="video/mp4">
+                </video>
+                <!-- Video 3 (barrita 3): clip "Africa" que dio David
+                     (carpeta Downloads), comprimido con el mismo preset
+                     V0.1 que el resto de esta carpeta (H.264 CRF10
+                     level4.2 veryslow + VP9 CRF24 b:v0, fps nativo 24
+                     en vez de forzar 30 — igual que preview-2/-4 acá —
+                     y -an para sacar el audio original). Nombrado
+                     "preview-5" porque "preview-3" y "preview" (sin
+                     número) ya están usados en index.html/Home para
+                     otra tarjeta, no por orden de aparición acá. -->
+                <video
+                  class="ytd-insight__card-media ytd-insight__card-media--3"
+                  poster="../assets/animations/youtube-compass-card/youtube-compass-preview-5-poster.jpg"
+                  width="1280"
+                  height="720"
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                >
+                  <source data-src="../assets/animations/youtube-compass-card/youtube-compass-preview-5.webm" type="video/webm">
+                  <source data-src="../assets/animations/youtube-compass-card/youtube-compass-preview-5.mp4" type="video/mp4">
                 </video>
                 <!-- Decorativo: simula las barritas de progreso de
                      Instagram Stories arriba del video, como si el
@@ -320,7 +341,10 @@
             <h2 class="ytd-solution__headline reveal-title">A feed that starts playing before you decide</h2>
           </div>
           <p class="ytd-solution__body ytd-solution__body--primary reveal-body">When you open the app, the player starts automatically with content from your creators — not the full video, but a preview built from their highest-retention moments. If it hooks you, you keep watching. If not, it automatically moves to the next one.</p>
-          <p class="ytd-solution__body ytd-solution__body--aside reveal-body">Alongside it, two types of cards: individual videos and themed collections (salsa dancing, Costa Rican politics, whatever). Entering a collection changes the player entirely — it fills with content from that theme only. Old-but-good content, with strong engagement and watch time, gets a real second chance without competing against what's freshly uploaded.</p>
+          <a href="https://youtube-clone-sandy-two.vercel.app" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--md ytd-solution__cta reveal-body">
+            Go to app
+            <span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span>
+          </a>
           <!-- Grabación de pantalla de David (YouTube) montada sobre un
                mockup de TV en After Effects/editor de video — 8
                columnas centradas. Mismo borde degradado tipo "Gemini"
@@ -347,11 +371,101 @@
               </div>
             </div>
           </div>
-          <a href="https://youtube-clone-sandy-two.vercel.app" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--md ytd-solution__cta">
-            Go to app
-            <span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span>
-          </a>
         </div>
+      </div>
+    </section>
+
+    <!-- Sección nueva a pedido de David: fondo con el degradé pastel tipo
+         "aurora" del hero de blog.youtube/creator-and-artist-stories/
+         (mismos 3 colores/posiciones que el SVG real de esa página —
+         ver comentario en css/project-youtube-discovery.css), un
+         título con el mismo tratamiento visual que .ytd-solution__headline
+         (reimplementado bajo su propia clase, no reusado directo — mismo
+         criterio del resto de esta página) y la grabación de pantalla
+         de "Real time Comments" con el mockup de TV completo (bezel +
+         pie/base) pero con fondo real transparente esta vez — canal
+         alpha de verdad (VP9/WebM, mismo criterio que
+         hands-tablet-mockup.webm en el proyecto de Onboarding: solo
+         WebM, sin fallback mp4 porque H.264 no soporta alpha, sin
+         poster porque tampoco se puede pre-visualizar transparencia en
+         un formato con poster). El fondo de esta grabación es negro
+         puro (0,0,0) SIEMPRE — colorkey muy ajustado (similarity 0.02,
+         casi exacto) para no comerse contenido oscuro real de la
+         página (su modo oscuro usa gris casi-negro #0F0F0F, no negro
+         puro — verificado en vivo, no a ojo, con overlay sobre fondo
+         magenta antes de aplicar esto al archivo final). 8 columnas
+         centradas (3/11, misma fórmula que .ytd-solution__video-card
+         / .ytd-insight__card). -->
+    <section class="ytd-comments">
+      <!-- Carrusel: mismo mecanismo (scroll nativo + scroll-snap +
+           dots) que .project-testimonial en project-onboarding —
+           cada slide es una unidad completa (título + body + video),
+           no solo el video, porque cada feature tiene su propia
+           copy. -->
+      <div class="ytd-comments__track">
+        <div class="ytd-comments__slide">
+          <div class="ytd-comments__grid grid-12">
+            <div class="ytd-comments__header">
+              <h2 class="ytd-comments__headline reveal-title">Real time comments</h2>
+            </div>
+            <p class="ytd-comments__body ytd-comments__body--primary reveal-body">Reactions, at the moment they happened. Jump straight to what people said when it mattered. Comments tied to the video's key moments, not buried at the bottom.</p>
+            <a href="https://youtube-clone-sandy-two.vercel.app" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--md ytd-comments__cta reveal-body">
+              Go to app
+              <span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span>
+            </a>
+            <div class="ytd-comments__video-wrap">
+              <video
+                class="ytd-comments__video"
+                width="1524"
+                height="998"
+                muted
+                loop
+                playsinline
+                preload="none"
+              >
+                <source data-src="../assets/animations/youtube-compass-card/comments-tv-mockup.webm" type="video/webm">
+              </video>
+            </div>
+          </div>
+        </div>
+
+        <!-- Grabación de pantalla "Collections" (carpeta Downloads/
+             Captures de David) — mockup de laptop, no de TV, distinto
+             al del primer slide. Fondo verde real (chroma key), quitado
+             con colorkey. Recorte medido con el filtro bbox de ffmpeg
+             sobre el clip completo para encontrar el rectángulo real
+             que ocupa la laptop en cada frame (la base es más ancha que
+             la pantalla) — 1800×1080, sin recortar el pie del mockup. -->
+        <div class="ytd-comments__slide">
+          <div class="ytd-comments__grid grid-12">
+            <div class="ytd-comments__header">
+              <h2 class="ytd-comments__headline reveal-title">One topic, endless content</h2>
+            </div>
+            <p class="ytd-comments__body ytd-comments__body--primary reveal-body">What if your interests became their own channel? Collections group everything you care about into themed cards built just for you.</p>
+            <a href="https://youtube-clone-sandy-two.vercel.app" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--md ytd-comments__cta reveal-body">
+              Go to app
+              <span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span>
+            </a>
+            <div class="ytd-comments__video-wrap">
+              <video
+                class="ytd-comments__video"
+                width="1800"
+                height="1080"
+                muted
+                loop
+                playsinline
+                preload="none"
+              >
+                <source data-src="../assets/animations/youtube-compass-card/collections-laptop-mockup.webm" type="video/webm">
+              </video>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="ytd-comments__dots" role="tablist" aria-label="Choose feature">
+        <button type="button" class="ytd-comments__dot is-active" role="tab" aria-selected="true" aria-label="Real time comments"></button>
+        <button type="button" class="ytd-comments__dot" role="tab" aria-selected="false" aria-label="One topic, endless content"></button>
       </div>
     </section>
 
