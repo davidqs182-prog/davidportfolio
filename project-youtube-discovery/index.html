@@ -415,7 +415,7 @@
             </a>
             <div class="ytd-comments__video-wrap">
               <video
-                class="ytd-comments__video"
+                class="ytd-comments__video reveal-body"
                 width="1524"
                 height="998"
                 muted
@@ -448,7 +448,7 @@
             </a>
             <div class="ytd-comments__video-wrap">
               <video
-                class="ytd-comments__video"
+                class="ytd-comments__video reveal-body"
                 width="1800"
                 height="1080"
                 muted
@@ -469,7 +469,56 @@
       </div>
     </section>
 
-    <!-- Próximas secciones (Para quién, Limitaciones, Cierre) -->
+    <!-- ===== "Who it's for" =====
+         Mismo patrón de header que .ytd-solution/.ytd-insight (eyebrow +
+         headline en 6 columnas, body debajo en las mismas). Las dos
+         tarjetas (Viewers/Creators) van directo como hijas del grid de
+         12, cada una 3 columnas (4/7 y 7/10) — juntas ocupan las 6
+         columnas centrales, a pedido de David.
+
+         Estructura de tarjeta calcada de blog.youtube/creator-and-artist-stories/
+         (foto arriba, luego chip + título) que David pidió analizar y
+         aplicar acá — mismo radio de 20px medido en vivo ahí. "Viewers"/
+         "Creators" hace de chip (el rol que ahí cumple la píldora de
+         categoría); la oración descriptiva usa tipografía de body, no
+         de headline (a pedido de David) — acá no hay tags de tercer
+         nivel, no hay ese contenido.
+
+         Fotos reales: audience-viewers.jpg (Foto 2.jpg de David, carpeta
+         Downloads) y audience-creators.jpg (foto 1.webp, carpeta Figma
+         Test) — redimensionadas/convertidas a jpg en
+         assets/images/youtube-compass/. -->
+    <section class="ytd-audience">
+      <div class="ytd-audience__inner container">
+        <div class="ytd-audience__grid grid-12">
+          <div class="ytd-audience__header">
+            <p class="eyebrow reveal-title">Who it's for</p>
+            <h2 class="ytd-audience__headline reveal-title">Two sides, one shared problem</h2>
+          </div>
+          <p class="ytd-audience__body reveal-body">YouTube Compass connects both sides faster: less friction to find, more chance to be found.</p>
+          <div class="ytd-audience__card ytd-audience__card--viewers reveal-body">
+            <div class="ytd-audience__card-media">
+              <img src="../assets/images/youtube-compass/audience-viewers.jpg" alt="A crowd of fans cheering at a stadium" width="1000" height="1500" loading="lazy">
+            </div>
+            <div class="ytd-audience__card-content">
+              <span class="ytd-audience__card-chip">Viewers</span>
+              <p class="ytd-audience__card-title">They waste time deciding what to watch, and sometimes don't even know what they're looking for.</p>
+            </div>
+          </div>
+          <div class="ytd-audience__card ytd-audience__card--creators reveal-body">
+            <div class="ytd-audience__card-media">
+              <img src="../assets/images/youtube-compass/audience-creators.jpg" alt="A content creator smiling at his desk" width="600" height="900" loading="lazy">
+            </div>
+            <div class="ytd-audience__card-content">
+              <span class="ytd-audience__card-chip">Creators</span>
+              <p class="ytd-audience__card-title">They compete for attention among more than 3 million active channels in the YouTube Partner Program.</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Próximas secciones (Limitaciones, Cierre) -->
 
     <!-- ===== "Get in touch" =====
          Mismo bloque de texto que en Home (ver index.html/css/styles.css

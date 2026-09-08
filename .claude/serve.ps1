@@ -19,8 +19,30 @@ $mime = @{
   ".mp4" = "video/mp4"; ".webm" = "video/webm"; ".mov" = "video/quicktime"
 }
 
-while ($listener.IsListening) {
-  $context = $listener.GetContext()
+# ===== Por qué esto ya no es un simple `while` secuencial =====
+# Versión anterior: un solo hilo, un `while` que atendía UNA request a
+# la vez de punta a punta (incluyendo `ReadAllBytes` completo de
+# archivos grandes antes de escribir el primer byte de respuesta) y
+# encima mandaba `Connection: close` en cada respuesta — forzando un
+# handshake TCP nuevo por cada request. Un navegador real abre varias
+# conexiones en paralelo por página (CSS, JS, fuentes, íconos, cada
+# imagen, cada video); acá TODAS esperaban en fila detrás de la que
+# el hilo único estuviera sirviendo en ese momento — si le tocaba
+# justo a un webm de ~20MB, la página entera se sentía trabada hasta
+# que ese archivo terminara. David lo notó en vivo ("mi versión local
+# dura en cargar... en general la página").
+#
+# Fix: cada conexión aceptada se despacha a un runspace del pool (hasta
+# 8 en simultáneo) y el `while` principal vuelve enseguida a aceptar la
+# siguiente — así un archivo grande ya no bloquea al resto. Sumado a
+# habilitar keep-alive (antes forzado a `false`), el navegador puede
+# reusar la misma conexión para varios requests seguidos en vez de
+# pagar un handshake nuevo por cada uno.
+$runspacePool = [runspacefactory]::CreateRunspacePool(1, 8)
+$runspacePool.Open()
+
+$handleRequest = {
+  param($context, $Root, $mime)
   $request = $context.Request
   $response = $context.Response
   try {
@@ -44,14 +66,55 @@ while ($listener.IsListening) {
       if (-not $contentType) { $contentType = "application/octet-stream" }
       $response.ContentType = $contentType
       $response.Headers.Add("Accept-Ranges", "bytes")
+      # Keep-alive probado y revertido: combinado con despachar cada
+      # conexión a un runspace del pool (ver más abajo), dos requests
+      # que llegan por la MISMA conexión persistente pueden terminar
+      # respondidas fuera de orden por runspaces distintos — HTTP/1.1
+      # exige que se respondan en el mismo orden en que llegaron por
+      # esa conexión, así que el navegador veía la conexión como rota
+      # (ERR_CONNECTION_RESET, confirmado en vivo). La concurrencia
+      # entre conexiones DISTINTAS (el fix real contra el bloqueo en
+      # cascada) no depende de esto — se mantiene con `close` acá.
       $response.KeepAlive = $false
       $response.Headers.Add("Connection", "close")
 
-      $fileLength = (Get-Item $filePath).Length
+      $fileInfo = Get-Item $filePath
+      $fileLength = $fileInfo.Length
+      $lastModified = $fileInfo.LastWriteTimeUtc.ToString("R")
+      $response.Headers.Add("Last-Modified", $lastModified)
+      # Cache liviano: revalida siempre (por eso `no-cache`, no
+      # `max-age`) para nunca servir una versión vieja mientras se
+      # sigue editando en vivo, pero permite que el navegador mande
+      # If-Modified-Since y se ahorre volver a bajar un archivo que no
+      # cambió — sobre todo importa para los videos grandes y las
+      # fuentes/íconos que se piden en cada página.
+      $response.Headers.Add("Cache-Control", "no-cache")
+
+      $ifModifiedSince = $request.Headers["If-Modified-Since"]
+      $notModified = $false
+      if ($ifModifiedSince) {
+        # DateTimeOffset (no DateTime) parsea bien el formato RFC1123
+        # ("Sat, 05 Sep 2026 14:09:51 GMT") que mandan los navegadores;
+        # DateTime::TryParse a secas lo probó y fallaba silenciosamente
+        # con ese formato. Se trunca a segundos antes de comparar
+        # porque el header HTTP no lleva milisegundos y LastWriteTimeUtc
+        # sí — sin truncar, la comparación casi nunca daba igual.
+        $parsedDate = [DateTimeOffset]::MinValue
+        if ([DateTimeOffset]::TryParse($ifModifiedSince, [ref]$parsedDate)) {
+          $truncatedTicks = $fileInfo.LastWriteTimeUtc.Ticks - ($fileInfo.LastWriteTimeUtc.Ticks % [TimeSpan]::TicksPerSecond)
+          $fileModified = [DateTimeOffset]::new($truncatedTicks, [TimeSpan]::Zero)
+          if ($fileModified -le $parsedDate) {
+            $notModified = $true
+          }
+        }
+      }
+
       $rangeHeader = $request.Headers["Range"]
 
       if ($request.HttpMethod -eq "HEAD") {
         $response.ContentLength64 = $fileLength
+      } elseif ($notModified -and -not $rangeHeader) {
+        $response.StatusCode = 304
       } elseif ($rangeHeader -and $rangeHeader -match "bytes=(\d*)-(\d*)") {
         $start = if ($matches[1]) { [int64]$matches[1] } else { 0 }
         $end = if ($matches[2]) { [int64]$matches[2] } else { $fileLength - 1 }
@@ -75,9 +138,21 @@ while ($listener.IsListening) {
         }
         $stream.Close()
       } else {
-        $bytes = [System.IO.File]::ReadAllBytes($filePath)
-        $response.ContentLength64 = $bytes.Length
-        $response.OutputStream.Write($bytes, 0, $bytes.Length)
+        # Streameado en vez de ReadAllBytes: manda el archivo en
+        # chunks a medida que lo lee, no todo junto recién al final —
+        # para un video grande, esto es la diferencia entre "el
+        # navegador ve los primeros bytes casi al instante" y "espera
+        # a que el archivo entero esté en memoria antes de recibir
+        # nada".
+        $response.ContentLength64 = $fileLength
+        $stream = [System.IO.File]::OpenRead($filePath)
+        $buffer = New-Object byte[] 65536
+        while ($true) {
+          $read = $stream.Read($buffer, 0, $buffer.Length)
+          if ($read -le 0) { break }
+          $response.OutputStream.Write($buffer, 0, $read)
+        }
+        $stream.Close()
       }
     } else {
       $response.StatusCode = 404
@@ -88,5 +163,31 @@ while ($listener.IsListening) {
     $response.StatusCode = 500
   } finally {
     $response.OutputStream.Close()
+  }
+}
+
+# Instancias de [powershell] en vuelo, para poder liberarlas (.Dispose())
+# una vez que terminan — si no, cada request dejaría su instancia viva
+# en memoria para siempre en una sesión de dev larga.
+$pending = New-Object System.Collections.Generic.List[System.Management.Automation.PowerShell]
+
+while ($listener.IsListening) {
+  $context = $listener.GetContext()
+  $ps = [powershell]::Create()
+  $ps.RunspacePool = $runspacePool
+  [void]$ps.AddScript($handleRequest).AddArgument($context).AddArgument($Root).AddArgument($mime)
+  # BeginInvoke (no Invoke): dispara y no espera — el while vuelve de
+  # inmediato a GetContext() para aceptar la próxima conexión mientras
+  # esta se sigue sirviendo en su propio runspace.
+  $handle = $ps.BeginInvoke()
+  $pending.Add($ps)
+
+  # Barrido liviano de las que ya terminaron, antes de volver a
+  # esperar la próxima conexión — evita que $pending crezca sin límite.
+  for ($i = $pending.Count - 1; $i -ge 0; $i--) {
+    if ($pending[$i].InvocationStateInfo.State -in @("Completed", "Failed", "Stopped")) {
+      $pending[$i].Dispose()
+      $pending.RemoveAt($i)
+    }
   }
 }
