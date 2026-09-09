@@ -289,6 +289,25 @@
       <p class="ds-section-desc"><span class="ds-tag">extra</span> = variante que agregamos nosotros, no viene del componente Button original de Figma. <strong>Dark</strong> usa Purple 950 (default) y Purple 900 (hover) — un "negro" que en realidad es parte de la escala de marca. <strong>Outline + ícono</strong> es el patrón usado en el header de las páginas de proyecto ("Back to home"): ícono al inicio + texto, sin animación (a diferencia de <strong>Dark + ícono</strong>, que es el patrón de "Go to project" en las tarjetas de "Work" — texto + ícono al final, deslizándose a la derecha en hover). Los dos usan el mismo <code>gap: 8px</code> de <code>.btn</code>, solo cambia el orden de ícono/texto en el HTML. <strong>Outline + solo ícono</strong> usa el modifier <code>.btn--icon</code> (<code>css/components.css</code>) — mismo componente, sin texto, circular (<code>aspect-ratio:1/1</code> contra el <code>min-height</code> de cada tamaño); como el ícono es el único contenido, el botón necesita su propio <code>aria-label</code> en vez del <code>aria-hidden</code> que llevaría acompañando texto visible. Flechas de swipe de los carruseles de la página de Onboarding ("Behind the scenes" y "Testimonial").</p>
     </section>
 
+    <!-- ===== Link de fuente (cita) ===== -->
+    <section class="ds-section" id="source-link">
+      <h2>Link de fuente (cita)</h2>
+      <p class="ds-section-desc">
+        <code>.source-link</code> — para marcar una cifra/dato dentro de un párrafo de
+        body con su fuente, sin que se vea como un botón ni rompa el flujo del texto.
+        Hereda el color del texto que lo rodea (funciona igual en cualquier página,
+        sin importar qué negro/gris use cada una); se distingue por el subrayado
+        punteado, que se vuelve sólido en hover. Siempre <code>target="_blank"
+        rel="noopener noreferrer"</code>, como cualquier link externo del sitio.
+      </p>
+      <p style="max-width: 600px;">
+        Every day, over
+        <a href="https://blog.youtube/press/" target="_blank" rel="noopener noreferrer" class="source-link">20 million videos</a>
+        get uploaded to YouTube.
+      </p>
+      <p class="ds-section-desc">Usado en <code>project-youtube-discovery/index.html</code> — la cifra de videos subidos por día ("El problema") y la de canales activos en el YouTube Partner Program (tarjeta "Creators" de "Who it's for"), ambas citando la fuente oficial (blog.youtube).</p>
+    </section>
+
     <!-- ===== Íconos ===== -->
     <section class="ds-section" id="icons">
       <h2>Íconos</h2>

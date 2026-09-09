@@ -453,6 +453,39 @@ body {
 .ytd-insight__card {
   grid-column: 3 / 11;
   margin-top: var(--space-64);
+  /* position:relative para poder anclar .ytd-insight__card-spark acá
+     (no en -border-inner, que tiene overflow:hidden por el radio
+     redondeado del video — el spark necesita poder asomarse afuera
+     del borde de la tarjeta, no quedar recortado por esa esquina). */
+  position: relative;
+}
+
+/* Render 3D (spark.png, carpeta Figma Test de David) flotando sobre
+   la esquina superior derecha de la tarjeta — mismo @keyframes
+   ytd-compass-float ya definido más arriba (pensado justo para esto:
+   simular que un render 3D levita, sin @keyframes nuevo). Tamaño de
+   display bastante menor a los 113px nativos del PNG — es un acento
+   decorativo, no debería competir con el video. */
+.ytd-insight__card-spark {
+  position: absolute;
+  top: -28px;
+  right: -28px;
+  width: 72px;
+  height: 72px;
+  /* z-index:2 — .ytd-insight__card-stories (la barrita blanca de
+     progreso) usa z-index:1 y ninguno de sus ancestros hasta acá
+     arriba (-border, -border-inner) crea su propio contexto de
+     apilamiento, así que compite directo contra el spark en el mismo
+     nivel — sin esto, la barrita quedaba encima aunque el spark venga
+     después en el HTML. */
+  z-index: 2;
+  animation: ytd-compass-float 4s ease-in-out infinite;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ytd-insight__card-spark {
+    animation: none;
+  }
 }
 
 .ytd-insight__card-border {
@@ -970,6 +1003,33 @@ body {
    align-items:stretch (default del grid) lo estiraría a la altura de
    ese vecino — ya pasó una vez acá (con el párrafo --aside, ya
    eliminado) y se veía como un blob circular en vez de un botón. */
+/* Estilo de los 3 botones "Go to app" de esta página (acá y en las 2
+   tarjetas de .ytd-comments) — a pedido de David, calcado del botón
+   "Load more" de blog.youtube (medido en vivo: negro puro #000, no
+   --ytd-black — es un negro distinto, más "puro", del que blog.youtube
+   usa para su propio texto; radio 24px sobre 40px de alto = pill
+   completo, que ya nos da gratis el 999px de .btn). Fuente real de esa
+   referencia es "YoutubeSansMonoSemiBold" (no self-hosted acá, mismo
+   criterio que .ytd-audience__card-chip) — se aproxima con
+   --font-body + uppercase + tracking, igual que ese chip. El ícono y
+   la animación de hover de la flecha (.icon-forward) NO cambian, son
+   de .btn/components.css, esta clase solo pisa color/tipografía. */
+.ytd-cta {
+  background-color: #000000;
+  color: #ffffff;
+  padding: 0 var(--space-24);
+  min-height: 40px;
+  font-family: var(--font-body);
+  font-size: 14px;
+  font-weight: 600;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.ytd-cta:hover {
+  background-color: var(--ytd-black);
+}
+
 .ytd-solution__cta {
   grid-column: 2 / 8;
   justify-self: start;
@@ -1335,6 +1395,174 @@ body {
      apenas, ya que la primera ya trae var(--space-32) de por sí. */
   .ytd-audience__card--creators {
     margin-top: var(--space-16);
+  }
+}
+
+/* ===== "Cierre" =====
+   Mismo patrón que .ytd-solution/.ytd-audience (eyebrow + headline +
+   body en 6 columnas, 2/8). Fondo blanco a pedido de David — mismo
+   #FFFFFF que .ytd-insight, para cerrar con ese mismo tono en vez de
+   heredar el #FAFAFA de <body> que traía .ytd-audience justo arriba. */
+.ytd-closing {
+  padding-block: var(--space-96);
+  background-color: #ffffff;
+}
+
+.ytd-closing__header {
+  grid-column: 2 / 8;
+  grid-row: 1;
+}
+
+.ytd-closing__headline {
+  margin-top: var(--space-16);
+  font-family: var(--font-display);
+  font-weight: 800;
+  font-size: var(--text-h1-size);
+  line-height: var(--text-h1-line);
+  letter-spacing: 0;
+  color: var(--ytd-black);
+}
+
+.ytd-closing__body {
+  grid-column: 2 / 8;
+  grid-row: 2;
+  margin-top: var(--space-16);
+  max-width: 600px;
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--ytd-black);
+}
+
+/* Lista de "Limitaciones" — a pedido de David, centrada horizontalmente
+   con el video: en vez de arrancar en la fila del header (como un
+   "aside" más), comparte fila con .ytd-closing__video-card (grid-row:3
+   en los dos, ver más abajo — no la 2: esa ya la ocupa el body en toda
+   la fila 2/8, que se solapa con las columnas 3/7 del video) y se
+   centra verticalmente contra su altura (align-self:center) en vez de
+   arrancar pegada arriba. */
+.ytd-closing__limitations {
+  grid-column: 8 / 13;
+  grid-row: 3;
+  align-self: center;
+  list-style: none;
+}
+
+.ytd-closing__limitations li {
+  display: flex;
+  align-items: flex-start;
+  gap: var(--space-12);
+}
+
+.ytd-closing__limitations li + li {
+  margin-top: var(--space-24);
+}
+
+.ytd-closing__limitation-spark {
+  flex-shrink: 0;
+  width: 28px;
+  height: 28px;
+  /* Ajustado a ojo contra la primera línea de texto (line-height:24px
+     de --text-body-lg) — a este tamaño ya no hace falta bajarlo, más
+     bien un pelín para arriba para que quede centrado contra esa
+     primera línea en vez de alineado por displcement al borde. */
+  margin-top: -2px;
+}
+
+.ytd-closing__limitations p {
+  margin: 0;
+  font-family: var(--font-body);
+  font-size: var(--text-body-lg-size);
+  line-height: var(--text-body-lg-line);
+  color: var(--ytd-black);
+}
+
+/* 4 columnas (3/7) — no las 8 centradas (3/11) que usan
+   .ytd-insight__card/.ytd-solution__video-card: ese ancho está
+   pensado para 16:9, y este video es vertical (9:16); a 8 columnas
+   quedaría desproporcionadamente alto. Empieza en la columna 3, a
+   pedido de David. */
+.ytd-closing__video-card {
+  grid-column: 3 / 7;
+  grid-row: 3;
+  margin-top: var(--space-64);
+}
+
+/* Mismo borde degradado animado "Gemini" que .ytd-insight__card-border
+   / .ytd-solution__video-border (mismo @keyframes ya definido arriba,
+   ytd-insight-card-border-rotate — no uno nuevo). */
+.ytd-closing__video-border {
+  background: linear-gradient(
+    135deg,
+    #4285f4,
+    #9b72cb,
+    #1ba1e3,
+    #d96570,
+    #9b72cb,
+    #4285f4
+  );
+  background-size: 300% 300%;
+  animation: ytd-insight-card-border-rotate 6s ease infinite;
+  border-radius: 12px;
+  padding: 3px;
+  box-shadow:
+    0 0 20px rgba(66, 133, 244, 0.35),
+    0 0 40px rgba(155, 114, 203, 0.25),
+    0 0 60px rgba(217, 101, 112, 0.15);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ytd-closing__video-border {
+    animation: none;
+  }
+}
+
+/* 9:16 (no 16:9) — el video fuente es vertical (1080x1920). */
+.ytd-closing__video-border-inner {
+  position: relative;
+  aspect-ratio: 9 / 16;
+  border-radius: 9px;
+  overflow: hidden;
+  background-color: #000000;
+}
+
+.ytd-closing__video {
+  display: block;
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+@media (max-width: 767px) {
+  /* grid-row:auto acá es necesario, no cosmético: header/body tienen
+     grid-row:1 y video-card grid-row:2 (para poder compartir fila con
+     .ytd-closing__limitations en desktop) — sin resetear eso, en
+     mobile (donde los 4 pasan a grid-column:1/-1, ancho completo)
+     header y body quedarían los DOS en la fila 1, superpuestos. */
+  .ytd-closing__header,
+  .ytd-closing__body,
+  .ytd-closing__limitations,
+  .ytd-closing__video-card {
+    grid-column: 1 / -1;
+    grid-row: auto;
+    align-self: auto;
+  }
+
+  .ytd-closing__video-card {
+    margin-top: var(--space-32);
+  }
+
+  .ytd-closing__body {
+    margin-top: 0;
+  }
+
+  /* En mobile ya no está al lado del body (ambos van a ancho
+     completo, apilados) — necesita su propio aire arriba en vez del
+     centrado vertical pensado para acompañar la altura del video. */
+  .ytd-closing__limitations {
+    margin-top: var(--space-32);
   }
 }
 

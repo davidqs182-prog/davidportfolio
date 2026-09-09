@@ -177,7 +177,7 @@
               <source data-src="../assets/animations/youtube-compass-card/problem-animation.mp4" type="video/mp4">
             </video>
           </div>
-          <p class="ytd-problem__body reveal-body">Every day, 3 million videos get uploaded to YouTube. To pick one, users have almost nothing to go on: a thumbnail, a title, a few seconds of doubt. The decision comes before the enjoyment — creating friction at the exact moment that matters most: the first one.</p>
+          <p class="ytd-problem__body reveal-body">Every day, over <a href="https://blog.youtube/press/" target="_blank" rel="noopener noreferrer" class="source-link">20 million videos</a> get uploaded to YouTube. To pick one, users have almost nothing to go on: a thumbnail, a title, a few seconds of doubt. The decision comes before the enjoyment — creating friction at the exact moment that matters most: the first one.</p>
         </div>
       </div>
     </section>
@@ -323,6 +323,7 @@
                 </div>
               </div>
             </div>
+            <img class="ytd-insight__card-spark" src="../assets/images/youtube-compass/insight-spark.png" alt="" width="113" height="113" loading="lazy">
           </div>
         </div>
       </div>
@@ -341,7 +342,7 @@
             <h2 class="ytd-solution__headline reveal-title">A feed that starts playing before you decide</h2>
           </div>
           <p class="ytd-solution__body ytd-solution__body--primary reveal-body">When you open the app, the player starts automatically with content from your creators — not the full video, but a preview built from their highest-retention moments. If it hooks you, you keep watching. If not, it automatically moves to the next one.</p>
-          <a href="https://youtube-clone-sandy-two.vercel.app" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--md ytd-solution__cta reveal-body">
+          <a href="https://youtube-clone-sandy-two.vercel.app" target="_blank" rel="noopener noreferrer" class="btn ytd-cta ytd-solution__cta reveal-body">
             Go to app
             <span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span>
           </a>
@@ -409,7 +410,7 @@
               <h2 class="ytd-comments__headline reveal-title">Real time comments</h2>
             </div>
             <p class="ytd-comments__body ytd-comments__body--primary reveal-body">Reactions, at the moment they happened. Jump straight to what people said when it mattered. Comments tied to the video's key moments, not buried at the bottom.</p>
-            <a href="https://youtube-clone-sandy-two.vercel.app" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--md ytd-comments__cta reveal-body">
+            <a href="https://youtube-clone-sandy-two.vercel.app" target="_blank" rel="noopener noreferrer" class="btn ytd-cta ytd-comments__cta reveal-body">
               Go to app
               <span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span>
             </a>
@@ -442,7 +443,7 @@
               <h2 class="ytd-comments__headline reveal-title">One topic, endless content</h2>
             </div>
             <p class="ytd-comments__body ytd-comments__body--primary reveal-body">What if your interests became their own channel? Collections group everything you care about into themed cards built just for you.</p>
-            <a href="https://youtube-clone-sandy-two.vercel.app" target="_blank" rel="noopener noreferrer" class="btn btn--dark btn--md ytd-comments__cta reveal-body">
+            <a href="https://youtube-clone-sandy-two.vercel.app" target="_blank" rel="noopener noreferrer" class="btn ytd-cta ytd-comments__cta reveal-body">
               Go to app
               <span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span>
             </a>
@@ -511,14 +512,81 @@
             </div>
             <div class="ytd-audience__card-content">
               <span class="ytd-audience__card-chip">Creators</span>
-              <p class="ytd-audience__card-title">They compete for attention among more than 3 million active channels in the YouTube Partner Program.</p>
+              <p class="ytd-audience__card-title">They compete for attention among more than <a href="https://blog.youtube/news-and-events/youtube-partner-program-updates-2027-new-opportunities-earn/" target="_blank" rel="noopener noreferrer" class="source-link">3 million active channels</a> in the YouTube Partner Program.</p>
             </div>
           </div>
         </div>
       </div>
     </section>
 
-    <!-- Próximas secciones (Limitaciones, Cierre) -->
+    <!-- ===== "Cierre" =====
+         Mismo patrón que .ytd-solution/.ytd-audience (eyebrow + headline
+         en 6 columnas, 2/8, body debajo en las mismas) — a pedido de
+         David, sin inventar nada nuevo de layout para esto. Copy real
+         de la sección 7 ("Cierre") del proyecto, ver memoria. -->
+    <section class="ytd-closing">
+      <div class="ytd-closing__inner container">
+        <div class="ytd-closing__grid grid-12">
+          <div class="ytd-closing__header">
+            <p class="eyebrow reveal-title">In process...</p>
+            <h2 class="ytd-closing__headline reveal-title">Things I am working on</h2>
+          </div>
+          <p class="ytd-closing__body reveal-body">A hypothesis, not an answer. YouTube Compass starts from a simple idea: the data to improve discovery already exists inside YouTube. What's missing is connecting it. A project I'd love to test with real platform data.</p>
+          <!-- Limitaciones (sección 6 del copy, pendiente hasta ahora)
+               — a pedido de David, en columna 8/13 (misma fórmula
+               "aside" que .ytd-solution__body--aside/.ytd-insight__body--aside),
+               al lado del header/body en vez de abajo. Bullets con el
+               mismo spark.png (render 3D, carpeta Figma Test) que ya
+               flota sobre la tarjeta de "Key insight" — acá quieto, de
+               ícono de lista, no animado. -->
+          <ul class="ytd-closing__limitations reveal-body">
+            <li>
+              <img class="ytd-closing__limitation-spark" src="../assets/images/youtube-compass/insight-spark.png" alt="" width="113" height="113">
+              <p><strong>Ads/revenue impact</strong> — What happens to the monetization model if the player starts with "trailers" instead of the full video (fewer pre-roll impressions, for example).</p>
+            </li>
+            <li>
+              <img class="ytd-closing__limitation-spark" src="../assets/images/youtube-compass/insight-spark.png" alt="" width="113" height="113">
+              <p><strong>Relationship to Shorts</strong> — This doesn't replace or directly compete with Shorts.</p>
+            </li>
+            <li>
+              <img class="ytd-closing__limitation-spark" src="../assets/images/youtube-compass/insight-spark.png" alt="" width="113" height="113">
+              <p><strong>What this project doesn't solve</strong> — A conceptual project, with real limits: no real data, no validation against the real recommendation engine.</p>
+            </li>
+          </ul>
+          <!-- Video re-procesado con una fuente más corta (11.3s) y
+               mejor calidad — a pedido de David, arranca en la
+               columna 3. Es vertical (1080x1920, 9:16), a diferencia
+               de los otros videos de esta página (16:9) — angosto
+               (4 columnas, 3/7) en vez de las 8 centradas que usan
+               .ytd-insight__card/.ytd-solution__video-card, porque a
+               ese ancho un 9:16 se ve desproporcionadamente alto.
+               Mismo borde degradado "Gemini" que esos dos, calcado de
+               .ytd-solution__video-card (border → border-inner →
+               video), solo con el aspect-ratio propio. -->
+          <div class="ytd-closing__video-card">
+            <div class="ytd-closing__video-border">
+              <div class="ytd-closing__video-border-inner">
+                <video
+                  class="ytd-closing__video"
+                  poster="../assets/animations/youtube-compass-card/closing-in-process-poster.jpg"
+                  width="1080"
+                  height="1920"
+                  muted
+                  loop
+                  playsinline
+                  preload="none"
+                >
+                  <source data-src="../assets/animations/youtube-compass-card/closing-in-process.webm" type="video/webm">
+                  <source data-src="../assets/animations/youtube-compass-card/closing-in-process.mp4" type="video/mp4">
+                </video>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Próxima sección pendiente (Limitaciones) -->
 
     <!-- ===== "Get in touch" =====
          Mismo bloque de texto que en Home (ver index.html/css/styles.css

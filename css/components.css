@@ -240,6 +240,27 @@
   background-color: var(--color-purple-200);
 }
 
+/* ---------- Source link (cita/fuente) ----------
+   Link inline dentro de un párrafo de body, para marcar una cifra/dato
+   con su fuente sin romper el flujo del texto ni "gritar" como un
+   botón — hereda el color del texto que lo rodea (así funciona igual
+   en cualquier página, sin importar qué negro/gris use cada una) y
+   usa un subrayado punteado en vez de sólido para distinguirse de un
+   link de navegación normal; se vuelve sólido en hover como única
+   señal de interactividad. Nace en el "problema" y las tarjetas de
+   audiencia de project-youtube-discovery (cifras de YouTube citadas
+   con su fuente oficial). */
+.source-link {
+  color: inherit;
+  text-decoration: underline;
+  text-decoration-style: dotted;
+  text-underline-offset: 3px;
+}
+
+.source-link:hover {
+  text-decoration-style: solid;
+}
+
 /* ---------- Icons ----------
    Íconos de Google Material Symbols (Rounded) — nunca SVG dibujado a
    mano. El nombre del ícono va como texto adentro del <span> (ej.
