@@ -65,11 +65,38 @@ Por default **no regenera** un `-alpha.mp4` que ya existe (para no rehacer
 todo cada vez). Para forzar: correr el workflow con el input `force` en
 `true`.
 
+### El gotcha que costó una tanda entera: Safari compone PREMULTIPLICADO
+
+Safari compone el HEVC-alpha con la fórmula de **alpha premultiplicado**
+(`resultado = RGB + fondo·(1−a)`), no la de alpha recto
+(`RGB·a + fondo·(1−a)`). Nuestras fuentes (`.webm` y PNG) son **alpha
+recto**: RGB pleno en los bordes, y en los mockups con chroma key las
+zonas transparentes tienen el verde o el blanco del fondo original (no
+negro). Sin premultiplicar, en Safari eso se ve como:
+
+- un **halo claro** alrededor de toda la figura (los bordes con
+  `a≈0.5` dan `RGB + fondo·0.5` → muy claro), y
+- un **fondo blanco o verde lavado** en vez de transparente (el RGB de
+  las zonas `a=0` se suma sobre la página).
+
+En Chrome/Firefox no pasa porque usan el `.webm` (alpha recto, compuesto
+recto) — es solo Safari y solo el HEVC.
+
+**Fix (ya en el workflow):** `-vf "format=rgba,premultiply=inplace=1,format=yuva420p"`
+antes del encoder. Premultiplica el RGB por el alpha en espacio RGB
+(equivale a componer contra negro): deja `RGB=0` donde `a=0` y `RGB·a`
+en los bordes, que es justo lo que la fórmula premultiplicada de Safari
+espera. **Verificar en RGB** (no YUV): un píxel transparente tiene que
+quedar `(0,0,0)`, un borde con `a` tiene que quedar `≈ RGB_original·(a/255)`.
+
 ### Por qué cada flag
 
 - **`-c:v libvpx-vp9` antes de `-i`**: fuerza el decoder que entrega el
   alpha del `.webm` como `yuva420p`. Sin esto el alpha se puede perder en
   la decodificación.
+- **`format=rgba,premultiply=inplace=1,format=yuva420p`**: premultiplica
+  el alpha (ver el gotcha de arriba). El `format=rgba` antes es
+  obligatorio — premultiplicar en YUV rompe el croma (centrado en 128).
 - **`-alpha_quality 0.95` + `-q:v 65`**: calidad alta a propósito. Es un
   portafolio — mejor que pese de más a que se vea blando (mismo criterio
   que el skill `compress-portfolio-video`, que llegó a CRF 10). Si un

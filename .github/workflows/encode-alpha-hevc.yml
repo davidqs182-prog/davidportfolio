@@ -85,6 +85,19 @@ jobs:
             fi
 
             echo "::group::encode -> $out"
+            # -vf format=rgba,premultiply=inplace=1,format=yuva420p:
+            #   Safari compone el HEVC-alpha como alpha PREMULTIPLICADO
+            #   (result = RGB + fondo*(1-a)). Nuestras fuentes son alpha
+            #   RECTO (RGB pleno en los bordes; verde o blanco en las
+            #   zonas transparentes de los mockups con chroma key). Sin
+            #   premultiplicar, en Safari eso se ve como un halo claro
+            #   alrededor de la figura y un fondo blanco/verde lavado en
+            #   vez de transparente. Premultiplicar en RGB (multiplicar
+            #   RGB por alpha, i.e. componer contra negro) deja RGB=0 donde
+            #   a=0 y RGB*a en los bordes -> la fórmula premultiplicada de
+            #   Safari da el resultado correcto. Chrome/Firefox (alpha
+            #   recto sobre el .webm) no se ven afectados: usan otro
+            #   archivo.
             # -alpha_quality 0.95 / -q:v 65: calidad alta a propósito —
             #   es un portafolio, mejor pesar de más que verse blando
             #   (mismo criterio que compress-portfolio-video). Si un
@@ -92,6 +105,7 @@ jobs:
             # -tag:v hvc1: OBLIGATORIO. Safari no reproduce HEVC en mp4
             #   si el tag es hev1 en vez de hvc1.
             ffmpeg -y "${in_args[@]}" \
+              -vf "format=rgba,premultiply=inplace=1,format=yuva420p" \
               -an \
               -c:v hevc_videotoolbox -alpha_quality 0.95 -q:v 65 \
               -pix_fmt yuva420p -tag:v hvc1 \
