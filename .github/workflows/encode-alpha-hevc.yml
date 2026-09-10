@@ -69,16 +69,29 @@ jobs:
               continue
             fi
 
-            echo "::group::encode $src -> $out"
-            # -c:v libvpx-vp9 ANTES de -i: fuerza el decoder que sí
-            #   entrega el alpha del webm como yuva420p.
+            # Fuente preferida: si hay una secuencia PNG master en
+            # <dir>/frames/ al lado del .webm, se codifica DESDE los PNG.
+            # Es una sola compresión (mejor nitidez y bordes de alpha más
+            # limpios) en vez de la cadena PNG -> webm -> HEVC. Si no hay
+            # carpeta frames/, se usa el .webm (con -c:v libvpx-vp9 ANTES
+            # de -i para que el decoder entregue el alpha como yuva420p).
+            framedir="$(dirname "$src")/frames"
+            if ls "$framedir"/frame_*.png >/dev/null 2>&1; then
+              echo "fuente: secuencia PNG ($framedir)"
+              in_args=(-framerate 30 -i "$framedir/frame_%05d.png")
+            else
+              echo "fuente: $src"
+              in_args=(-c:v libvpx-vp9 -i "$src")
+            fi
+
+            echo "::group::encode -> $out"
             # -alpha_quality 0.95 / -q:v 65: calidad alta a propósito —
             #   es un portafolio, mejor pesar de más que verse blando
             #   (mismo criterio que compress-portfolio-video). Si un
             #   archivo puntual queda muy pesado, bajar el -q:v de ESE.
             # -tag:v hvc1: OBLIGATORIO. Safari no reproduce HEVC en mp4
             #   si el tag es hev1 en vez de hvc1.
-            ffmpeg -y -c:v libvpx-vp9 -i "$src" \
+            ffmpeg -y "${in_args[@]}" \
               -an \
               -c:v hevc_videotoolbox -alpha_quality 0.95 -q:v 65 \
               -pix_fmt yuva420p -tag:v hvc1 \

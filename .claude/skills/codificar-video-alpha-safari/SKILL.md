@@ -111,12 +111,36 @@ transparencia real, sin negro ni verde.
 
 ### Mejor calidad: fuente con alpha original
 
-El workflow se alimenta del `.webm` VP9+alpha que ya existe — funciona,
-pero es "comprimir algo ya comprimido". Si David guarda los **renders
-originales con alpha** (comp de After Effects, ProRes 4444, o secuencia
-PNG), conviene commitear ESE como fuente y apuntar el workflow ahí, para
-que el HEVC salga de material sin pérdida previa. (Hoy el workflow busca
-`.webm`; si se suman fuentes en otro formato, ajustar el `find`.)
+Codificar el HEVC desde el `.webm` VP9+alpha es "comprimir algo ya
+comprimido" — pierde nitidez y puede dejar un borde claro en el alpha.
+
+El workflow ya prefiere una **secuencia PNG master** cuando existe: si al
+lado del `<nombre>.webm` hay una carpeta `frames/` con
+`frame_00000.png`, `frame_00001.png`, … el HEVC se codifica desde esos
+PNG (una sola compresión). Es el caso del avatar del hero
+(`assets/animations/hero-guitar-scroll/frames/`). Si no hay `frames/`,
+cae al `.webm`.
+
+Para sumar otro video a este camino: commitear su secuencia PNG en
+`<carpeta-del-video>/frames/frame_%05d.png` y correr el workflow con
+`force`. (El `.webm` de ese video conviene regenerarlo también desde los
+PNG — ver abajo.)
+
+**Regenerar el `.webm` desde los PNG** (local, Windows — no necesita
+Mac), a más calidad y manteniendo TODOS los frames como keyframe (el
+scroll-scrub del hero hace seek en las dos direcciones, ver `js/main.js`;
+sin `-g 1` el seek hacia atrás se entrecorta):
+
+```bash
+ffmpeg -y -framerate 30 -i "<carpeta>/frames/frame_%05d.png" \
+  -c:v libvpx-vp9 -crf 18 -b:v 0 -g 1 -deadline good -cpu-used 1 \
+  -pix_fmt yuva420p -an \
+  "<carpeta>/<nombre>.webm"
+```
+
+Verificar que quedó all-keyframes:
+`ffprobe -v error -select_streams v:0 -show_entries frame=key_frame -of csv=p=0 "<nombre>.webm" | sort | uniq -c`
+→ debe dar solo `N 1` (N = cantidad de frames), ningún `0`.
 
 ## Cómo lo integra Claude en el HTML (después de `git pull`)
 
