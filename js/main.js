@@ -643,10 +643,40 @@
 
       if (lineY <= viewportBottom) {
         entry.triggered = true;
-        entry.video.play().catch(function () {
-          // Autoplay bloqueado: el poster se queda como imagen estática
-          // hasta que el usuario interactúe con la página.
-        });
+        var v = entry.video;
+
+        // El disparador puede caer ANTES de que el IntersectionObserver
+        // de lazy-load (loadVideo, más arriba) le haya puesto el src —
+        // pasa cuando la línea de "data-play-at" ya está dentro del
+        // viewport al cargar la página (layout de tablet: el contenido
+        // arriba de la tarjeta es más corto). Sin esto, play() se
+        // llamaba sobre un <video> sin fuente, fallaba en silencio, y
+        // como ya quedaba "triggered" no se reintentaba nunca — había
+        // que recargar. Cargamos acá si hace falta y recién ahí
+        // reproducimos.
+        var pendingSrc = v.querySelectorAll("source[data-src]");
+        if (pendingSrc.length) {
+          pendingSrc.forEach(function (s) {
+            s.src = s.dataset.src;
+            s.removeAttribute("data-src");
+          });
+          v.load();
+        }
+
+        var play = function () {
+          v.play().catch(function () {
+            // Autoplay bloqueado: el poster se queda como imagen
+            // estática hasta que el usuario interactúe con la página.
+          });
+        };
+        if (v.readyState >= 2) {
+          play();
+        } else {
+          v.addEventListener("canplay", function onCanPlay() {
+            v.removeEventListener("canplay", onCanPlay);
+            play();
+          });
+        }
       }
     });
 

@@ -450,6 +450,41 @@
   display: none;
 }
 
+/* El overlay también sigue el breakpoint REAL del viewport (mismos
+   cortes que tokens.css: Tablet 768–1023px, Mobile <768px). Antes solo
+   cambiaba a 8/4 columnas dentro del <iframe> de vista previa (clases
+   .bp-tablet/.bp-mobile vía applyGridBreakpoint en js/main.js) — al
+   redimensionar la ventana a mano quedaba pegado en la grilla de
+   Desktop (12 col). Esto lo arregla: mismo cálculo que .bp-tablet/
+   .bp-mobile, disparado por media query. --grid-margin/--grid-gutter ya
+   los ajusta el bloque responsive de styles.css; acá se ponen igual
+   explícitos para las páginas que cargan components.css sin styles.css. */
+@media (max-width: 1023px) {
+  #grid-overlay {
+    max-width: var(--grid-tablet-width);
+    padding-inline: var(--grid-tablet-margin);
+    grid-template-columns: repeat(var(--grid-tablet-columns), 1fr);
+    column-gap: var(--grid-tablet-gutter);
+  }
+
+  #grid-overlay .grid-overlay__col:nth-child(n + 9) {
+    display: none;
+  }
+}
+
+@media (max-width: 767px) {
+  #grid-overlay {
+    max-width: var(--grid-mobile-width);
+    padding-inline: var(--grid-mobile-margin);
+    grid-template-columns: repeat(var(--grid-mobile-columns), 1fr);
+    column-gap: var(--grid-mobile-gutter);
+  }
+
+  #grid-overlay .grid-overlay__col:nth-child(n + 5) {
+    display: none;
+  }
+}
+
 /* #dev-tools: panel fijo abajo a la derecha con los botones — Grid
    (muestra/oculta el overlay) + Desktop/Tablet/Mobile (cambian qué
    grid se previsualiza, y de paso fuerzan el overlay visible). */
