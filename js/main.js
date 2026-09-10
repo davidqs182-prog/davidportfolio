@@ -692,7 +692,18 @@
 
   window.addEventListener("scroll", checkTriggers, { passive: true });
   window.addEventListener("resize", checkTriggers);
-  checkTriggers(); // por si ya arranca visible (pantallas muy altas)
+
+  // En desktop (pantallas altas) chequeamos ya al cargar, por si el
+  // video arranca visible. En mobile/tablet NO: ahí el contenido arriba
+  // de la tarjeta es corto y la línea de "data-play-at" suele estar ya
+  // en pantalla al load — pero a esa altura el navegador móvil todavía
+  // bloquea el play() (sin ninguna interacción del usuario), fallaba, y
+  // como quedaba marcado "triggered" no se reintentaba: había que
+  // recargar. Esperamos al primer scroll real (ese sí cuenta como
+  // interacción y además la página ya terminó de asentarse).
+  if (window.innerWidth >= 1024) {
+    checkTriggers();
+  }
 })();
 
 // ===== Dots de carrusel (reusado por Testimonials y Behind the scenes) =====
