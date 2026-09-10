@@ -43,18 +43,26 @@ La salida sin comprar una Mac: **GitHub Actions con un runner `macos-latest`**
 
 1. Corre en `macos-latest`, instala `ffmpeg` por Homebrew (viene con
    VideoToolbox).
-2. Recorre todos los `.webm` bajo `assets/animations/`.
-3. Para cada uno que tenga canal alpha (`alpha_mode=1` en los metadatos),
-   genera `<nombre>-alpha.mp4` al lado, con este comando:
+2. Recorre los `.webm` bajo `assets/animations/` (excluye `*-premul.webm`).
+3. Para cada uno con canal alpha (`alpha_mode=1`) que no sea opaco
+   (sin `-poster.jpg`), genera `<nombre>-alpha.mp4` al lado. La fuente,
+   en orden de preferencia: `<nombre>-premul.webm` (ya premultiplicado,
+   ver el gotcha más abajo — este es el camino normal) → `<dir>/frames/`
+   (secuencia PNG, solo el hero) → `<nombre>.webm`. Comando base:
 
    ```bash
-   ffmpeg -y -c:v libvpx-vp9 -i "<src>.webm" \
+   ffmpeg -y -c:v libvpx-vp9 -i "<src>-premul.webm" \
+     -vf "format=yuva420p" \
      -an \
      -c:v hevc_videotoolbox -alpha_quality 0.95 -q:v 65 \
      -pix_fmt yuva420p -tag:v hvc1 \
      -movflags +faststart \
      "<src>-alpha.mp4"
    ```
+
+   (Si la fuente NO está premultiplicada, el `-vf` es
+   `format=rgba,premultiply=inplace=1,format=yuva420p` — pero eso en el
+   runner puede tardar +50 min sobre los videos grandes.)
 
 4. Verifica cada salida con `ffprobe` — tiene que dar exactamente
    `hevc,hvc1`. Si da `hev1`, Safari NO lo reproduce (falla el build).
@@ -82,12 +90,37 @@ negro). Sin premultiplicar, en Safari eso se ve como:
 En Chrome/Firefox no pasa porque usan el `.webm` (alpha recto, compuesto
 recto) — es solo Safari y solo el HEVC.
 
-**Fix (ya en el workflow):** `-vf "format=rgba,premultiply=inplace=1,format=yuva420p"`
-antes del encoder. Premultiplica el RGB por el alpha en espacio RGB
-(equivale a componer contra negro): deja `RGB=0` donde `a=0` y `RGB·a`
-en los bordes, que es justo lo que la fórmula premultiplicada de Safari
-espera. **Verificar en RGB** (no YUV): un píxel transparente tiene que
-quedar `(0,0,0)`, un borde con `a` tiene que quedar `≈ RGB_original·(a/255)`.
+**Fix:** premultiplicar el RGB por el alpha en espacio RGB (equivale a
+componer contra negro) antes de codificar:
+`-vf "format=rgba,premultiply=inplace=1,format=yuva420p"`. Deja `RGB=0`
+donde `a=0` y `RGB·a` en los bordes — justo lo que la fórmula
+premultiplicada de Safari espera. **Verificar en RGB** (no YUV, forzando
+`-pix_fmt rgba` en la extracción): un píxel transparente tiene que quedar
+`(0,0,0)`, un borde con `a` tiene que quedar `≈ RGB_original·(a/255)`.
+
+**Dónde se hace el premultiplicado — LOCAL, no en el runner.** Ese
+`-vf` con `format=rgba` sobre los videos grandes (comments-tv,
+collections-laptop, ~22 MB de VP9) costaba **+50 min** en el runner
+macOS (decodificar VP9-alpha por software + expandir a RGBA + volver).
+Por eso se pre-genera local (Windows, rápido) un
+**`<nombre>-premul.webm`** al lado del original:
+
+```bash
+ffmpeg -y -c:v libvpx-vp9 -i "<nombre>.webm" \
+  -vf "format=rgba,premultiply=inplace=1,format=yuva420p" \
+  -c:v libvpx-vp9 -crf 30 -b:v 0 -deadline good -cpu-used 2 -pix_fmt yuva420p -an \
+  "<nombre>-premul.webm"
+```
+
+Es un intermedio (el HEVC final es `-q:v 65` igual), CRF 30 alcanza. Se
+commitea. El workflow, al ver `<nombre>-premul.webm`, lo usa como fuente
+**sin** `-vf` (solo transcodifica a HEVC, que es lo que sí anda rápido en
+el runner). El `<nombre>.webm` original NO se toca — Chrome/Firefox lo
+siguen usando con composición recta.
+
+Orden de fuentes del workflow: `-premul.webm` → `frames/*.png` (el hero,
+121 frames, ahí el `-vf` en el runner sí es barato) → `.webm` a secas
+(último recurso, premultiplica en el runner y puede tardar mucho).
 
 ### Por qué cada flag
 

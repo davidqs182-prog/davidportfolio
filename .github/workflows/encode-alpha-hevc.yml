@@ -69,43 +69,50 @@ jobs:
               continue
             fi
 
-            # Fuente preferida: si hay una secuencia PNG master en
-            # <dir>/frames/ al lado del .webm, se codifica DESDE los PNG.
-            # Es una sola compresión (mejor nitidez y bordes de alpha más
-            # limpios) en vez de la cadena PNG -> webm -> HEVC. Si no hay
-            # carpeta frames/, se usa el .webm (con -c:v libvpx-vp9 ANTES
-            # de -i para que el decoder entregue el alpha como yuva420p).
+            # Safari compone el HEVC-alpha como alpha PREMULTIPLICADO
+            # (result = RGB + fondo*(1-a)). Nuestras fuentes son alpha
+            # RECTO (RGB pleno en los bordes; verde o blanco en las zonas
+            # transparentes de los mockups con chroma key). Sin
+            # premultiplicar, en Safari eso se ve como un halo claro
+            # alrededor de la figura y un fondo blanco/verde lavado en vez
+            # de transparente. Hay que premultiplicar en RGB (RGB*alpha,
+            # i.e. componer contra negro) antes de codificar.
+            #
+            # El premultiplicado se hace FUERA del runner (localmente, ver
+            # skill codificar-video-alpha-safari): el filtro
+            # format=rgba,premultiply en el runner macOS costaba +50 min
+            # sobre los videos grandes. Fuente, en orden de preferencia:
+            #   1. <nombre>-premul.webm  -> ya premultiplicado, sin -vf
+            #   2. <dir>/frames/*.png    -> secuencia PNG master (el hero;
+            #      son 121 frames, ahí el -vf sí es barato)
+            #   3. <nombre>.webm         -> último recurso, con -vf
+            premul="${src%.webm}-premul.webm"
             framedir="$(dirname "$src")/frames"
-            if ls "$framedir"/frame_*.png >/dev/null 2>&1; then
+            # Default: no premultiplicar (la fuente -premul.webm ya lo
+            # está). format=yuva420p es un no-op barato — evita un array
+            # vacío con set -u en el bash 3.2 del runner.
+            vf_args=(-vf "format=yuva420p")
+            if [ -f "$premul" ]; then
+              echo "fuente: $premul (ya premultiplicado)"
+              in_args=(-c:v libvpx-vp9 -i "$premul")
+            elif ls "$framedir"/frame_*.png >/dev/null 2>&1; then
               echo "fuente: secuencia PNG ($framedir)"
               in_args=(-framerate 30 -i "$framedir/frame_%05d.png")
+              vf_args=(-vf "format=rgba,premultiply=inplace=1,format=yuva420p")
             else
-              echo "fuente: $src"
+              echo "fuente: $src (sin -premul.webm; premultiplicando en el runner)"
               in_args=(-c:v libvpx-vp9 -i "$src")
+              vf_args=(-vf "format=rgba,premultiply=inplace=1,format=yuva420p")
             fi
 
             echo "::group::encode -> $out"
-            # -vf format=rgba,premultiply=inplace=1,format=yuva420p:
-            #   Safari compone el HEVC-alpha como alpha PREMULTIPLICADO
-            #   (result = RGB + fondo*(1-a)). Nuestras fuentes son alpha
-            #   RECTO (RGB pleno en los bordes; verde o blanco en las
-            #   zonas transparentes de los mockups con chroma key). Sin
-            #   premultiplicar, en Safari eso se ve como un halo claro
-            #   alrededor de la figura y un fondo blanco/verde lavado en
-            #   vez de transparente. Premultiplicar en RGB (multiplicar
-            #   RGB por alpha, i.e. componer contra negro) deja RGB=0 donde
-            #   a=0 y RGB*a en los bordes -> la fórmula premultiplicada de
-            #   Safari da el resultado correcto. Chrome/Firefox (alpha
-            #   recto sobre el .webm) no se ven afectados: usan otro
-            #   archivo.
             # -alpha_quality 0.95 / -q:v 65: calidad alta a propósito —
             #   es un portafolio, mejor pesar de más que verse blando
             #   (mismo criterio que compress-portfolio-video). Si un
             #   archivo puntual queda muy pesado, bajar el -q:v de ESE.
             # -tag:v hvc1: OBLIGATORIO. Safari no reproduce HEVC en mp4
             #   si el tag es hev1 en vez de hvc1.
-            ffmpeg -y "${in_args[@]}" \
-              -vf "format=rgba,premultiply=inplace=1,format=yuva420p" \
+            ffmpeg -y "${in_args[@]}" "${vf_args[@]}" \
               -an \
               -c:v hevc_videotoolbox -alpha_quality 0.95 -q:v 65 \
               -pix_fmt yuva420p -tag:v hvc1 \
@@ -123,7 +130,7 @@ jobs:
             fi
 
             encoded_any=1
-          done < <(find assets/animations -type f -name '*.webm' -print0 | sort -z)
+          done < <(find assets/animations -type f -name '*.webm' ! -name '*-premul.webm' -print0 | sort -z)
 
           echo "encoded_any=$encoded_any" >> "$GITHUB_ENV"
 
