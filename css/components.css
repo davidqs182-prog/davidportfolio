@@ -386,10 +386,7 @@
    =====================================================================
    Herramienta de guía — NO es parte del diseño del sitio, es para
    trabajar. Antes vivía duplicada como <style>/<script> inline en cada
-   página (index.html, project-onboarding.html,
-   project-youtube-discovery.html, resume.html); se centralizó acá +
-   en js/main.js al agregar el selector de breakpoints, para no
-   mantener la misma regla 4 veces.
+   página; se centralizó acá + en js/main.js.
 
    Oculta por default (display:none en #dev-tools) y solo main.js la
    muestra, y ÚNICAMENTE si location.hostname es localhost/127.0.0.1 —
@@ -397,11 +394,13 @@
    siempre, sin importar si alguien se olvida de sacarla antes de un
    commit a master. No depende de un paso manual.
 
-   #grid-overlay: overlay fijo con las columnas del grid superpuestas
-   sobre la página real, para chequear alineación mientras se trabaja.
-   Reusa las MISMAS 12 divs .grid-overlay__col en los 3 breakpoints —
-   en Tablet/Mobile se ocultan las columnas de más con :nth-child en
-   vez de generar HTML distinto por breakpoint. */
+   #grid-overlay: overlay fijo con las 12 columnas del grid superpuestas
+   sobre la página real, para chequear alineación. UN botón (Grid) lo
+   prende/apaga; las columnas siguen el breakpoint real del viewport
+   (12 / 8 / 4 col, ver los @media más abajo — en Tablet/Mobile se
+   ocultan las de más con :nth-child, mismas 12 divs). Para ver el
+   contenido reacomodado se redimensiona la ventana y el grid acompaña;
+   ya no hay selector de breakpoint ni vista previa en <iframe>. */
 #grid-overlay {
   display: none;
   position: fixed;
@@ -425,40 +424,14 @@
   border-right: 1px solid rgba(97, 70, 133, 0.4);
 }
 
-/* Breakpoint Tablet: 8 columnas visibles (se ocultan la 9ª a la 12ª),
-   ancho/margen/gutter de --grid-tablet-* (tokens.css). */
-#grid-overlay.bp-tablet {
-  max-width: var(--grid-tablet-width);
-  padding-inline: var(--grid-tablet-margin);
-  grid-template-columns: repeat(var(--grid-tablet-columns), 1fr);
-  column-gap: var(--grid-tablet-gutter);
-}
-
-#grid-overlay.bp-tablet .grid-overlay__col:nth-child(n + 9) {
-  display: none;
-}
-
-/* Breakpoint Mobile: 4 columnas visibles (se ocultan la 5ª a la 12ª). */
-#grid-overlay.bp-mobile {
-  max-width: var(--grid-mobile-width);
-  padding-inline: var(--grid-mobile-margin);
-  grid-template-columns: repeat(var(--grid-mobile-columns), 1fr);
-  column-gap: var(--grid-mobile-gutter);
-}
-
-#grid-overlay.bp-mobile .grid-overlay__col:nth-child(n + 5) {
-  display: none;
-}
-
-/* El overlay también sigue el breakpoint REAL del viewport (mismos
-   cortes que tokens.css: Tablet 768–1023px, Mobile <768px). Antes solo
-   cambiaba a 8/4 columnas dentro del <iframe> de vista previa (clases
-   .bp-tablet/.bp-mobile vía applyGridBreakpoint en js/main.js) — al
-   redimensionar la ventana a mano quedaba pegado en la grilla de
-   Desktop (12 col). Esto lo arregla: mismo cálculo que .bp-tablet/
-   .bp-mobile, disparado por media query. --grid-margin/--grid-gutter ya
-   los ajusta el bloque responsive de styles.css; acá se ponen igual
-   explícitos para las páginas que cargan components.css sin styles.css. */
+/* El overlay sigue el breakpoint REAL del viewport (mismos cortes que
+   tokens.css: Tablet 768–1023px, Mobile <768px) — a Tablet muestra 8
+   columnas (oculta la 9ª a la 12ª) y a Mobile 4 (oculta la 5ª a la
+   12ª), con el ancho/margen/gutter de --grid-tablet-* / --grid-mobile-*.
+   --grid-margin/--grid-gutter ya los ajusta el bloque responsive de
+   styles.css; acá se ponen igual explícitos para las páginas que cargan
+   components.css sin styles.css. El botón Grid solo prende/apaga
+   (.is-visible) — no hay selector de breakpoint. */
 @media (max-width: 1023px) {
   #grid-overlay {
     max-width: var(--grid-tablet-width);
@@ -485,30 +458,21 @@
   }
 }
 
-/* #dev-tools: panel fijo abajo a la derecha con los botones — Grid
-   (muestra/oculta el overlay) + Desktop/Tablet/Mobile (cambian qué
-   grid se previsualiza, y de paso fuerzan el overlay visible). */
+/* #dev-tools: el botón Grid, fijo abajo a la derecha (solo en localhost,
+   ver js/main.js). */
 #dev-tools {
   display: none;
   position: fixed;
   right: 16px;
   bottom: 16px;
   z-index: 100000;
-  flex-direction: column;
-  align-items: flex-end;
-  gap: 10px;
 }
 
 #dev-tools.is-dev-visible {
   display: flex;
 }
 
-#dev-tools__breakpoints {
-  display: flex;
-  gap: 6px;
-}
-
-#dev-tools button {
+#grid-overlay-toggle {
   border: none;
   border-radius: 999px;
   padding: 8px 14px;
@@ -519,44 +483,13 @@
   font-weight: 500;
   cursor: pointer;
   box-shadow: 0 2px 10px rgba(0, 0, 0, 0.25);
-  text-align: right;
   display: inline-flex;
   align-items: center;
   gap: 6px;
 }
 
-#dev-tools button.is-active {
+#grid-overlay-toggle.is-active {
   background: var(--color-purple-500);
-}
-
-/* Modal con el <iframe> de vista previa — se abre al elegir Tablet o
-   Mobile (ver js/main.js openPreview()). Es el sitio real cargado de
-   nuevo a ese ancho exacto, así el contenido se reacomoda de verdad
-   (texto con clamp()/vw, grid-12 en 1fr, flex-wrap...), no es solo el
-   overlay de líneas. Fondo oscuro semi-transparente para remarcar que
-   es una simulación, no la página real de la pestaña. */
-#dev-preview {
-  display: none;
-  position: fixed;
-  inset: 0;
-  z-index: 99998;
-  align-items: center;
-  justify-content: center;
-  background: rgba(18, 12, 34, 0.6);
-}
-
-#dev-preview.is-visible {
-  display: flex;
-}
-
-#dev-preview-frame {
-  border: 0;
-  border-radius: 12px;
-  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
-  background: #ffffff;
-  height: 90vh;
-  max-width: 95vw;
-  max-height: 95vh;
 }
 
 /* Ocultas también al exportar/imprimir a PDF (ver css/resume.css) —
@@ -564,8 +497,7 @@
    Resume. */
 @media print {
   #dev-tools,
-  #grid-overlay,
-  #dev-preview {
+  #grid-overlay {
     display: none !important;
   }
 }

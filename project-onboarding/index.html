@@ -499,9 +499,10 @@
   </main>
 
   <!-- Herramienta de guía (no es parte del diseño del sitio, solo
-       visible en localhost — ver js/main.js): overlay del grid +
-       selector de breakpoint (Desktop/Tablet/Mobile). Estilos y
-       lógica centralizados en css/components.css y js/main.js. -->
+       visible en localhost — ver js/main.js): overlay del grid de 12
+       columnas que sigue el breakpoint real del viewport (12 / 8 / 4
+       col según el ancho, ver css/components.css) + botón para
+       prenderlo/apagarlo. Atajo de teclado: "g". -->
   <div id="grid-overlay" aria-hidden="true">
     <div class="grid-overlay__col"></div>
     <div class="grid-overlay__col"></div>
@@ -518,28 +519,10 @@
   </div>
 
   <div id="dev-tools">
-    <div id="dev-tools__breakpoints">
-      <button data-breakpoint="desktop" class="is-active" type="button">
-        <span class="material-symbols-rounded" aria-hidden="true">desktop_windows</span>
-        Desktop
-      </button>
-      <button data-breakpoint="tablet" type="button">
-        <span class="material-symbols-rounded" aria-hidden="true">tablet_mac</span>
-        Tablet
-      </button>
-      <button data-breakpoint="mobile" type="button">
-        <span class="material-symbols-rounded" aria-hidden="true">smartphone</span>
-        Mobile
-      </button>
-    </div>
     <button id="grid-overlay-toggle" type="button">
       <span class="material-symbols-rounded" aria-hidden="true">grid_on</span>
       Grid
     </button>
-  </div>
-
-  <div id="dev-preview" aria-hidden="true">
-    <iframe id="dev-preview-frame" title="Vista previa responsiva"></iframe>
   </div>
 
   <script src="../js/main.js"></script>
