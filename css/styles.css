@@ -797,19 +797,15 @@ body {
     --grid-gutter: var(--grid-mobile-gutter);
   }
 
-  /* Navbar: "About"/"Get in Touch" (o el logo solo, en Resume) pasan a
-     su propia fila centrada debajo del logo — a este ancho no entran
-     los tres en una sola fila (bug real encontrado con la vista previa
-     Mobile del dev-tool: los botones se superponían). */
-  .navbar {
-    flex-wrap: wrap;
-    justify-content: center;
-    row-gap: var(--space-16);
-  }
-
+  /* Header en una sola fila también en mobile (logo a la izquierda,
+     botones a la derecha, como en desktop). Antes se apilaba en 2 filas
+     porque con el wordmark ancho + "About" + "Get in Touch" no entraban
+     — ahora el logo de Home es la marca compacta del favicon y el botón
+     "Back to home" de las páginas de proyecto es solo el ícono, así que
+     entran sin encimarse. Gap más chico entre botones por si acaso en
+     pantallas de ~320px. */
   .navbar__links {
-    width: 100%;
-    justify-content: center;
+    gap: var(--space-4);
   }
 
   .hero {
