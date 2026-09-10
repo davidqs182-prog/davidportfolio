@@ -1085,15 +1085,22 @@ body {
 .ytd-comments__track {
   display: flex;
   overflow-x: auto;
-  /* Explícito: sin esto, el navegador computa overflow-y como "auto"
-     también (regla CSS poco conocida — no se puede tener un eje en
-     "visible" y el otro no), recortando el track verticalmente sin
-     querer cuando su contenido mide más alto que su propia caja. Eso
-     rompía silenciosamente el IntersectionObserver del lazy-load de
-     video (js/main.js) — el ratio de intersección se calculaba contra
-     ese recorte vertical accidental, no contra el tamaño real del
-     slide. */
-  overflow-y: visible;
+  /* CORRECCIÓN a la corrección anterior: acá decía "overflow-y:
+     visible" con el comentario de que el navegador, si no se declara
+     explícito, lo recalcula a "auto" cuando el otro eje no es
+     "visible". Cierto — pero esa MISMA regla del spec corre al revés
+     también: declarar "visible" en un eje mientras el otro es "auto"
+     hace que el navegador VUELVA A convertir ese "visible" a "auto"
+     de todos modos (confirmado en vivo con getComputedStyle: seguía
+     dando "auto" a pesar de este "visible"). O sea que el fix de
+     abajo nunca fue un fix real — solo dejó de notarse mientras no
+     hubo overflow vertical real. "clip" sí lo resiste (no es
+     "visible", así que esa regla de conversión no aplica) — con
+     scrollbar-width:none ya recortando el resultado visual, esto
+     además evita que el track pueda alguna vez scrollear
+     verticalmente ("mini scroll" que David encontró en vivo), en vez
+     de solo esconder la barra pero dejar el scroll funcional. */
+  overflow-y: clip;
   scroll-snap-type: x mandatory;
   scrollbar-width: none;
   padding-left: var(--comments-inset);
