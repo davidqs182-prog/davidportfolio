@@ -798,12 +798,15 @@ body {
   }
 
   /* Header en una sola fila también en mobile (logo a la izquierda,
-     botones a la derecha, como en desktop). Antes se apilaba en 2 filas
-     porque con el wordmark ancho + "About" + "Get in Touch" no entraban
-     — ahora el logo de Home es la marca compacta del favicon y el botón
-     "Back to home" de las páginas de proyecto es solo el ícono, así que
-     entran sin encimarse. Gap más chico entre botones por si acaso en
-     pantallas de ~320px. */
+     botones a la derecha, como en desktop). Para que el wordmark + los
+     dos botones entren sin encimarse en pantallas angostas (~360–375px):
+     el wordmark baja de 22px a 18px de alto y el gap entre botones se
+     achica. En las páginas de proyecto el botón "Back" ya es solo el
+     ícono, así que ahí sobra lugar. */
+  .navbar__logo {
+    height: 18px;
+  }
+
   .navbar__links {
     gap: var(--space-4);
   }
