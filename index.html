@@ -86,6 +86,11 @@
           preload="auto"
           fetchpriority="high"
         >
+          <!-- HEVC con canal alpha para Safari / iOS (que no soporta alpha
+               en VP9/WebM). El resto de los navegadores no reconocen el
+               codec hvc1 y siguen con el .webm. Ver skill
+               codificar-video-alpha-safari. -->
+          <source src="assets/animations/hero-guitar-scroll/hero-guitar-scroll-v2-alpha.mp4" type='video/mp4; codecs="hvc1"'>
           <source src="assets/animations/hero-guitar-scroll/hero-guitar-scroll-v2.webm" type="video/webm">
         </video>
       </div>

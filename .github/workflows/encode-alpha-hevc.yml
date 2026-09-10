@@ -51,6 +51,17 @@ jobs:
               continue
             fi
 
+            # Convención del repo: un video OPACO lleva un poster .jpg
+            # (que no puede tener transparencia); uno transparente no lleva
+            # poster, o lleva uno .png. Si hay <nombre>-poster.jpg al lado,
+            # el video se trata como opaco -> ya anda en Safari por su .mp4
+            # h264, no necesita el gemelo HEVC-alpha (aunque el .webm tenga
+            # alpha embebido de más).
+            if [ -f "${src%.webm}-poster.jpg" ]; then
+              echo "skip (opaco, tiene -poster.jpg): $src"
+              continue
+            fi
+
             out="${src%.webm}-alpha.mp4"
 
             if [ "${{ inputs.force }}" != "true" ] && [ -f "$out" ]; then

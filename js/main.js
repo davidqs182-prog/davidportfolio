@@ -176,8 +176,27 @@
 
   // Fuerza el frame 0 en cuanto hay metadata — algunos navegadores no
   // pintan ningún frame hasta el primer seek/play() explícito.
+  //
+  // "Priming play": además, algunos Chrome/GPU pintan el primer frame de
+  // un WebM con canal alpha en NEGRO hasta que el <video> pasó por el
+  // pipeline de reproducción al menos una vez (un seek con currentTime no
+  // alcanza). Un play()+pause() mudo apenas carga fuerza el modo de
+  // composición con alpha; después se vuelve al frame 0. En Safari/iOS
+  // esto opera sobre el <source> HEVC-alpha (el .mp4 hvc1), no el webm.
   stageImg.addEventListener("loadedmetadata", function () {
-    stageImg.currentTime = 0;
+    var primed = stageImg.play();
+    if (primed && typeof primed.then === "function") {
+      primed
+        .then(function () {
+          stageImg.pause();
+          stageImg.currentTime = 0;
+        })
+        .catch(function () {
+          stageImg.currentTime = 0;
+        });
+    } else {
+      stageImg.currentTime = 0;
+    }
   });
 
   var currentFrame = 0;
