@@ -160,6 +160,22 @@
   aspect-ratio: 1 / 1;
 }
 
+/* Modifier: botón "Back to home" del header. En desktop/tablet es un
+   botón normal (flecha + texto). En mobile se queda solo con la flecha,
+   circular (mismo recorte que .btn--icon) — a ese ancho el navbar ya
+   apretado no necesita el texto y el aria-label del <a> cubre la
+   accesibilidad. */
+@media (max-width: 767px) {
+  .btn--back {
+    padding: 0;
+    aspect-ratio: 1 / 1;
+  }
+
+  .btn--back__label {
+    display: none;
+  }
+}
+
 /* Estilo: Primary */
 .btn--primary {
   background-color: var(--color-purple-500);
