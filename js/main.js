@@ -161,43 +161,146 @@
   var FPS = 30;
   var FPS_MS = 1000 / FPS;
 
+  // ===== Modo imagen (Safari / iOS) =====
+  // Safari — y TODO navegador en iOS, que por obligación de Apple usa
+  // WebKit — no decodifica alpha en VP9/WebM, y el HEVC-alpha que sí
+  // acepta deja un halo claro alrededor de la figura (el plano de alpha
+  // sale subsampleado del encoder). Para esos navegadores el <video> se
+  // reemplaza por un <img> y "cambiar de frame" vuelve a ser reasignar
+  // src, con la secuencia WebP con alpha en assets/animations/
+  // hero-guitar-scroll/frames-webp/ (~6 MB, alpha perfecto como un PNG).
+  // El resto (Chrome/Firefox/Android) sigue con el <video>.
+  var vProbe = document.createElement("video");
+  var canWebmVp9 = !!(
+    vProbe.canPlayType && vProbe.canPlayType('video/webm; codecs="vp9"')
+  );
+  var ua = navigator.userAgent;
+  var isAppleWebKit =
+    /iPad|iPhone|iPod/.test(ua) ||
+    (navigator.platform === "MacIntel" && navigator.maxTouchPoints > 1) ||
+    (/Safari/.test(ua) &&
+      !/Chrome|CriOS|Chromium|Android|Edg|FxiOS/.test(ua));
+  // ?heroimg=1 fuerza el modo imagen en cualquier navegador (para probar
+  // en desarrollo cómo lo ve Safari/iOS sin un dispositivo Apple).
+  var forceImg = /[?&]heroimg=1(&|$)/.test(location.search);
+  var imageMode = forceImg || isAppleWebKit || !canWebmVp9;
+
+  var FRAME_BASE = "assets/animations/hero-guitar-scroll/frames-webp/frame_";
+  var frameImgs = []; // Image objects, cargados a demanda
+  var frameCbs = []; // callbacks esperando la carga de cada frame
+
+  function pad5(n) {
+    n = "" + n;
+    while (n.length < 5) n = "0" + n;
+    return n;
+  }
+
+  function loadFrame(n) {
+    if (frameImgs[n]) return frameImgs[n];
+    var im = new Image();
+    frameImgs[n] = im;
+    // onload y onerror hacen lo mismo: vaciar la cola de callbacks. Si un
+    // frame falla, no queremos que la precarga secuencial ni un tick() en
+    // espera se queden colgados para siempre — sigue con el anterior.
+    var flush = function () {
+      var cbs = frameCbs[n];
+      frameCbs[n] = null;
+      if (cbs) {
+        for (var i = 0; i < cbs.length; i++) cbs[i]();
+      }
+    };
+    im.onload = flush;
+    im.onerror = flush;
+    im.src = FRAME_BASE + pad5(n) + ".webp";
+    return im;
+  }
+
+  // Pide un frame puntual con prioridad y avisa cuando termina (cargó o
+  // falló — im.complete cubre ambos, así el que espera no queda colgado).
+  function ensureFrame(n, cb) {
+    var im = loadFrame(n);
+    if (im.complete) {
+      cb();
+      return;
+    }
+    (frameCbs[n] = frameCbs[n] || []).push(cb);
+  }
+
+  // Precarga secuencial del resto (uno tras otro, sin 121 requests de
+  // golpe). El scroll-scrub puede pedir cualquier frame antes de que la
+  // cola llegue ahí — para eso está ensureFrame().
+  function preloadRest(from) {
+    if (from >= FRAME_COUNT) return;
+    var im = loadFrame(from);
+    var next = function () {
+      preloadRest(from + 1);
+    };
+    if (im.complete) {
+      next();
+    } else {
+      (frameCbs[from] = frameCbs[from] || []).push(next);
+    }
+  }
+
   // readyState 4 = HAVE_ENOUGH_DATA — por si el navegador ya tenía el
   // video cacheado y dispara canplaythrough antes de que este script
-  // llegue a escuchar el evento.
-  var videoReady = stageImg.readyState >= 4;
+  // llegue a escuchar el evento. En modo imagen arranca en false y se
+  // pone true cuando el frame 0 está pintado.
+  var videoReady = imageMode ? false : stageImg.readyState >= 4;
 
-  stageImg.addEventListener("canplaythrough", function onReady() {
-    videoReady = true;
-    stageImg.removeEventListener("canplaythrough", onReady);
-    // Si tick() se había quedado esperando, retoma sola la reproducción
-    // — el usuario no tiene que volver a scrollear.
-    if (isPlaying && waitingForFrame !== null) tick(playGeneration);
-  });
+  if (imageMode) {
+    // Cambia el <video> por un <img> equivalente (misma clase, mismo
+    // tamaño declarado — las reglas CSS de .hero__avatar son por clase,
+    // aplican igual a un <img>).
+    var img = new Image();
+    img.id = "stageImg";
+    img.className = stageImg.className;
+    img.width = stageImg.getAttribute("width") || 828;
+    img.height = stageImg.getAttribute("height") || 1108;
+    img.alt = "David Quirós tocando guitarra";
+    img.draggable = false;
+    stageImg.replaceWith(img);
+    stageImg = img;
 
-  // Fuerza el frame 0 en cuanto hay metadata — algunos navegadores no
-  // pintan ningún frame hasta el primer seek/play() explícito.
-  //
-  // "Priming play": además, algunos Chrome/GPU pintan el primer frame de
-  // un WebM con canal alpha en NEGRO hasta que el <video> pasó por el
-  // pipeline de reproducción al menos una vez (un seek con currentTime no
-  // alcanza). Un play()+pause() mudo apenas carga fuerza el modo de
-  // composición con alpha; después se vuelve al frame 0. En Safari/iOS
-  // esto opera sobre el <source> HEVC-alpha (el .mp4 hvc1), no el webm.
-  stageImg.addEventListener("loadedmetadata", function () {
-    var primed = stageImg.play();
-    if (primed && typeof primed.then === "function") {
-      primed
-        .then(function () {
-          stageImg.pause();
-          stageImg.currentTime = 0;
-        })
-        .catch(function () {
-          stageImg.currentTime = 0;
-        });
-    } else {
-      stageImg.currentTime = 0;
-    }
-  });
+    ensureFrame(0, function () {
+      stageImg.src = frameImgs[0].src;
+      videoReady = true;
+      preloadRest(1);
+      if (isPlaying && waitingForFrame !== null) tick(playGeneration);
+    });
+  } else {
+    stageImg.addEventListener("canplaythrough", function onReady() {
+      videoReady = true;
+      stageImg.removeEventListener("canplaythrough", onReady);
+      // Si tick() se había quedado esperando, retoma sola la reproducción
+      // — el usuario no tiene que volver a scrollear.
+      if (isPlaying && waitingForFrame !== null) tick(playGeneration);
+    });
+
+    // Fuerza el frame 0 en cuanto hay metadata — algunos navegadores no
+    // pintan ningún frame hasta el primer seek/play() explícito.
+    //
+    // "Priming play": además, algunos Chrome/GPU pintan el primer frame
+    // de un WebM con canal alpha en NEGRO hasta que el <video> pasó por
+    // el pipeline de reproducción al menos una vez (un seek con
+    // currentTime no alcanza). Un play()+pause() mudo apenas carga fuerza
+    // el modo de composición con alpha; después se vuelve al frame 0.
+    stageImg.addEventListener("loadedmetadata", function () {
+      var primed = stageImg.play();
+      if (primed && typeof primed.then === "function") {
+        primed
+          .then(function () {
+            stageImg.pause();
+            stageImg.currentTime = 0;
+          })
+          .catch(function () {
+            stageImg.currentTime = 0;
+          });
+      } else {
+        stageImg.currentTime = 0;
+      }
+    });
+  }
 
   var currentFrame = 0;
   var direction = 0;
@@ -221,10 +324,34 @@
     visibilityObserver.observe(heroStage);
   }
 
+  // Devuelve true si el frame quedó mostrado; false si todavía se está
+  // descargando (modo imagen) — en ese caso deja waitingForFrame armado
+  // y un callback que retoma tick() cuando la imagen carga.
   function setFrame(nextFrame) {
     nextFrame = Math.min(FRAME_COUNT - 1, Math.max(0, nextFrame));
     currentFrame = nextFrame;
-    stageImg.currentTime = currentFrame / FPS;
+
+    if (!imageMode) {
+      stageImg.currentTime = nextFrame / FPS;
+      return true;
+    }
+
+    var im = frameImgs[nextFrame];
+    if (im && im.complete) {
+      // Cargó -> lo mostramos. Falló (naturalWidth 0) -> dejamos el frame
+      // anterior y seguimos igual, en vez de congelar la animación por un
+      // archivo faltante.
+      if (im.naturalWidth) stageImg.src = im.src;
+      return true;
+    }
+    waitingForFrame = nextFrame;
+    ensureFrame(nextFrame, function () {
+      if (isPlaying && waitingForFrame === nextFrame) {
+        waitingForFrame = null;
+        tick(playGeneration);
+      }
+    });
+    return false;
   }
 
   function tick(generation) {
@@ -240,16 +367,18 @@
       return;
     }
 
-    // El video todavía no está listo — nos quedamos quietos en el
-    // último frame confirmado en vez de mostrar algo roto/en blanco.
-    // El listener de canplaythrough retoma esto solo apenas esté listo.
+    // El video/secuencia todavía no está listo — nos quedamos quietos en
+    // el último frame confirmado en vez de mostrar algo roto/en blanco.
     if (!videoReady) {
       waitingForFrame = nextFrame;
       return;
     }
 
+    if (!setFrame(nextFrame)) {
+      // setFrame ya dejó waitingForFrame + el callback de carga.
+      return;
+    }
     waitingForFrame = null;
-    setFrame(nextFrame);
     setTimeout(function () {
       tick(generation);
     }, FPS_MS);

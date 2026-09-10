@@ -1,5 +1,31 @@
 # Handoff: Scroll-Driven Guitar Animation
 
+## Estado de la implementación en el sitio (2026-09-10)
+
+Todo lo de abajo es el handoff original. Cómo quedó en el sitio:
+
+- **`frames/`** — 121 PNG originales con alpha (los masters). Fuente de
+  verdad; no se tocan.
+- **`frames-webp/`** — 121 WebP con alpha derivados de los PNG (~6 MB).
+  Los usa **Safari / iOS** (y cualquier navegador sin VP9): ahí el
+  `<video>` se reemplaza por un `<img>` y el scroll-scrub reasigna
+  `src` frame a frame. WebKit no soporta alpha en VP9/WebM y el
+  HEVC-alpha deja un halo claro alrededor de la figura, así que para
+  esos navegadores se usa la secuencia. Ver la detección `imageMode` en
+  `js/main.js`.
+- **`hero-guitar-scroll-v2.webm`** — VP9 + alpha, todos los frames como
+  keyframe, re-codificado desde los PNG a CRF 18. Lo usan
+  Chrome / Firefox / Android (seek con `video.currentTime`).
+- **`hero-guitar-scroll-v2-alpha.mp4`** — HEVC-alpha (lo genera el
+  workflow `encode-alpha-hevc.yml`). Solo queda como fallback si el JS
+  no corre; en la práctica Safari va por la secuencia WebP.
+- Para regenerar los WebP desde los PNG:
+  `ffmpeg -i frames/frame_%05d.png -c:v libwebp -quality 82 -compression_level 6 -pix_fmt yuva420p frames-webp/frame_%05d.webp`
+  (ffmpeg numera la salida desde 1 — hay que renombrar a base 0 para que
+  coincida con los PNG).
+
+---
+
 ## Overview
 A full-bleed frame-by-frame animation of a character playing guitar, driven by scroll direction like a video: scrolling down plays forward from frame 1 to the last frame; scrolling up reverses it back to frame 1. Background is **transparent** (the PNG frames carry their own alpha channel) so it can be dropped onto any background.
 
