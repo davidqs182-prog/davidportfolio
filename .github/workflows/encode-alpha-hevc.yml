@@ -1,0 +1,103 @@
+name: Encode HEVC+alpha MP4 (Safari)
+
+# Genera los .mp4 HEVC con canal alpha que Safari / iOS necesitan, a partir
+# de los .webm VP9+alpha que ya viven en el repo. Corre en un runner de
+# macOS porque el único encoder que produce "HEVC con alpha" que Safari
+# después sabe leer es hevc_videotoolbox (de Apple) — no existe en Windows
+# ni en Linux. Ver .claude/skills/codificar-video-alpha-safari/SKILL.md.
+#
+# Se dispara a mano (pestaña Actions -> este workflow -> "Run workflow").
+# Por cada <nombre>.webm con alpha genera <nombre>-alpha.mp4 al lado, y
+# commitea solo esos archivos a la branch desde la que se corrió.
+
+on:
+  workflow_dispatch:
+    inputs:
+      force:
+        description: "Regenerar TODOS los -alpha.mp4 aunque ya existan"
+        type: boolean
+        default: false
+
+permissions:
+  contents: write
+
+jobs:
+  encode:
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Instalar ffmpeg (trae VideoToolbox en macOS)
+        run: brew install ffmpeg
+
+      - name: Confirmar que ffmpeg puede codificar HEVC con alpha
+        run: |
+          ffmpeg -hide_banner -encoders | grep hevc_videotoolbox
+          ffmpeg -hide_banner -h encoder=hevc_videotoolbox | grep -i alpha_quality
+
+      - name: Codificar cada .webm con alpha -> .mp4 HEVC+alpha
+        run: |
+          set -euo pipefail
+
+          encoded_any=0
+
+          # Todos los .webm bajo assets/animations/ (recursivo).
+          while IFS= read -r -d '' src; do
+            # ¿El .webm tiene canal alpha? Los que no, se saltean (ya
+            # funcionan en Safari vía su .mp4 h264, o no lo necesitan).
+            if ! ffprobe -v error -show_entries stream_tags:format_tags -of default=nw=1 "$src" \
+                 | grep -qi 'alpha_mode=1'; then
+              echo "skip (sin alpha): $src"
+              continue
+            fi
+
+            out="${src%.webm}-alpha.mp4"
+
+            if [ "${{ inputs.force }}" != "true" ] && [ -f "$out" ]; then
+              echo "ya existe (corré con force para regenerar): $out"
+              continue
+            fi
+
+            echo "::group::encode $src -> $out"
+            # -c:v libvpx-vp9 ANTES de -i: fuerza el decoder que sí
+            #   entrega el alpha del webm como yuva420p.
+            # -alpha_quality 0.95 / -q:v 65: calidad alta a propósito —
+            #   es un portafolio, mejor pesar de más que verse blando
+            #   (mismo criterio que compress-portfolio-video). Si un
+            #   archivo puntual queda muy pesado, bajar el -q:v de ESE.
+            # -tag:v hvc1: OBLIGATORIO. Safari no reproduce HEVC en mp4
+            #   si el tag es hev1 en vez de hvc1.
+            ffmpeg -y -c:v libvpx-vp9 -i "$src" \
+              -an \
+              -c:v hevc_videotoolbox -alpha_quality 0.95 -q:v 65 \
+              -pix_fmt yuva420p -tag:v hvc1 \
+              -movflags +faststart \
+              "$out"
+            echo "::endgroup::"
+
+            # Verificación dura antes de aceptarlo.
+            info=$(ffprobe -v error -select_streams v:0 \
+              -show_entries stream=codec_name,codec_tag_string -of csv=p=0 "$out")
+            echo "  ffprobe -> $info"
+            if [ "$info" != "hevc,hvc1" ]; then
+              echo "::error::$out no quedó como hevc/hvc1 (dio: $info)"
+              exit 1
+            fi
+
+            encoded_any=1
+          done < <(find assets/animations -type f -name '*.webm' -print0 | sort -z)
+
+          echo "encoded_any=$encoded_any" >> "$GITHUB_ENV"
+
+      - name: Commitear los -alpha.mp4 a la branch
+        if: env.encoded_any == '1'
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add "assets/animations/**/*-alpha.mp4" 2>/dev/null || git add $(find assets/animations -name '*-alpha.mp4')
+          if git diff --staged --quiet; then
+            echo "Nada nuevo para commitear."
+          else
+            git commit -m "Encode HEVC+alpha MP4s para Safari/iOS (workflow automático)"
+            git push origin HEAD:${{ github.ref_name }}
+          fi

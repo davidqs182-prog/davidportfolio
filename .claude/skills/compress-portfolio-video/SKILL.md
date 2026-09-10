@@ -66,12 +66,19 @@ que se vea suelto sobre el fondo real de la página, no un rectángulo
 opaco. Ejemplo ya resuelto en el sitio:
 `assets/animations/youtube-compass-card/collections-laptop-mockup.webm`.
 
-- **Solo WebM/VP9, sin equivalente MP4.** H.264 no soporta canal alfa
-  — no hay fallback de compatibilidad posible, así que el `<video>` va
-  con un solo `<source>` y **sin atributo `poster`** (no hay forma de
-  generar un poster JPG/PNG con transparencia real que sirva de
-  placeholder). Mismo patrón que `hands-tablet-mockup.webm` en
-  Onboarding.
+- **WebM/VP9 es el master; H.264 no soporta canal alfa.** Así que el
+  `.mp4` H.264 del flujo estándar no aplica acá, y el `<video>` va **sin
+  atributo `poster`** (no hay forma de generar un poster JPG/PNG con
+  transparencia real que sirva de placeholder). Mismo patrón que
+  `hands-tablet-mockup.webm` en Onboarding.
+- **Para que ande en Safari / iOS hace falta además un `.mp4` HEVC con
+  canal alfa.** Safari no reproduce alpha en VP9/WebM — sin ese gemelo
+  HEVC, en iPhone/iPad el mockup se ve con caja negra o verde. Ese `.mp4`
+  no se puede codificar en Windows (necesita `hevc_videotoolbox` de
+  macOS); se genera con el workflow de GitHub Actions descrito en el
+  skill **`codificar-video-alpha-safari`**. Después de comprimir el
+  `.webm` acá, seguir ese skill para el gemelo HEVC y para el orden de
+  los `<source>` en el HTML.
 - **Pedirle al usuario que grabe con fondo verde de verdad** si el
   fondo original es blanco o un color que se parece al contenido real
   (paredes claras, UI clara) — un fondo verde saturado separa mucho
