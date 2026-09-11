@@ -802,6 +802,20 @@ body {
     --hero-mobile-title-size: calc(
       (100vw - 2 * var(--grid-mobile-margin)) / 4.962
     );
+    /* Mismo criterio que --hero-mobile-title-size de acá arriba, pero
+       calibrado para la palabra "About" en vez de "Designer" — a pedido
+       de David, tiene que llenar las 4 columnas igual que "Product
+       Designer" en Home, no quedarse en su font-size compartido de
+       siempre (69.17px, que en "About" — palabra más angosta —
+       solo llega a 236.5px de ancho, no a las 4 columnas). Medido en
+       vivo: a ese font-size compartido, "About" mide 236.54px — 236.54 /
+       69.17 = 3.4199 (ancho:font-size, para ESTA palabra puntual en Work
+       Sans 900 uppercase, letter-spacing -0.02em, igual que el 4.962 de
+       "Designer" — no es intercambiable entre palabras). Ver
+       .hero__title--about más abajo. */
+    --hero-mobile-about-size: calc(
+      (100vw - 2 * var(--grid-mobile-margin)) / 3.4199
+    );
   }
 
   /* Header en una sola fila también en mobile (logo a la izquierda,
@@ -840,6 +854,15 @@ body {
      para que .hero__subtitle ("Work") pueda usar el mismo exacto. */
   .hero__title {
     font-size: var(--hero-mobile-title-size);
+  }
+
+  /* "About" (about/index.html) reusa .hero__title pero es otra palabra
+     — al mismo font-size compartido de arriba no llega a las 4 columnas
+     (ver el cálculo de --hero-mobile-about-size más arriba). Modificador
+     aparte en vez de pisar .hero__title a secas para no afectar "Product
+     Designer"/"Work" en Home. */
+  .hero__title--about {
+    font-size: var(--hero-mobile-about-size);
   }
 
   /* "Work" al mismo font-size exacto que "Product Designer" (mismo
@@ -1195,16 +1218,22 @@ body {
 @media (max-width: 767px) {
   .about-experience {
     /* El -180px de desktop está calibrado para el avatar chico (columna
-       8, ver --about-avatar-width) — con el avatar ahora al tamaño del
-       de Home (ver .about-experience__avatar acá abajo) ese valor de
-       desktop invadía el header entero. -70px es el mismo orden de
-       magnitud que el -66px que usa .hero__stage en este mismo
-       breakpoint para el avatar de Home (misma superposición "cabeza +
-       tope de la tabla sobre el título"), medido en vivo contra el
-       título "About" para que el solape sea parecido, no el 100% del
-       título tapado. */
-    margin-top: -150px;
+       8, ver --about-avatar-width) — con el avatar más grande de mobile
+       (ver .about-experience__avatar acá abajo) ese valor de desktop
+       invadía el header entero. Retocado en vivo contra el título
+       "About" para que el solape sea parecido al de desktop (cabeza +
+       tope de la tabla sobre el título), no el 100% tapado. */
+    margin-top: -95px;
     margin-bottom: var(--space-40);
+    /* Salvavidas: primero se probó el mismo ancho que .hero__avatar
+       (clamp × 2.15, ~473px, desbordando el viewport como en Home) y en
+       un teléfono real eso generaba scroll horizontal real (el texto de
+       las tarjetas de abajo aparecía cortado/corrido, reportado por
+       David) — a diferencia de Home, acá no vale la pena arriesgarse:
+       aunque el ancho ya se recortó (ver __avatar), overflow-x:hidden
+       recorta cualquier resto en vez de dejarlo crear una barra de
+       scroll horizontal en toda la página. */
+    overflow-x: hidden;
   }
 
   .about-experience__track {
@@ -1228,20 +1257,19 @@ body {
     flex: 0 0 auto;
   }
 
-  /* Mismo tamaño que .hero__avatar en este breakpoint (a pedido de
-     David) — mismo clamp() base (220px mínimo / 43vw / 619px máximo)
-     multiplicado ×2.15, ver ese comentario en .hero__avatar arriba para
-     el porqué del factor. Ya no depende de --about-col8-width (pensado
-     para el layout de 12 columnas de desktop): a este tamaño el avatar
-     es más ancho que el propio viewport y se centra igual que en Home
-     (el contenedor flex con align-items:center no lo recorta). */
+  /* Más grande que el original de esta sección (era 200px fijo) pero
+     MENOS que el de Home (clamp × 2.15, ~473px) — a pedido de David:
+     ese tamaño desbordaba el viewport y en un teléfono real generaba
+     scroll horizontal con el texto de las tarjetas cortado. ×1.3 sobre
+     el mismo clamp() base de Home da 286px a este ancho, adentro de los
+     343px disponibles (375 - 2×16 de padding) sin desbordar. Ya no
+     depende de --about-col8-width (pensado para el layout de 12
+     columnas de desktop). */
   .about-experience__avatar {
-    width: calc(clamp(220px, 43vw, 619px) * 2.15);
+    width: calc(clamp(220px, 43vw, 619px) * 1.3);
     /* La regla base trae max-width:100% (pensada para no pasarse de
-       --about-col8-width en desktop) — acá lo pisa, si no el avatar
-       queda recortado al ancho del track (mismo mecanismo por el que
-       .hero__avatar en Home no tiene max-width y sí puede desbordar el
-       viewport centrado). */
+       --about-col8-width en desktop) — acá lo pisa para que el cálculo
+       de arriba mande, no el ancho del track. */
     max-width: none;
     margin-left: 0;
   }
