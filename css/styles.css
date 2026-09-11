@@ -898,11 +898,31 @@ body {
      ya cae bien en todo el rango. */
   .hero__stage {
     margin-top: -66px;
-    margin-bottom: -54px;
+    /* -54px pegaba "Work" casi arriba de las botas (a pedido de David,
+       quedaba muy arriba). Menos negativo = "Work" baja esos px sin
+       tocar nada más del layout de arriba. */
+    margin-bottom: -40px;
   }
 
   .project-card {
     margin-bottom: var(--space-40);
+  }
+
+  /* "YouTube Compass" (el título con la brújula dentro de la tarjeta,
+     no el logo del sitio): a pedido de David, en mobile tiene que
+     llenar el ancho completo de la tarjeta — mismos 16px de margen que
+     el resto del contenido — en vez de las 8/12 columnas que ocupa en
+     desktop/tablet (~65% del ancho, se nota "chico" con aire de sobra
+     a los costados). El font-size de .project-card__ytd-hero-title ya
+     está en cqi, relativo al ANCHO DEL FRAME (ver ese comentario más
+     arriba) — y el ícono de la brújula en em, proporcional al texto —
+     así que alcanza con agrandar el frame: texto e ícono se reacomodan
+     solos, manteniendo la misma proporción entre ellos que ya tenían.
+     Ojo: NO tocar --ytd-8col (la variable en sí) — el frame del video
+     de preview de abajo la comparte y ese no se pidió agrandar, solo
+     el título. */
+  .project-card__ytd-hero-title-frame {
+    width: calc(100vw - 2 * var(--grid-margin));
   }
 
   /* "Get in touch": info (1/6) + foto (7/13) no entran cómodos lado a
