@@ -933,23 +933,21 @@ body {
 
   /* "YouTube Compass" (el título con la brújula dentro de la tarjeta,
      no el logo del sitio): a pedido de David, en mobile tiene que
-     dejar 24px de margen a cada lado MEDIDOS DESDE EL BORDE DE LA
-     TARJETA (.project-card__ytd-hero), no desde el borde de la
-     pantalla — la tarjeta ya está adentro de .container, inset
-     --grid-margin (16px) del viewport. Por eso la resta es doble: los
-     16px que ya come .container + los 24px de margen pedidos acá.
-     (Primer intento restó solo un tramo de 16px desde el viewport —
-     eso daba 0px de margen contra la tarjeta, no 16: el texto quedó
-     pegado al borde de la tarjeta y se veía "demasiado grande".)
-     El font-size de .project-card__ytd-hero-title ya está en cqi,
-     relativo al ANCHO DEL FRAME (ver ese comentario más arriba) — y el
-     ícono de la brújula en em, proporcional al texto — así que alcanza
-     con ajustar el ancho del frame: texto e ícono se reacomodan solos,
-     misma proporción entre ellos que ya tenían. Ojo: NO tocar
-     --ytd-8col (la variable en sí) — el frame del video de preview de
-     abajo la comparte y ese no se pidió agrandar, solo el título. */
+     dejar un margen a cada lado MEDIDO DESDE EL BORDE DE LA TARJETA
+     (.project-card__ytd-hero), no desde el borde de la pantalla — la
+     tarjeta ya está adentro de .container, inset --grid-margin (16px)
+     del viewport. Por eso la resta es doble: los 16px que ya come
+     .container + el margen pedido acá (probando valores: 24px primero,
+     ahora 16px para comparar). El font-size de
+     .project-card__ytd-hero-title ya está en cqi, relativo al ANCHO
+     DEL FRAME (ver ese comentario más arriba) — y el ícono de la
+     brújula en em, proporcional al texto — así que alcanza con ajustar
+     el ancho del frame: texto e ícono se reacomodan solos, misma
+     proporción entre ellos que ya tenían. Ojo: NO tocar --ytd-8col (la
+     variable en sí) — el frame del video de preview de abajo la
+     comparte y ese no se pidió agrandar, solo el título. */
   .project-card__ytd-hero-title-frame {
-    width: calc(100vw - 2 * var(--grid-margin) - 2 * 24px);
+    width: calc(100vw - 2 * var(--grid-margin) - 2 * 16px);
   }
 
   /* "Get in touch": info (1/6) + foto (7/13) no entran cómodos lado a
