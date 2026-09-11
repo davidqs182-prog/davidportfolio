@@ -1234,15 +1234,33 @@ body {
        recorta cualquier resto en vez de dejarlo crear una barra de
        scroll horizontal en toda la página. */
     overflow-x: hidden;
-    /* overflow-x:hidden solo no alcanza en Safari/iOS real (reportado
-       por David: "un ligero scroll dentro del scroll general") — es un
-       bug conocido de WebKit, un elemento con overflow:hidden pero con
-       contenido que de verdad desborda (el avatar, 473px en un
-       viewport de 375px) puede seguir capturando el gesto de swipe
-       horizontal aunque no haya barra ni límite visible que recorrer.
-       touch-action:pan-y le dice al navegador que acá el único gesto
-       de scroll válido es vertical, sin importar qué tan ancho sea el
-       contenido de adentro. */
+    /* La causa real del "scroll dentro del scroll" que reportó David
+       (se scrollea un poco solo, después recién se scrollea la página
+       general) NO era horizontal, era vertical — y no era el layout,
+       era una regla de la spec de CSS Overflow que no salta a la
+       vista: si overflow-x se pone en algo distinto de "visible" (acá,
+       hidden) y overflow-y se deja en su default (visible), el
+       navegador COMPUTA overflow-y como "auto" solo, sin que lo
+       hayamos pedido — y esto pasa incluso si overflow-y:visible se
+       declara explícito (medido en vivo: seguía dando "auto" en
+       getComputedStyle igual, y measured .scrollHeight 40px por
+       encima de .clientHeight — un rango de scroll vertical propio,
+       chico pero real, que el dedo consumía antes de pasarle el gesto
+       a la página). La única forma de que ninguno de los dos ejes
+       quede en "auto" es que ambos sean el MISMO valor no-visible —
+       por eso "overflow: hidden" (shorthand, los dos ejes) en vez de
+       solo overflow-x. Nada legítimo se recorta verticalmente: la
+       sección nunca tuvo contenido más alto que ella misma, el rango
+       de scroll que aparecía era justamente este bug. */
+    overflow: hidden;
+    /* overflow:hidden solo tampoco alcanza en Safari/iOS real para el
+       eje horizontal — bug conocido de WebKit, un elemento con
+       overflow:hidden pero con contenido que de verdad desborda (el
+       avatar, 473px en un viewport de 375px) puede seguir capturando
+       el gesto de swipe horizontal aunque no haya barra ni límite
+       visible que recorrer. touch-action:pan-y le dice al navegador
+       que acá el único gesto de scroll válido es vertical, sin
+       importar qué tan ancho sea el contenido de adentro. */
     touch-action: pan-y;
   }
 
