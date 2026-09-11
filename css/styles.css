@@ -1223,7 +1223,7 @@ body {
        invadía el header entero. Retocado en vivo contra el título
        "About" para que el solape sea parecido al de desktop (cabeza +
        tope de la tabla sobre el título), no el 100% tapado. */
-    margin-top: -95px;
+    margin-top: -135px;
     margin-bottom: var(--space-40);
     /* Salvavidas: primero se probó el mismo ancho que .hero__avatar
        (clamp × 2.15, ~473px, desbordando el viewport como en Home) y en
