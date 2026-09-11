@@ -1255,16 +1255,23 @@ body {
     flex: 0 0 auto;
   }
 
-  /* Más grande que el original de esta sección (era 200px fijo) pero
-     MENOS que el de Home (clamp × 2.15, ~473px) — a pedido de David:
-     ese tamaño desbordaba el viewport y en un teléfono real generaba
-     scroll horizontal con el texto de las tarjetas cortado. ×1.3 sobre
-     el mismo clamp() base de Home da 286px a este ancho, adentro de los
-     343px disponibles (375 - 2×16 de padding) sin desbordar. Ya no
-     depende de --about-col8-width (pensado para el layout de 12
-     columnas de desktop). */
+  /* Mismo tamaño que .hero__avatar en este breakpoint (a pedido de
+     David, "igual de alto proporcionalmente que el de Home") — mismo
+     clamp() base × 2.15. Antes se había bajado a ×1.3 porque a ×2.15
+     (~473px) desbordaba el viewport (375px) y en un teléfono real eso
+     generaba scroll horizontal con el texto de abajo cortado — pero esa
+     vez el ancho también se recortaba junto con la altura. Ahora el
+     salvavidas real es overflow-x:hidden en .about-experience (ver ese
+     comentario): con eso puesto, el sobrante de ancho se recorta limpio
+     en los bordes del viewport (mismo efecto visual que .hero__avatar
+     en Home, que también desborda) SIN generar scroll, así que el
+     tamaño puede volver a ser el completo. La altura crece "hacia
+     abajo" solo — el pin es un item de un flex column con
+     align-items:flex-start, su borde superior no se mueve al cambiar de
+     tamaño (eso lo fija margin-top de .about-experience, no esto), así
+     que agrandar acá no cambia el solape con "About" ya calibrado. */
   .about-experience__avatar {
-    width: calc(clamp(220px, 43vw, 619px) * 1.3);
+    width: calc(clamp(220px, 43vw, 619px) * 2.15);
     /* La regla base trae max-width:100% (pensada para no pasarse de
        --about-col8-width en desktop) — acá lo pisa para que el cálculo
        de arriba mande, no el ancho del track. */
