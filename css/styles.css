@@ -1194,13 +1194,16 @@ body {
    única en mobile). */
 @media (max-width: 767px) {
   .about-experience {
-    /* El -180px de desktop empuja la sección hacia arriba para que el
-       avatar se superponga con "ABOUT" (efecto a propósito, ver el
-       comentario en .about-experience más arriba) — con el avatar chico
-       de mobile (ver .about-experience__avatar acá abajo) ese solape ya
-       no se ve bien y además invade el header. Se anula del todo: la
-       sección arranca en flujo normal, pegada debajo del hero. */
-    margin-top: 0;
+    /* El -180px de desktop está calibrado para el avatar chico (columna
+       8, ver --about-avatar-width) — con el avatar ahora al tamaño del
+       de Home (ver .about-experience__avatar acá abajo) ese valor de
+       desktop invadía el header entero. -70px es el mismo orden de
+       magnitud que el -66px que usa .hero__stage en este mismo
+       breakpoint para el avatar de Home (misma superposición "cabeza +
+       tope de la tabla sobre el título"), medido en vivo contra el
+       título "About" para que el solape sea parecido, no el 100% del
+       título tapado. */
+    margin-top: -150px;
     margin-bottom: var(--space-40);
   }
 
@@ -1225,11 +1228,21 @@ body {
     flex: 0 0 auto;
   }
 
+  /* Mismo tamaño que .hero__avatar en este breakpoint (a pedido de
+     David) — mismo clamp() base (220px mínimo / 43vw / 619px máximo)
+     multiplicado ×2.15, ver ese comentario en .hero__avatar arriba para
+     el porqué del factor. Ya no depende de --about-col8-width (pensado
+     para el layout de 12 columnas de desktop): a este tamaño el avatar
+     es más ancho que el propio viewport y se centra igual que en Home
+     (el contenedor flex con align-items:center no lo recorta). */
   .about-experience__avatar {
-    /* Ancho fijo chico en vez del clamp() pensado para el layout de 12
-       columnas — a este ancho el avatar es solo la presentación arriba
-       de la lista, no necesita ocupar una columna de grid. */
-    width: 200px;
+    width: calc(clamp(220px, 43vw, 619px) * 2.15);
+    /* La regla base trae max-width:100% (pensada para no pasarse de
+       --about-col8-width en desktop) — acá lo pisa, si no el avatar
+       queda recortado al ancho del track (mismo mecanismo por el que
+       .hero__avatar en Home no tiene max-width y sí puede desbordar el
+       viewport centrado). */
+    max-width: none;
     margin-left: 0;
   }
 
