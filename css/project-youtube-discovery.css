@@ -1660,6 +1660,20 @@ body {
     padding-bottom: var(--space-64);
   }
 
+  /* En mobile "YOUTUBE 🧭 COMPASS" tiene que verse igual de grande que
+     .project-card__ytd-hero-title en Home (a pedido de David) — el
+     frame de acá seguía en 10/12 columnas (pensado para desktop), más
+     angosto que el de la tarjeta de Home (que en mobile pasa a
+     ~viewport completo, ver ese mismo selector en styles.css). Mismo
+     font-family/weight/tracking y misma relación cqi 6:1 en ambos (ya
+     documentado en el comentario de .ytd-hero__title más arriba) — con
+     el frame igual de ancho, el font-size resultante también queda
+     prácticamente igual, brújula incluida (el ícono ya escala en em,
+     relativo al texto). */
+  .ytd-hero__title-frame {
+    width: calc(100vw - 2 * var(--grid-margin) - 2 * 16px);
+  }
+
   .ytd-about__headline,
   .ytd-problem__headline,
   .ytd-insight__headline,
