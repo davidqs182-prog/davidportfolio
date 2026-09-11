@@ -1172,3 +1172,86 @@ body {
   line-height: var(--text-body-line);
   color: var(--color-text-black);
 }
+
+/* About — Experience en mobile. Va acá, DESPUÉS de las reglas base de
+   arriba (no dentro del @media (max-width:767px) de más arriba en este
+   archivo) — misma especificidad que esas reglas base, así que si
+   quedara antes en el archivo el cascade las pisa igual por orden de
+   aparición, sin importar que estén en un media query. Bug real,
+   encontrado en vivo: con el bloque acá arriba, .about-experience seguía
+   midiendo margin-top:-180px y position:sticky a 375px.
+
+   El patrón desktop (avatar "clavado" con position:sticky + tarjetas que
+   se deslizan por detrás en horizontal) necesita las 12 columnas del
+   grid para tener sentido — a 375px de ancho el avatar solo (columna 8,
+   ~210px medido en vivo) ya deja casi nada de lugar para el texto, que
+   además queda escondido fuera de pantalla sin ninguna señal visible de
+   que se puede hacer swipe (bug real: colisiona con el header "Get in
+   Touch" por el margin-top negativo pensado para el avatar grande de
+   desktop). Pasa a pila vertical simple: avatar arriba, centrado, y cada
+   experience debajo en flujo normal — mismo criterio que
+   .project-bento__grid en project-onboarding.css (mosaico 2D -> columna
+   única en mobile). */
+@media (max-width: 767px) {
+  .about-experience {
+    /* El -180px de desktop empuja la sección hacia arriba para que el
+       avatar se superponga con "ABOUT" (efecto a propósito, ver el
+       comentario en .about-experience más arriba) — con el avatar chico
+       de mobile (ver .about-experience__avatar acá abajo) ese solape ya
+       no se ve bien y además invade el header. Se anula del todo: la
+       sección arranca en flujo normal, pegada debajo del hero. */
+    margin-top: 0;
+    margin-bottom: var(--space-40);
+  }
+
+  .about-experience__track {
+    flex-direction: column;
+    align-items: center;
+    overflow-x: visible;
+    padding-right: 0;
+    padding-inline: var(--grid-mobile-margin);
+    gap: var(--space-32);
+  }
+
+  /* Espaciador de la columna 1 en desktop (ver comentario en
+     .about-experience__edge más arriba) — con .about-experience__track
+     ya con su propio padding-inline acá arriba, sobra. */
+  .about-experience__edge {
+    display: none;
+  }
+
+  .about-experience__pin {
+    position: static;
+    flex: 0 0 auto;
+  }
+
+  .about-experience__avatar {
+    /* Ancho fijo chico en vez del clamp() pensado para el layout de 12
+       columnas — a este ancho el avatar es solo la presentación arriba
+       de la lista, no necesita ocupar una columna de grid. */
+    width: 200px;
+    margin-left: 0;
+  }
+
+  /* Parche opaco + fade: ambos existen solo para tapar las tarjetas que
+     scrollean por detrás del avatar en el layout horizontal de desktop
+     (ver esos comentarios más arriba) — en la pila vertical de mobile no
+     hay nada detrás del avatar que tapar. */
+  .about-experience__avatar-backing,
+  .about-experience__fade {
+    display: none;
+  }
+
+  .about-experience__list {
+    flex-direction: column;
+    align-items: stretch;
+    gap: var(--space-32);
+    width: 100%;
+  }
+
+  .about-experience__item {
+    flex: 0 0 auto;
+    width: 100%;
+    padding-block: 0;
+  }
+}
