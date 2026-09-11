@@ -464,6 +464,22 @@
     padding-inline: var(--grid-tablet-margin);
     grid-template-columns: repeat(var(--grid-tablet-columns), 1fr);
     column-gap: var(--grid-tablet-gutter);
+    /* Línea roja en el borde izquierdo/derecho del overlay — el borde
+       real del breakpoint (Tablet/Mobile) según lo mide syncGridWidth()
+       en js/main.js, no la fuente de Figma. Contraste a propósito con
+       el violeta de las columnas para que sea evidente cuál línea es
+       cuál. Solo Tablet/Mobile (a pedido de David — en Desktop el
+       borde ya coincide con el viewport salvo el tope de 1440px, no
+       hace falta remarcarlo). Es un box-shadow inset, no un border: un
+       border restaría 2px+2px al content-box (aunque sea box-sizing:
+       border-box) y correría las columnas esa diferencia respecto a
+       las tarjetas reales — ya nos mordió una vez con el ancho del
+       overlay, no lo repetimos acá. box-shadow no participa del box
+       model, así que las columnas quedan exactas. Prende/apaga solo
+       con el botón Grid — es parte de #grid-overlay, no una regla
+       aparte. */
+    box-shadow: inset 2px 0 0 0 var(--color-red-500),
+      inset -2px 0 0 0 var(--color-red-500);
   }
 
   #grid-overlay .grid-overlay__col:nth-child(n + 9) {
