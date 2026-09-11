@@ -29,13 +29,56 @@
 
   devTools.classList.add("is-dev-visible");
 
+  // El overlay es position:fixed + inset:0 (left:0 Y right:0), que en
+  // Chrome/Windows (y cualquier navegador con scrollbar que ocupa
+  // espacio real, no superpuesta) se dimensiona contra
+  // window.innerWidth — que INCLUYE el ancho de esa scrollbar. El
+  // contenido real (.container, .work-list, etc., todo width:100%
+  // normal) se dimensiona contra document.documentElement.clientWidth,
+  // que la EXCLUYE. La diferencia (10-20px típico en Windows) hacía que
+  // el grid pareciera "de más" en el borde derecho, corrido respecto a
+  // las tarjetas reales. En mobile real (scrollbar superpuesta, no
+  // ocupa layout) innerWidth === clientWidth, así que esto no le pasa.
+  //
+  // Fix, en dos partes:
+  // 1) Calculamos el ancho igual que .container: min(clientWidth,
+  //    --grid-max-width) — ancho completo en mobile/tablet (nunca llega
+  //    a los 1440px), tope de 1440px centrado en desktop ancho.
+  // 2) route width/left A MANO (no dejar "right" fijo en 0): con left,
+  //    width Y right los tres fijados a la vez, margin-inline:auto (ya
+  //    puesto en components.css para el centrado en desktop) reparte el
+  //    espacio sobrante EN LOS DOS LADOS — centrando el overlay dentro
+  //    de los innerWidth px en vez de alinearlo como el contenido real
+  //    (que no tiene ese sobrante para repartir: clientWidth ya es su
+  //    100%). Poniendo right:auto ese reparto no se dispara; left queda
+  //    en 0 en mobile/tablet (flush, como .container) y centrado a mano
+  //    en desktop ancho (mismo cálculo que el margin-inline:auto real).
+  function syncGridWidth() {
+    var clientWidth = document.documentElement.clientWidth;
+    var maxWidth =
+      parseFloat(
+        getComputedStyle(document.documentElement).getPropertyValue(
+          "--grid-max-width"
+        )
+      ) || 1440;
+    var width = Math.min(clientWidth, maxWidth);
+    var left = Math.max(0, (clientWidth - width) / 2);
+    overlay.style.width = width + "px";
+    overlay.style.left = left + "px";
+    overlay.style.right = "auto";
+  }
+
   function toggleGrid() {
     var willShow = !overlay.classList.contains("is-visible");
+    if (willShow) syncGridWidth();
     overlay.classList.toggle("is-visible", willShow);
     gridToggle.classList.toggle("is-active", willShow);
   }
 
   gridToggle.addEventListener("click", toggleGrid);
+  window.addEventListener("resize", function () {
+    if (overlay.classList.contains("is-visible")) syncGridWidth();
+  });
 
   document.addEventListener("keydown", function (e) {
     if (e.key.toLowerCase() !== "g") return;
