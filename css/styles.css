@@ -1234,6 +1234,16 @@ body {
        recorta cualquier resto en vez de dejarlo crear una barra de
        scroll horizontal en toda la página. */
     overflow-x: hidden;
+    /* overflow-x:hidden solo no alcanza en Safari/iOS real (reportado
+       por David: "un ligero scroll dentro del scroll general") — es un
+       bug conocido de WebKit, un elemento con overflow:hidden pero con
+       contenido que de verdad desborda (el avatar, 473px en un
+       viewport de 375px) puede seguir capturando el gesto de swipe
+       horizontal aunque no haya barra ni límite visible que recorrer.
+       touch-action:pan-y le dice al navegador que acá el único gesto
+       de scroll válido es vertical, sin importar qué tan ancho sea el
+       contenido de adentro. */
+    touch-action: pan-y;
   }
 
   .about-experience__track {
@@ -1243,6 +1253,11 @@ body {
     padding-right: 0;
     padding-inline: var(--grid-mobile-margin);
     gap: var(--space-32);
+    /* Explícito acá también, no solo en .about-experience — este es el
+       contenedor que de verdad desborda (el avatar adentro), y en
+       Safari/iOS conviene no depender de que la restricción de un
+       ancestro alcance siempre al elemento que recibe el gesto. */
+    touch-action: pan-y;
   }
 
   /* Espaciador de la columna 1 en desktop (ver comentario en
