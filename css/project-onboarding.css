@@ -1274,6 +1274,16 @@
     flex: 0 0 82vw;
   }
 
+  /* Flechas de swipe (Behind the scenes + Testimonials): en mobile el
+     gesto táctil nativo ya cubre la navegación (scroll-snap + swipe con
+     el dedo), y los dots debajo dan el mismo control con clic — las
+     flechas quedan redundantes y, a este ancho, se superponen al
+     contenido de la tarjeta en vez de quedar en el margen. */
+  .project-process__arrow,
+  .project-testimonial__arrow {
+    display: none;
+  }
+
   /* Bento grid: el mosaico 2x2 (con aspect-ratio propio del bloque
      completo, pensado para 2 columnas) no tiene forma de acomodarse
      bien apilado en una sola columna angosta — pasa a una pila vertical
@@ -1292,13 +1302,18 @@
     aspect-ratio: 576 / 1024;
   }
 
-  .project-bento__tile--top,
-  .project-bento__tile--bottom-right {
+  .project-bento__tile--top {
     aspect-ratio: 16 / 9;
   }
 
-  .project-bento__tile--bottom-left {
-    aspect-ratio: 9 / 16;
+  /* Los dos bocetos (Arbeitsplatz + input annotation) se ocultan en
+     mobile: son detalle de proceso, ya sostenido por el boceto del
+     dashboard (--top) y el video de sketching (--tall) que quedan
+     visibles — a este ancho apilados los 4 tiles alargan demasiado la
+     sección sin aportar información nueva. */
+  .project-bento__tile--bottom-left,
+  .project-bento__tile--bottom-right {
+    display: none;
   }
 
   /* Ya no es un grid-12 real (ver .project-bento__grid arriba) — la
