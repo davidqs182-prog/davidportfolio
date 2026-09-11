@@ -927,8 +927,10 @@ body {
     margin-bottom: -40px;
   }
 
+  /* Más aire entre tarjetas en mobile (a pedido de David) — 40px se
+     sentía apretado contra el CTA de la tarjeta anterior. */
   .project-card {
-    margin-bottom: var(--space-40);
+    margin-bottom: var(--space-64);
   }
 
   /* "YouTube Compass" (el título con la brújula dentro de la tarjeta,
