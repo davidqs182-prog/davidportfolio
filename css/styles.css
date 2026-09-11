@@ -795,6 +795,13 @@ body {
   :root {
     --grid-margin: var(--grid-mobile-margin);
     --grid-gutter: var(--grid-mobile-gutter);
+    /* Una sola fuente de verdad para que "Product Designer" Y "Work"
+       usen EXACTO el mismo font-size en mobile (a pedido de David) —
+       ver el comentario largo en .hero__title más abajo para de dónde
+       sale el 4.962. */
+    --hero-mobile-title-size: calc(
+      (100vw - 2 * var(--grid-mobile-margin)) / 4.962
+    );
   }
 
   /* Header en una sola fila también en mobile (logo a la izquierda,
@@ -813,6 +820,37 @@ body {
 
   .hero {
     padding-block: var(--space-32) var(--space-40);
+  }
+
+  /* A pedido de David: en mobile "PRODUCT DESIGNER" tiene que llenar
+     las 4 columnas del grid (tocar el borde de la columna 1 y de la
+     4) en vez de quedar al 15vw de siempre (que no llega). "DESIGNER"
+     es la palabra más ancha de las dos líneas — .hero__title ya se
+     achica al contenido (shrink-to-fit), así que su propio ancho ES el
+     ancho de "DESIGNER". Medido en vivo a 375px: a font-size 56.28px
+     (el 15vw de antes), "DESIGNER" media 279.26px — proporción
+     279.26/56.28 = 4.962 (ancho del texto : font-size, para esta
+     palabra puntual en Work Sans 900 uppercase, letter-spacing -0.02em;
+     no es una constante genérica de la tipografía, es de ESTA palabra).
+     Despejando para que el ancho iguale el contenido de 4 columnas
+     (100vw - 2 × --grid-mobile-margin): font-size = ese ancho / 4.962.
+     Verificado que da 0px de diferencia contra el borde real de la
+     columna 1/4 (mismo criterio que el grid del dev-tool: medir, no
+     opinar a ojo). El valor vive en --hero-mobile-title-size (arriba)
+     para que .hero__subtitle ("Work") pueda usar el mismo exacto. */
+  .hero__title {
+    font-size: var(--hero-mobile-title-size);
+  }
+
+  /* "Work" al mismo font-size exacto que "Product Designer" (mismo
+     --hero-mobile-title-size, ver arriba) — a pedido de David, una vez
+     agrandado el título a las 4 columnas. Su posición bajo los pies del
+     avatar la da el margin-bottom negativo de .hero__stage (más abajo),
+     no su propio tamaño — "Work" solo crece hacia ABAJO desde donde ya
+     arrancaba (line-height:0.85 corto, la línea de base no se mueve
+     para arriba), así que agrandarla no la despega de las botas. */
+  .hero__subtitle {
+    font-size: var(--hero-mobile-title-size);
   }
 
   /* .hero__intro en absolute (ver esa regla arriba) se ubica contra el
@@ -835,11 +873,16 @@ body {
     display: none;
   }
 
-  /* Avatar al doble de tamaño en mobile, a pedido de David — calc()
-     sobre el clamp() original (no valores nuevos sueltos) para
-     conservar la misma curva de escalado fluido, solo al doble. */
+  /* Avatar un poco más grande todavía en mobile, a pedido de David —
+     mismo criterio que el ×2 de acá abajo (multiplicar el clamp()
+     original, no valores nuevos sueltos): ×2.15, +7.5% sobre el ×2 que
+     ya había. Si esto corre "Work" lejos de las botas, hay que
+     reescalar proporcionalmente los márgenes negativos de .hero__stage
+     de acá abajo (el aire transparente del PNG crece en px al mismo
+     ritmo que el avatar) — verificado en vivo que con este +7.5% no
+     hizo falta: sigue pegado a las botas. */
   .hero__avatar {
-    width: calc(clamp(220px, 43vw, 619px) * 2);
+    width: calc(clamp(220px, 43vw, 619px) * 2.15);
   }
 
   /* Los márgenes negativos de .hero__stage compensan el aire
