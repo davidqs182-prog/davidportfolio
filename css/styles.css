@@ -1279,6 +1279,18 @@ body {
        de arriba mande, no el ancho del track. */
     max-width: none;
     margin-left: 0;
+    /* El PNG (900×1205 nativo) no tiene al personaje centrado en su
+       propio lienzo — medido con canvas/getImageData (mismo método que
+       el aire transparente de .hero__avatar): el contenido real va de
+       x=216 a x=874, centro en x=545, pero el centro del lienzo es
+       x=450 — 95px corridos a la derecha (10.56% del ancho). Por eso
+       recortar el lienzo centrado (lo que hace el overflow-x:hidden del
+       padre) deja al personaje pegado al borde derecho en vez de
+       centrado (bug real, reportado en vivo). translateX en % es
+       relativo al ancho propio del elemento, así que corrige
+       automáticamente en cualquier viewport sin depender de la fórmula
+       de --about-avatar-width de acá arriba. */
+    transform: translateX(-10.556%);
   }
 
   /* Parche opaco + fade: ambos existen solo para tapar las tarjetas que
