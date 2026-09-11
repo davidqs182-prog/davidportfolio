@@ -1177,7 +1177,14 @@
      del título en vez de calcular un alto fijo distinto por breakpoint. */
   .project-hero {
     height: auto;
-    padding-block: var(--space-32) var(--space-48);
+    /* padding-bottom en 0: .project-hero__media pasó a flujo normal
+       (position:static, ver abajo) en vez del position:absolute +
+       bottom:0 que usa desktop para pegar el video al borde inferior
+       del hero. Sin padding-bottom, el propio fin del video YA es el
+       borde inferior de la sección — con padding quedaba un tramo de
+       fondo gris vacío entre el video y el borde (reportado en vivo,
+       captura con el espacio marcado). */
+    padding-block: var(--space-32) 0;
   }
 
   .project-hero__media {
@@ -1199,7 +1206,11 @@
 
 @media (max-width: 767px) {
   .project-hero {
-    padding-block: var(--space-24) var(--space-32);
+    /* Mismo motivo que el padding-bottom:0 de acá arriba (bloque de
+       1023px) — este valor pisa ESE por especificidad de media query,
+       así que hay que repetirlo acá también o vuelve el aire gris
+       vacío debajo del video en mobile puntualmente. */
+    padding-block: var(--space-24) 0;
   }
 
   .project-devices {
