@@ -443,14 +443,24 @@
 /* El overlay sigue el breakpoint REAL del viewport (mismos cortes que
    tokens.css: Tablet 768–1023px, Mobile <768px) — a Tablet muestra 8
    columnas (oculta la 9ª a la 12ª) y a Mobile 4 (oculta la 5ª a la
-   12ª), con el ancho/margen/gutter de --grid-tablet-* / --grid-mobile-*.
+   12ª), con el margen/gutter de --grid-tablet-* / --grid-mobile-*.
    --grid-margin/--grid-gutter ya los ajusta el bloque responsive de
    styles.css; acá se ponen igual explícitos para las páginas que cargan
    components.css sin styles.css. El botón Grid solo prende/apaga
-   (.is-visible) — no hay selector de breakpoint. */
+   (.is-visible) — no hay selector de breakpoint.
+
+   SIN max-width acá a propósito: --grid-tablet-width/--grid-mobile-width
+   son el ancho del frame de referencia en Figma (768/375), no un tope
+   real del sitio — .container nunca cambia su max-width de 1440px por
+   breakpoint (ver comentario en styles.css: solo --grid-margin/
+   --grid-gutter varían, así no se rompen los grid-column:X/Y ya
+   ubicados). Poner acá max-width:768px/375px hacía que el overlay fuera
+   una caja centrada de ESE ancho fijo en vez de ocupar todo el viewport
+   como el contenido real — en cualquier pantalla que no midiera
+   EXACTO 768 o 375 (la gran mayoría: 390, 393, 412, 414, 820...) el
+   overlay quedaba corrido/descentrado respecto al contenido real. */
 @media (max-width: 1023px) {
   #grid-overlay {
-    max-width: var(--grid-tablet-width);
     padding-inline: var(--grid-tablet-margin);
     grid-template-columns: repeat(var(--grid-tablet-columns), 1fr);
     column-gap: var(--grid-tablet-gutter);
@@ -463,7 +473,6 @@
 
 @media (max-width: 767px) {
   #grid-overlay {
-    max-width: var(--grid-mobile-width);
     padding-inline: var(--grid-mobile-margin);
     grid-template-columns: repeat(var(--grid-mobile-columns), 1fr);
     column-gap: var(--grid-mobile-gutter);
