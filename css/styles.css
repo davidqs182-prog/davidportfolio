@@ -989,11 +989,12 @@ body {
      borde superior del avatar queda ~220px más arriba, justo a la
      altura pedida. */
   margin-top: -180px;
-  /* Mismo gap que .project-card usa antes de .contact en Home (146px,
-     medida puntual de Figma) — sin esto, el carrusel queda pegado
-     directo contra el border-top de la sección de contacto (0px de
-     por medio, medido en vivo). */
-  margin-bottom: 146px;
+  /* Antes iba directo a .contact (de ahí el 146px, el mismo gap que
+     .project-card usa antes de .contact en Home) — ahora entre medio
+     está la sección Summary (reusada de resume.html, con su propio
+     padding-block:48px arriba), así que ese 146px sumado sobraba
+     (194px totales, reportado en vivo: "existe mucho espacio"). */
+  margin-bottom: var(--space-24);
 }
 
 .about-experience__track {
