@@ -80,10 +80,11 @@
 }
 
 /* Los dos párrafos van lado a lado (a pedido de David) — mismo patrón
-   5/5 (2/7 + 8/13) que .resume-entry-list--col1/2 y
-   .resume-skills__col--1/2 más abajo, así las tres secciones comparten
-   el mismo ritmo de columnas. Sin max-width: a este ancho de columna
-   (5/12, ~530px en el viewport más grande) el que tenía antes
+   5/5 (2/7 + 7/12, sin hueco en el medio) que .resume-entry-list--col1/2
+   y .resume-skills__col--1/2 más abajo, así las tres secciones
+   horizontales de la página comparten el mismo ritmo de columnas:
+   deja afuera la columna 1 y la 12. Sin max-width: a este ancho de
+   columna (5/12, ~530px en el viewport más grande) el que tenía antes
    (600px, pensado para un solo párrafo a ancho completo) nunca hubiese
    entrado en juego igual. */
 .resume-summary__body {
@@ -111,9 +112,10 @@
    tiene que estar alineada con la de la columna izquierda". Antes el
    título vivía SOLO en la columna izquierda, empujando su lista media
    fila más abajo que la derecha.
-   5/5 (2/7 + 8/13): mismo inicio en columna 2 que el resto del
-   contenido desde Summary, con un hueco de 1 columna en el medio (la
-   7). */
+   5/5 (2/7 + 7/12), a pedido de David — mismo inicio en columna 2 que
+   el resto del contenido desde Summary, sin hueco en el medio (antes
+   era 2/7 + 8/13, con la 7 vacía de por medio); deja afuera la columna
+   1 y la 12. */
 .resume-experience {
   padding-block: var(--space-48);
 }
@@ -131,14 +133,15 @@
 }
 
 .resume-entry-list--col2 {
-  grid-column: 8 / 13;
+  grid-column: 7 / 12;
 }
 
 /* ---------- Skills: 2 columnas ----------
    Mismo patrón que Experience: el H2 "Skills" arriba de las dos
    columnas (fila propia, ver regla de .resume-work__grid >
    .resume-section__heading más arriba), 2 grupos de categoría en cada
-   columna, ambas arrancando a la misma altura. 5/5 (2/7 + 8/13). */
+   columna, ambas arrancando a la misma altura. 5/5 (2/7 + 7/12), sin
+   hueco en el medio — mismo patrón que Experience. */
 .resume-skills {
   padding-block: var(--space-48);
 }
@@ -152,7 +155,7 @@
 }
 
 .resume-skills__col--2 {
-  grid-column: 8 / 13;
+  grid-column: 7 / 12;
 }
 
 /* ---------- Education ----------
