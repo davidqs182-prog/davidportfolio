@@ -7,38 +7,97 @@
    página. Mismo criterio que project-onboarding.css/
    project-youtube-discovery.css.
 
-   Primera parte nada más, a pedido de David — header + hero, con la
-   imagen compuesta del proyecto (mockup de iPhone con Leo + banners de
-   la feria) de fondo, exportada de Figma (node 385:42660, archivo
-   b3dN9DxslQbeJinmN3FTat, 1440×600 nativos). El resto del contenido del
-   hero (título, copy) todavía no está diseñado — queda para un
-   siguiente paso, ver el TODO en project-leo/index.html.
+   Primera parte nada más, a pedido de David — header + hero. El fondo
+   son 3 elementos separados (fondo anaranjado, imagen de los banners,
+   mockup del iPhone) en vez de una sola imagen plana — a pedido de
+   David, para poder reposicionar/redimensionar cada uno por separado
+   en un próximo paso, pensando en breakpoints angostos ("para que sean
+   responsivos posteriormente"). Medidas en base al diseño de Figma
+   (node 385:42660, archivo b3dN9DxslQbeJinmN3FTat, 1440×600 nativos) —
+   fijas en px por ahora, igual que el resto de measurements de
+   project-onboarding.css; se vuelven fluidas/responsive cuando se
+   ataque ese próximo paso, no antes. El resto del contenido del hero
+   (título, copy) todavía no está diseñado — queda para un siguiente
+   paso, ver el TODO en project-leo/index.html. */
 
-   Corrección en vivo (David: "el alto está malo, además usás otros
-   botones"): la primera versión solo tenía el header (88px) sin hero
-   debajo, y el botón "Back to home" era la versión simplificada de
-   Figma (sin ícono, sin "About") en vez de la que ya usa el resto del
-   sitio. Ahora: 600px totales (header + hero, igual que
-   project-onboarding.css) y los mismos botones exactos que Onboarding/
-   YouTube Compass. */
-
-/* .project-leo__hero-wrap envuelve header + hero con un solo fondo
-   continuo — mismo motivo que .navbar--project en Onboarding (el fondo
-   va en un contenedor a ancho completo, no en el .navbar interno con
-   .container, si no en pantallas > 1440px se verían los bordes del
-   --color-bg asomando a los costados). background-size:cover (no un
-   cálculo de posición entre header y hero por separado) — sin huecos
-   en ningún ancho de viewport, aunque recorte un poco la imagen lejos
-   de los 1440px de diseño. */
 .project-leo__hero-wrap {
-  background-image: url("../assets/images/project-leo-hero.jpg");
-  background-size: cover;
-  background-position: center top;
+  position: relative;
 }
 
-/* Mismo alto que .project-hero en project-onboarding.css: 512px = 600px
-   (header + hero combinados, mismo total que el resto de las páginas
-   de proyecto) menos los 88px que ya mide el header. */
+/* Capa de fondo, detrás de header + hero — position:absolute + inset:0
+   así ocupa exactamente el alto real del wrap (600px: 88 del header +
+   512 del hero, ver .project-hero más abajo), sin necesitar repetir
+   ese número acá. overflow:hidden por si algún recorte se pasa un
+   pixel del borde. aria-hidden en el HTML — es decoración, no
+   contenido. */
+.project-leo__hero-visual {
+  position: absolute;
+  inset: 0;
+  overflow: hidden;
+}
+
+/* Fondo anaranjado — mismo color que .navbar--project usaba antes
+   (#cc6632, de Figma). Ancho fijo (710px de 1440 en el diseño real) en
+   vez de todo el ancho: la mitad derecha la cubre la foto de los
+   banners (acá abajo), que empieza más o menos donde termina el
+   naranja puro (con un poco de superposición, tal cual el diseño
+   original). */
+.project-leo__hero-bg {
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 710px;
+  height: 100%;
+  background-color: #cc6632;
+}
+
+/* Foto de los banners de la feria — asset real exportado de Figma
+   (node 385:42663, "Brand Identity V1 3"), sin ningún botón horneado
+   (es un nodo hoja, no incluye los botones del header, que son nodos
+   hermanos aparte). Ancla al borde derecho — en el diseño original
+   este recorte (1044px) termina justo en el borde derecho del frame de
+   1440px, así que right:0 replica eso exacto sin tener que calcular
+   un left. */
+.project-leo__hero-banner {
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 1044px;
+  height: 600px;
+  object-fit: cover;
+}
+
+/* Mockup del iPhone (con el ícono de Leo en el dock) — recorte propio
+   del screenshot completo del frame, ver el comentario largo en
+   project-leo/index.html para el porqué (el grupo "Mockup" de Figma no
+   exportaba limpio en aislado). Empieza en top:88px — justo debajo del
+   header — porque el recorte en sí ya arranca ahí (se cortó a propósito
+   así para no incluir nada de los botones placeholder de Figma). */
+.project-leo__hero-mockup {
+  position: absolute;
+  left: 0;
+  top: 88px;
+  width: 640px;
+  height: 512px;
+  object-fit: cover;
+}
+
+/* Header y hero van EN FLUJO NORMAL arriba de .project-leo__hero-visual
+   (que es position:absolute, se sale del flujo) — su altura combinada
+   (88 + 512 = 600px) es la que de verdad determina el alto de
+   .project-leo__hero-wrap; .project-leo__hero-visual con inset:0 solo
+   seguía a esa altura ya calculada. z-index:1 para pintar por encima
+   del fondo (ninguno de los dos tiene su propio fondo — se ve la capa
+   de abajo a través). */
+.navbar--project,
+.project-hero {
+  position: relative;
+  z-index: 1;
+}
+
+/* Mismo alto que .project-hero en project-onboarding.css: 512px =
+   600px (header + hero combinados, mismo total que el resto de las
+   páginas de proyecto) menos los 88px que ya mide el header. */
 .project-hero {
   height: 512px;
 }

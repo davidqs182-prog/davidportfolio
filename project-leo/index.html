@@ -44,18 +44,44 @@
        "About") — a pedido de David, no la versión simplificada sin
        ícono que traía el diseño de Figma (node 385:42660).
 
-       .project-leo__hero-wrap envuelve header + hero con la imagen
-       compuesta del proyecto (mockup de iPhone con Leo + banners de la
-       feria) de fondo, un solo continuo de punta a punta — mismo
-       criterio que .navbar--project en Onboarding (el fondo va en un
-       contenedor a ancho completo, no en el .navbar interno con
-       .container, si no en pantallas > 1440px se verían los bordes del
-       --color-bg de la página asomando a los costados). background-
-       size:cover en vez de un cálculo de posición entre dos fondos
-       separados — más simple y sin huecos en ningún ancho de viewport,
-       aunque recorte un poco la imagen en anchos muy distintos a los
-       1440px de diseño. -->
+       El fondo NO es un screenshot único (esa fue la primera versión,
+       David la rechazó: "deben ser elementos separados... para que
+       sean responsivos posteriormente") — son 3 piezas independientes,
+       ver .project-leo__hero-visual más abajo: fondo anaranjado (color
+       CSS), imagen (foto de los banners, asset real de Figma) y mockup
+       (recorte propio, ver ese comentario). Cada una se puede
+       reposicionar/redimensionar por separado en un próximo paso para
+       breakpoints angostos, sin depender de una sola imagen plana. -->
   <div class="project-leo__hero-wrap">
+    <div class="project-leo__hero-visual" aria-hidden="true">
+      <div class="project-leo__hero-bg"></div>
+      <img
+        class="project-leo__hero-banner"
+        src="../assets/images/project-leo-banner.jpg"
+        alt=""
+        width="1044"
+        height="600"
+        loading="lazy"
+      >
+      <!-- Recorte propio (no un export directo de Figma) — el grupo
+           "Mockup" de Figma no se dejaba exportar limpio en aislado (la
+           captura salía con una proporción rara, un bug de export de
+           Figma con los blurs/bordes redondeados del grupo). Se
+           recortó en cambio del screenshot completo del frame (que sí
+           renderiza bien), empezando en y=88px — justo debajo de la
+           franja de los botones — así el recorte no incluye nada de
+           los botones placeholder de Figma horneados en el diseño
+           original. -->
+      <img
+        class="project-leo__hero-mockup"
+        src="../assets/images/project-leo-mockup.jpg"
+        alt=""
+        width="640"
+        height="512"
+        loading="lazy"
+      >
+    </div>
+
     <header class="navbar--project">
       <div class="navbar container">
         <a href="/" class="btn btn--outline btn--md btn--back" aria-label="Back to home">
