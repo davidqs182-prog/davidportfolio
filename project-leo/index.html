@@ -37,23 +37,44 @@
   height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   <!-- End Google Tag Manager (noscript) -->
 
-  <!-- Header: primera parte de esta página (a pedido de David, el
-       resto del hero/contenido todavía no está diseñado). Mismo patrón
-       que .navbar--project en project-onboarding/project-youtube-discovery
-       (fondo en el <header>, no en el .navbar interno, para que llegue
-       de punta a punta en pantallas > 1440px) — solo que acá el fondo
-       es la imagen compuesta del proyecto (mockup de iPhone con Leo +
-       banners de la feria), no un color sólido. Sin ícono en "Back to
-       home" ni link "About" — tal cual el diseño de Figma (node
-       385:42660), a diferencia de las otras páginas de proyecto. -->
-  <header class="navbar--project">
-    <div class="navbar container">
-      <a href="/" class="btn btn--outline btn--md" aria-label="Back to home">Back to home</a>
-      <nav class="navbar__links">
-        <a href="/#contact" class="btn btn--dark btn--md">Get in Touch</a>
-      </nav>
-    </div>
-  </header>
+  <!-- Header + hero: primera parte de esta página (a pedido de David,
+       el resto del contenido del hero todavía no está diseñado). Header
+       con los MISMOS botones que project-onboarding/
+       project-youtube-discovery (ícono + label en "Back to home", link
+       "About") — a pedido de David, no la versión simplificada sin
+       ícono que traía el diseño de Figma (node 385:42660).
+
+       .project-leo__hero-wrap envuelve header + hero con la imagen
+       compuesta del proyecto (mockup de iPhone con Leo + banners de la
+       feria) de fondo, un solo continuo de punta a punta — mismo
+       criterio que .navbar--project en Onboarding (el fondo va en un
+       contenedor a ancho completo, no en el .navbar interno con
+       .container, si no en pantallas > 1440px se verían los bordes del
+       --color-bg de la página asomando a los costados). background-
+       size:cover en vez de un cálculo de posición entre dos fondos
+       separados — más simple y sin huecos en ningún ancho de viewport,
+       aunque recorte un poco la imagen en anchos muy distintos a los
+       1440px de diseño. -->
+  <div class="project-leo__hero-wrap">
+    <header class="navbar--project">
+      <div class="navbar container">
+        <a href="/" class="btn btn--outline btn--md btn--back" aria-label="Back to home">
+          <span class="material-symbols-rounded icon-back" aria-hidden="true">arrow_back</span>
+          <span class="btn--back__label">Back to home</span>
+        </a>
+        <nav class="navbar__links">
+          <a href="/about/" class="btn btn--outline btn--md">About</a>
+          <a href="/#contact" class="btn btn--dark btn--md">Get in Touch</a>
+        </nav>
+      </div>
+    </header>
+
+    <!-- Mismo alto que .project-hero en project-onboarding.css: 512px
+       = 600px (header + hero combinados, mismo total que el resto de
+       las páginas de proyecto) menos los 88px que ya mide el header.
+       Sin contenido todavía — ver el TODO de acá abajo. -->
+    <section class="project-hero"></section>
+  </div>
 
   <main>
     <!-- TODO: el resto del hero (título, copy, contenido debajo del
