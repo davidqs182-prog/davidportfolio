@@ -67,19 +67,22 @@
   object-fit: cover;
 }
 
-/* Mockup del iPhone (con el ícono de Leo en el dock) — recorte propio
-   del screenshot completo del frame, ver el comentario largo en
-   project-leo/index.html para el porqué (el grupo "Mockup" de Figma no
-   exportaba limpio en aislado). Empieza en top:88px — justo debajo del
-   header — porque el recorte en sí ya arranca ahí (se cortó a propósito
-   así para no incluir nada de los botones placeholder de Figma). */
+/* Mockup del iPhone (con el ícono de Leo en el dock) — PNG con
+   transparencia real alrededor del teléfono (ver el comentario largo
+   en project-leo/index.html para cómo se armó), no una imagen opaca
+   con el naranja horneado adentro como la primera versión — así queda
+   genuinamente separado de .project-leo__hero-bg, que se ve A TRAVÉS
+   de este recorte en vez de estar duplicado. left:140px/top:88px son
+   la esquina donde se recortó dentro del frame de 1440×600 (el recorte
+   ya arranca debajo de la franja de botones en Y, así que tampoco
+   incluye nada horneado de ahí). */
 .project-leo__hero-mockup {
   position: absolute;
-  left: 0;
+  left: 140px;
   top: 88px;
-  width: 640px;
+  width: 500px;
   height: 512px;
-  object-fit: cover;
+  object-fit: contain;
 }
 
 /* Header y hero van EN FLUJO NORMAL arriba de .project-leo__hero-visual

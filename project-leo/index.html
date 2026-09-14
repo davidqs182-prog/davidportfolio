@@ -63,20 +63,26 @@
         height="600"
         loading="lazy"
       >
-      <!-- Recorte propio (no un export directo de Figma) — el grupo
-           "Mockup" de Figma no se dejaba exportar limpio en aislado (la
-           captura salía con una proporción rara, un bug de export de
-           Figma con los blurs/bordes redondeados del grupo). Se
-           recortó en cambio del screenshot completo del frame (que sí
-           renderiza bien), empezando en y=88px — justo debajo de la
-           franja de los botones — así el recorte no incluye nada de
-           los botones placeholder de Figma horneados en el diseño
-           original. -->
+      <!-- Recorte propio con transparencia real (no un export directo
+           de Figma, y no la primera versión JPG que traía el naranja
+           horneado adentro — David: "no hiciste separado el mockup del
+           fondo anaranjado"). El grupo "Mockup" de Figma no se dejaba
+           exportar limpio en aislado (la captura salía con una
+           proporción rara, un bug de export de Figma con los blurs/
+           bordes redondeados del grupo), así que se armó a mano:
+           recorte del screenshot completo del frame (que sí renderiza
+           bien) empezando en y=88px (debajo de la franja de botones,
+           así tampoco incluye nada horneado de ahí) + colorkey del
+           naranja exacto de fondo (#cc6632, muestreado en vivo del PNG
+           real) vuelto transparente — con el ícono de Leo del dock
+           restaurado aparte (ffmpeg overlay), porque usa ese mismo
+           naranja de marca y el colorkey también se lo comía. PNG, no
+           JPG — el canal alfa no sobrevive en JPG. -->
       <img
         class="project-leo__hero-mockup"
-        src="../assets/images/project-leo-mockup.jpg"
+        src="../assets/images/project-leo-mockup.png"
         alt=""
-        width="640"
+        width="500"
         height="512"
         loading="lazy"
       >
