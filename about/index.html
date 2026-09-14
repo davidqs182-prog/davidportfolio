@@ -29,6 +29,10 @@
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/components.css">
   <link rel="stylesheet" href="../css/styles.css">
+  <!-- Solo para reusar .resume-summary/.resume-summary__body tal cual
+       (misma sección Summary que resume.html, a pedido de David) — ver
+       esa sección más abajo. -->
+  <link rel="stylesheet" href="../css/resume.css">
 </head>
 <body>
   <!-- Google Tag Manager (noscript) -->
@@ -140,6 +144,33 @@
         </ul>
       </div>
 
+    </section>
+
+    <!-- Summary: idéntica a la de resume.html (mismas clases, mismo
+         copy) — a pedido de David, reusa .resume-summary/
+         .resume-summary__body de css/resume.css en vez de duplicar
+         estilo nuevo. Si el copy cambia en resume.html, hay que
+         replicar el cambio acá también (no hay una sola fuente de
+         verdad compartida todavía). -->
+    <section class="resume-summary container">
+      <div class="grid-12">
+        <h2 class="resume-section__heading">Summary</h2>
+        <p class="resume-summary__body resume-summary__body--col1">
+          Product Designer with 7+ years of experience designing end-to-end
+          digital products, from user research and prototyping to shipping
+          with cross-functional engineering teams. Led design strategy for
+          consumer and internal platforms across marketplace, logistics, and
+          workforce management.
+        </p>
+        <p class="resume-summary__body resume-summary__body--col2">
+          <strong>Background spans both product design and digital
+          marketing</strong>, giving me a strong intuition for how design
+          decisions drive engagement and conversion. Fluent in Figma and AI
+          workflows for rapid
+          prototyping, translating ambiguous problems into clear, testable
+          user flows.
+        </p>
+      </div>
     </section>
 
     <!-- Get in touch: mismo bloque de texto que en Home/project-onboarding
