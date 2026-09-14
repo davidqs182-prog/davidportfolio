@@ -100,7 +100,7 @@
 }
 
 .resume-summary__body--col2 {
-  grid-column: 7 / 13;
+  grid-column: 7 / 11;
   margin-top: var(--space-16);
 }
 
