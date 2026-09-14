@@ -1,0 +1,72 @@
+/* =====================================================================
+   PÁGINA DE PROYECTO — Leo
+   =====================================================================
+   Estilos específicos de esta página de detalle de proyecto. Reusa
+   tokens.css, components.css y las clases compartidas de styles.css
+   (.container, .navbar, .btn) — acá solo lo que es único de esta
+   página. Mismo criterio que project-onboarding.css/
+   project-youtube-discovery.css.
+
+   Primera parte nada más, a pedido de David — el header
+   (.navbar--project), con la imagen compuesta del proyecto (mockup de
+   iPhone con Leo + banners de la feria) de fondo, exportada de Figma
+   (node 385:42660, archivo b3dN9DxslQbeJinmN3FTat, 1440×600 nativos).
+   El resto del hero (título, copy, contenido debajo del header)
+   todavía no está diseñado — queda para un siguiente paso, ver el
+   TODO en project-leo/index.html. */
+
+/* El fondo va en .navbar--project (el <header>, ancho completo) — mismo
+   motivo que project-onboarding.css: si el fondo fuera del .navbar
+   interno (que tiene .container, limitado a 1440px), en pantallas más
+   anchas que 1440px se verían los bordes del --color-bg de la página
+   asomando a los costados en vez de un header continuo.
+
+   background-size:100% auto (no un px fijo) — la imagen mantiene su
+   proporción real (1440×600 nativos) al ancho real del header en
+   cualquier viewport, en vez de estirarse. background-position:center
+   top recorta siempre la franja de arriba — que es, al ancho de diseño
+   (1440px), exactamente los 88px del header: los botones "Back to
+   home"/"Get in Touch" que trae la imagen de Figma horneados quedan
+   tapados por los botones reales de acá abajo, que caen en la misma
+   posición (mismo --grid-margin:70px que usa el resto del sitio para
+   ambos lados). */
+.navbar--project {
+  background-image: url("../assets/images/project-leo-hero.jpg");
+  background-size: 100% auto;
+  background-position: center top;
+  background-repeat: no-repeat;
+}
+
+/* Los botones reales (.btn--md, 40px de alto) quedan un poco más chicos
+   que los botones de Figma horneados en la imagen de fondo (48px/44px)
+   — sin este ajuste, un resto de los de Figma se alcanza a ver
+   asomando en 1-2 bordes del botón real (medido en vivo). Agrandados
+   apenas para que lo tapen del todo. */
+.navbar--project .btn {
+  min-height: 46px;
+  padding-inline: 20px;
+}
+
+/* Compensa el padding-block de .navbar (24px, pensado para botones de
+   40px) para que el header total se quede en 88px con estos botones
+   más altos — (88 - 46) / 2 = 21px. Sin esto el header crecía a 94px y
+   corría toda la franja de la imagen que se ve detrás (medido en
+   vivo). */
+.navbar--project .navbar {
+  padding-block: 21px;
+}
+
+/* Último ajuste fino, medido en vivo contra el rect real de los
+   botones de Figma: con el padding-inline parejo de arriba, "Back to
+   home" quedaba ~6px corto del lado derecho (su izquierda ya
+   coincidía con la de Figma) y "Get in Touch" ~6px corto del lado
+   izquierdo (su derecha ya coincidía) — quedaba una uña de los botones
+   horneados de Figma asomando en cada uno. Padding asimétrico, solo
+   del lado que hacía falta, para no correr el lado que ya alineaba. */
+.navbar--project .btn--outline {
+  padding-right: 26px;
+}
+
+.navbar--project .btn--dark {
+  padding-left: 26px;
+}
