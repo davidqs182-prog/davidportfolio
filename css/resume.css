@@ -95,6 +95,13 @@
   color: var(--color-text-black);
 }
 
+/* Mismo morado de marca (--color-brand) que "ABOUT"/"PRODUCT DESIGNER"
+   usan en el resto del sitio — a pedido de David, para el fragmento
+   resaltado del segundo párrafo. */
+.resume-summary__body strong {
+  color: var(--color-brand);
+}
+
 .resume-summary__body--col1 {
   grid-column: 2 / 7;
   margin-top: var(--space-16);
