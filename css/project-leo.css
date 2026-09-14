@@ -67,22 +67,121 @@
   object-fit: cover;
 }
 
-/* Mockup del iPhone (con el ícono de Leo en el dock) — PNG con
-   transparencia real alrededor del teléfono (ver el comentario largo
-   en project-leo/index.html para cómo se armó), no una imagen opaca
-   con el naranja horneado adentro como la primera versión — así queda
-   genuinamente separado de .project-leo__hero-bg, que se ve A TRAVÉS
-   de este recorte en vez de estar duplicado. left:140px/top:88px son
-   la esquina donde se recortó dentro del frame de 1440×600 (el recorte
-   ya arranca debajo de la franja de botones en Y, así que tampoco
-   incluye nada horneado de ahí). */
+/* Mockup del iPhone — a diferencia de la versión anterior (un recorte
+   de un screenshot del frame de Figma), este está armado con los
+   assets reales del teléfono (bezel + wallpaper + íconos del dock,
+   todos exportados sueltos de Figma) en vez de depender de ningún
+   recorte de frame. Motivo (David: "el teléfono sale cortado,
+   exportalo entero"): CUALQUIER recorte de un frame limitado a 600px
+   de alto iba a cortar el teléfono, que mide 912px de alto en el
+   diseño real — un screenshot nunca iba a salir completo. Acá el
+   bezel es el asset de hardware real (transparente por fuera y en el
+   hueco de pantalla), así que sale con sus 4 bordes redondeados
+   siempre, sin importar a qué tamaño se muestre.
+
+   Alto fijo (460px) elegido para que el teléfono ENTERO quepa
+   cómodo dentro de los 512px del hero, con margen arriba/abajo — ya
+   no se superpone con el header como en el diseño original de Figma
+   (que lo dejaba nacer muy arriba, cortado por el borde del frame).
+   Ancho: 460 × (463/912.3) ≈ 234px — misma proporción real del bezel
+   (measured en Figma), no un valor inventado. Centrado dentro de la
+   franja naranja (0–710px): (710 − 234) / 2 ≈ 238px. Centrado
+   verticalmente dentro del hero: top = 88 (header) + (512 − 460) / 2
+   ≈ 114px. */
 .project-leo__hero-mockup {
   position: absolute;
-  left: 140px;
-  top: 88px;
-  width: 500px;
-  height: 512px;
-  object-fit: contain;
+  left: 238px;
+  top: 114px;
+  width: 234px;
+  height: 460px;
+}
+
+.project-leo__mockup-bezel {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+/* Pantalla — posicionada en % del bezel (medido en Figma: el hueco de
+   pantalla arranca a 6.7%/2.1% de la esquina superior izquierda del
+   bezel y mide 86.8%/95.8% de su ancho/alto), así encaja en el hueco
+   transparente del bezel sin importar el tamaño final renderizado.
+   border-radius en px porque a este tamaño fijo (234×460) ya se puede
+   calcular directo: 52px de radio real en un alto de pantalla de
+   874px real = 5.95% → a 440px de alto renderizado, ~26px. overflow:
+   hidden recorta wallpaper + dock a esa misma esquina redondeada. */
+.project-leo__mockup-screen {
+  position: absolute;
+  left: 6.7%;
+  top: 2.1%;
+  width: 86.8%;
+  height: 95.8%;
+  overflow: hidden;
+  border-radius: 26px;
+  background-color: #000;
+}
+
+.project-leo__mockup-wallpaper {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Dock — mismo criterio de % (medido contra la pantalla, no el bezel):
+   arranca al 86.7% del alto de la pantalla, mide 92% de su ancho y
+   11.4% de su alto, centrado horizontalmente. Ícono de Leo con su
+   propio fondo naranja de marca (el SVG en sí es solo el trazo
+   blanco) — mismo #cc6632 que el resto de la página; ícono de cámara
+   con su gradiente gris — ninguno de los dos assets trae fondo
+   propio, a diferencia de Messages/Phone que sí. */
+.project-leo__mockup-dock {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  top: 86.7%;
+  width: 92%;
+  height: 11.4%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding-inline: 5%;
+  border-radius: 999px;
+  background-color: rgba(255, 255, 255, 0.2);
+  backdrop-filter: blur(10px);
+}
+
+.project-leo__mockup-app-icon {
+  width: 16%;
+  height: auto;
+  aspect-ratio: 1;
+  border-radius: 22%;
+  display: block;
+}
+
+.project-leo__mockup-app-icon--leo {
+  background-color: #cc6632;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-leo__mockup-app-icon--leo img {
+  width: 70%;
+  height: auto;
+}
+
+.project-leo__mockup-app-icon--camera {
+  background: linear-gradient(to bottom, #e5e4eb, #8f8e92);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.project-leo__mockup-app-icon--camera img {
+  width: 73%;
+  height: auto;
 }
 
 /* Header y hero van EN FLUJO NORMAL arriba de .project-leo__hero-visual

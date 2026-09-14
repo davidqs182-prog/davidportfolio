@@ -63,29 +63,52 @@
         height="600"
         loading="lazy"
       >
-      <!-- Recorte propio con transparencia real (no un export directo
-           de Figma, y no la primera versión JPG que traía el naranja
-           horneado adentro — David: "no hiciste separado el mockup del
-           fondo anaranjado"). El grupo "Mockup" de Figma no se dejaba
-           exportar limpio en aislado (la captura salía con una
-           proporción rara, un bug de export de Figma con los blurs/
-           bordes redondeados del grupo), así que se armó a mano:
-           recorte del screenshot completo del frame (que sí renderiza
-           bien) empezando en y=88px (debajo de la franja de botones,
-           así tampoco incluye nada horneado de ahí) + colorkey del
-           naranja exacto de fondo (#cc6632, muestreado en vivo del PNG
-           real) vuelto transparente — con el ícono de Leo del dock
-           restaurado aparte (ffmpeg overlay), porque usa ese mismo
-           naranja de marca y el colorkey también se lo comía. PNG, no
-           JPG — el canal alfa no sobrevive en JPG. -->
-      <img
-        class="project-leo__hero-mockup"
-        src="../assets/images/project-leo-mockup.png"
-        alt=""
-        width="500"
-        height="512"
-        loading="lazy"
-      >
+      <!-- Mockup del iPhone, armado con los assets reales de Figma en
+           vez de un recorte de screenshot (David: "el teléfono sale
+           cortado, exportalo entero" — cualquier recorte de un frame
+           limitado a 600px de alto iba a cortar el teléfono, que mide
+           912px de alto en el diseño real; la única forma de que
+           salga completo es no depender de un screenshot del frame en
+           absoluto). Bezel = el asset de hardware real del teléfono
+           (nodo 385:44424 "iPhone 16 Pro..."), transparente por fuera
+           Y en el hueco de la pantalla — de acá sale completo, sin
+           ningún corte, los 4 bordes redondeados incluidos. Encima va
+           la pantalla (wallpaper real + dock con los 4 íconos + el
+           ícono de Leo, todos assets reales de Figma) posicionada en
+           % del bezel (medido en Figma: 6.7%/2.1% desde la esquina,
+           86.8%/95.8% de ancho/alto) — así queda dentro del hueco
+           transparente pase lo que pase el tamaño final. Barra de
+           estado (hora/señal/batería) omitida por ahora — a esta
+           escala (el teléfono entero, no solo un recorte) no se
+           alcanza a leer igual, no vale la complejidad todavía. -->
+      <div class="project-leo__hero-mockup">
+        <img
+          class="project-leo__mockup-bezel"
+          src="../assets/images/project-leo-mockup/bezel.png"
+          alt=""
+          width="1350"
+          height="2760"
+        >
+        <div class="project-leo__mockup-screen">
+          <img
+            class="project-leo__mockup-wallpaper"
+            src="../assets/images/project-leo-mockup/screen.jpg"
+            alt=""
+            width="1290"
+            height="2796"
+          >
+          <div class="project-leo__mockup-dock">
+            <span class="project-leo__mockup-app-icon project-leo__mockup-app-icon--leo">
+              <img src="../assets/images/project-leo-mockup/icon-leo.svg" alt="Leo">
+            </span>
+            <img class="project-leo__mockup-app-icon" src="../assets/images/project-leo-mockup/icon-messages.svg" alt="">
+            <img class="project-leo__mockup-app-icon" src="../assets/images/project-leo-mockup/icon-phone.svg" alt="">
+            <span class="project-leo__mockup-app-icon project-leo__mockup-app-icon--camera">
+              <img src="../assets/images/project-leo-mockup/icon-camera.svg" alt="">
+            </span>
+          </div>
+        </div>
+      </div>
     </div>
 
     <header class="navbar--project">
