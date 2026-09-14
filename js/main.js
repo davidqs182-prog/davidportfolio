@@ -362,7 +362,7 @@
   var INTRO_SEGMENTS = [
     "Hi! I am ",
     "David Quirós",
-    ", a product designer based in ",
+    ", a creative based in ",
     "Costa Rica",
     " Germany.",
   ];
