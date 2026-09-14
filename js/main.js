@@ -511,6 +511,44 @@
   });
 })();
 
+// ===== Entrada "cortina" de .reveal-split (portada de la tarjeta de
+// Leo duplicada) =====
+// Observer APARTE del de arriba, a propósito — no es solo prolijidad:
+// .reveal-split arranca con clip-path:inset(0 50%) (ancho visible 0px,
+// ver css/components.css), y un elemento con ancho/alto efectivo 0
+// reporta intersectionRatio 0 SIEMPRE en Chrome, sin importar cuánto
+// de su layout box entre en pantalla — bug real, encontrado en vivo
+// (isIntersecting daba true pero ratio se quedaba en 0, así que un
+// threshold:0.1 como el de arriba nunca se cruzaba y la imagen jamás
+// revelaba). threshold:0 evita el problema — se dispara con que
+// cualquier fracción, así sea ínfima, del layout box entre en pantalla.
+(function () {
+  var splitEls = document.querySelectorAll(".reveal-split");
+  if (!splitEls.length) return;
+
+  if (!("IntersectionObserver" in window)) {
+    splitEls.forEach(function (el) {
+      el.classList.add("is-inview");
+    });
+    return;
+  }
+
+  var splitObserver = new IntersectionObserver(
+    function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        entry.target.classList.add("is-inview");
+        splitObserver.unobserve(entry.target);
+      });
+    },
+    { threshold: 0 }
+  );
+
+  splitEls.forEach(function (el) {
+    splitObserver.observe(el);
+  });
+})();
+
 // ===== Lazy-load de videos de proyecto =====
 // Los <video> de las tarjetas de "Work" tienen adentro <source data-src>
 // en vez de "src" (ni en el video ni en los source), así que el navegador
