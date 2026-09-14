@@ -97,9 +97,14 @@
 
 /* Mismo morado de marca (--color-brand) que "ABOUT"/"PRODUCT DESIGNER"
    usan en el resto del sitio — a pedido de David, para el fragmento
-   resaltado del segundo párrafo. */
+   resaltado del segundo párrafo. Subrayado en vez de negrita (David lo
+   pidió así) — <strong> sigue siendo semánticamente correcto (el
+   fragmento sí es importante), solo se le pisa el font-weight que
+   trae por default. */
 .resume-summary__body strong {
+  font-weight: inherit;
   color: var(--color-brand);
+  text-decoration: underline;
 }
 
 .resume-summary__body--col1 {
