@@ -397,36 +397,6 @@
   }
 }
 
-/* .reveal-split — variante "cortina" del mismo mecanismo de arriba
-   (mismo .is-inview vía IntersectionObserver, ver js/main.js), pensada
-   para imágenes compuestas de dos mitades (a pedido de David, en la
-   tarjeta de Leo duplicada cuyo cover es mockup de iPhone + banner uno
-   al lado del otro): en vez de fade+slide genérico, la imagen entra
-   como si dos cortinas se abrieran desde el centro hacia los bordes —
-   clip-path arranca en un hilo de 0px de ancho en el medio (inset 50%
-   a cada lado) y se abre a inset 0 (imagen completa). cubic-bezier con
-   overshoot leve (el 1.2 al final de la curva) para que se sienta más
-   "cortina" que un fade plano. */
-.reveal-split {
-  opacity: 0;
-  clip-path: inset(0 50% 0 50%);
-  transition: clip-path 0.9s cubic-bezier(0.16, 1, 0.3, 1),
-    opacity 0.4s ease-out;
-}
-
-.reveal-split.is-inview {
-  opacity: 1;
-  clip-path: inset(0 0 0 0);
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .reveal-split {
-    transition: none;
-    opacity: 1;
-    clip-path: inset(0 0 0 0);
-  }
-}
-
 /* =====================================================================
    DEV TOOLS
    =====================================================================
