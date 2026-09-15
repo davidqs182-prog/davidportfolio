@@ -112,6 +112,16 @@
   width: calc(100% - var(--leo-bg-right));
   height: 600px;
   object-fit: cover;
+  /* object-position default (50% 50%, centrado) recortaba parejo de
+     los dos lados — a este contenedor, más angosto que la imagen
+     nativa (1044px) desde que el fondo naranja pasó a llegar hasta la
+     columna 6, eso cortaba el letrero blanco de la derecha ("Lean
+     Engineering Organization"), que David pidió ver completo. Ambos
+     letreros están recostados hacia la mitad derecha de la foto (hay
+     bastante techo/estructura vacía a la izquierda) — anclar el
+     recorte a la derecha (100% en vez de 50%) descarta ese sobrante de
+     la izquierda primero y deja los dos letreros enteros. */
+  object-position: 100% center;
 }
 
 /* Mockup del iPhone — David re-exportó el PNG completo (mockup entero,
