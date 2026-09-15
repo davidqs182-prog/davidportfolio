@@ -38,26 +38,33 @@
 
 /* Fondo anaranjado — color CSS sólido (#cc6632, de Figma), NO una
    imagen — es un <div> con background-color, nada que exportar ni
-   rasterizar. Ancho: a pedido de David, "debe llegar hasta la [sexta]
+   rasterizar. Ancho: a pedido de David, "debe llegar hasta la sexta
    columna" del grid de 12 columnas del sitio (mismos tokens que
    --process-inset en project-onboarding.css) — no un valor inventado.
-   Arranca en x=0 (full-bleed, como el resto del fondo) y termina en el
-   borde derecho real de la columna 6: margen + 6 columnas + 5
-   separadores entre ellas. Con los tokens actuales (1440px máx, margen
-   70px, separador 20px → columna de 90px), eso da 70 + 6×90 + 5×20 =
-   710px — pero queda en calc(), no hardcodeado, así seguiría el mismo
-   margen/separador que ya cambian solos en tablet/mobile (ver
-   tokens.css) en vez de quedar pegado al valor de 1440px. */
+
+   Bug real encontrado en vivo con el overlay del grid prendido (David
+   marcó el desfasaje): en pantallas > 1440px el propio grid del sitio
+   se CENTRA (#grid-overlay tiene max-width + margin-inline:auto, igual
+   que .container) — la columna 1 ya no arranca en el borde real del
+   viewport, arranca (100vw - 1440) / 2 más adentro. Este fondo, en
+   cambio, es full-bleed (left:0, pensado a propósito para llegar
+   siempre al borde real de la página) — sin sumarle ese mismo
+   desfasaje, a > 1440px terminaba mucho antes de donde el grid real
+   marca la columna 6 (medido en vivo a 1920px: el grid la ponía en
+   x=950, este fondo llegaba solo a 710). --leo-center-offset replica
+   exactamente ese cálculo de #grid-overlay/.container. */
 .project-leo__hero-bg {
   --leo-content-width: calc(
     min(100vw, var(--grid-max-width)) - 2 * var(--grid-margin)
   );
   --leo-col-width: calc((var(--leo-content-width) - 11 * var(--grid-gutter)) / 12);
+  --leo-center-offset: max(0px, calc((100vw - var(--grid-max-width)) / 2));
   position: absolute;
   left: 0;
   top: 0;
   width: calc(
-    var(--grid-margin) + 6 * var(--leo-col-width) + 5 * var(--grid-gutter)
+    var(--leo-center-offset) + var(--grid-margin) + 6 * var(--leo-col-width) +
+      5 * var(--grid-gutter)
   );
   height: 100%;
   background-color: #cc6632;
