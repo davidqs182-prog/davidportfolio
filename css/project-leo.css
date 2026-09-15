@@ -30,7 +30,23 @@
    ese número acá. overflow:hidden por si algún recorte se pasa un
    pixel del borde. aria-hidden en el HTML — es decoración, no
    contenido. */
+/* --leo-bg-right: dónde termina de verdad la columna 6, compartido
+   entre .project-leo__hero-bg (lo usa como su propio ancho) y
+   .project-leo__hero-banner (lo usa como su left) — un solo lugar
+   para este cálculo en vez de repetirlo en los dos, que es justo lo
+   que rompió la primera versión (ver el bug documentado más abajo).
+   Fórmula: margen + 6 columnas + 5 separadores entre ellas, más
+   --leo-center-offset para el caso >1440px (ver ese comentario). */
 .project-leo__hero-visual {
+  --leo-content-width: calc(
+    min(100vw, var(--grid-max-width)) - 2 * var(--grid-margin)
+  );
+  --leo-col-width: calc((var(--leo-content-width) - 11 * var(--grid-gutter)) / 12);
+  --leo-center-offset: max(0px, calc((100vw - var(--grid-max-width)) / 2));
+  --leo-bg-right: calc(
+    var(--leo-center-offset) + var(--grid-margin) + 6 * var(--leo-col-width) +
+      5 * var(--grid-gutter)
+  );
   position: absolute;
   inset: 0;
   overflow: hidden;
@@ -40,32 +56,32 @@
    imagen — es un <div> con background-color, nada que exportar ni
    rasterizar. Ancho: a pedido de David, "debe llegar hasta la sexta
    columna" del grid de 12 columnas del sitio (mismos tokens que
-   --process-inset en project-onboarding.css) — no un valor inventado.
+   --process-inset en project-onboarding.css) — no un valor inventado,
+   ver --leo-bg-right en .project-leo__hero-visual más arriba.
 
    Bug real encontrado en vivo con el overlay del grid prendido (David
-   marcó el desfasaje): en pantallas > 1440px el propio grid del sitio
-   se CENTRA (#grid-overlay tiene max-width + margin-inline:auto, igual
-   que .container) — la columna 1 ya no arranca en el borde real del
-   viewport, arranca (100vw - 1440) / 2 más adentro. Este fondo, en
-   cambio, es full-bleed (left:0, pensado a propósito para llegar
-   siempre al borde real de la página) — sin sumarle ese mismo
-   desfasaje, a > 1440px terminaba mucho antes de donde el grid real
-   marca la columna 6 (medido en vivo a 1920px: el grid la ponía en
-   x=950, este fondo llegaba solo a 710). --leo-center-offset replica
-   exactamente ese cálculo de #grid-overlay/.container. */
+   marcó el desfasaje, dos veces): en pantallas > 1440px el propio
+   grid del sitio se CENTRA (#grid-overlay tiene max-width +
+   margin-inline:auto, igual que .container) — la columna 1 ya no
+   arranca en el borde real del viewport, arranca (100vw - 1440) / 2
+   más adentro. Este fondo, en cambio, es full-bleed (left:0, pensado
+   a propósito para llegar siempre al borde real de la página) — sin
+   sumarle ese mismo desfasaje, a > 1440px terminaba mucho antes de
+   donde el grid real marca la columna 6. Esa primera corrección SOLA
+   no alcanzaba: quedaba bien el fondo naranja, pero .project-leo__
+   hero-banner (la foto, ver más abajo) seguía con right:0 + un ancho
+   fijo de 1440px de referencia — a >1440px la foto arrancaba ANTES de
+   donde el naranja recién corregido terminaba, y como la foto pinta
+   encima, tapaba el naranja de más y se veía cortado igual (medido en
+   vivo a 1890px: naranja llegaba a 935 pero la foto ya arrancaba en
+   846 — 89px de la foto tapando naranja real). Por eso ahora los dos
+   comparten --leo-bg-right en vez de calcularlo cada uno por su
+   cuenta. */
 .project-leo__hero-bg {
-  --leo-content-width: calc(
-    min(100vw, var(--grid-max-width)) - 2 * var(--grid-margin)
-  );
-  --leo-col-width: calc((var(--leo-content-width) - 11 * var(--grid-gutter)) / 12);
-  --leo-center-offset: max(0px, calc((100vw - var(--grid-max-width)) / 2));
   position: absolute;
   left: 0;
   top: 0;
-  width: calc(
-    var(--leo-center-offset) + var(--grid-margin) + 6 * var(--leo-col-width) +
-      5 * var(--grid-gutter)
-  );
+  width: var(--leo-bg-right);
   height: 100%;
   background-color: #cc6632;
 }
@@ -73,15 +89,27 @@
 /* Foto de los banners de la feria — asset real exportado de Figma
    (node 385:42663, "Brand Identity V1 3"), sin ningún botón horneado
    (es un nodo hoja, no incluye los botones del header, que son nodos
-   hermanos aparte). Ancla al borde derecho — en el diseño original
-   este recorte (1044px) termina justo en el borde derecho del frame de
-   1440px, así que right:0 replica eso exacto sin tener que calcular
-   un left. */
+   hermanos aparte). left:var(--leo-bg-right) en vez de un ancho fijo:
+   arranca EXACTO donde termina el fondo naranja (mismo valor
+   compartido, ver .project-leo__hero-visual) y right:0 la ancla al
+   borde real de la página — el ancho queda para que el navegador lo
+   calcule solo a partir de esos dos bordes, así nunca hay hueco ni
+   superposición entre los dos, sin importar el viewport.
+   object-fit:cover ya se encargaba de recortar el sobrante cuando el
+   ancho no coincidía con el de la imagen real — sigue haciendo lo
+   mismo acá. */
 .project-leo__hero-banner {
   position: absolute;
+  left: var(--leo-bg-right);
   right: 0;
   top: 0;
-  width: 1044px;
+  /* <img> es un elemento reemplazado — left+right SIN width explícito
+     no lo estira entre los dos bordes como haría un <div> (el spec de
+     CSS le hace usar el tamaño intrínseco del HTML width="1044" en vez
+     de calcularlo), bug real encontrado en vivo (el borde derecho daba
+     left + 1044, no el borde real de la página). width:calc(100% - ...)
+     fuerza el cálculo real. */
+  width: calc(100% - var(--leo-bg-right));
   height: 600px;
   object-fit: cover;
 }
