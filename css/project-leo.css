@@ -36,17 +36,18 @@
   overflow: hidden;
 }
 
-/* Fondo anaranjado — mismo color que .navbar--project usaba antes
-   (#cc6632, de Figma). Ancho: a pedido de David, "debe llegar hasta la
-   séptima columna" del grid de 12 columnas del sitio (mismos tokens
-   que --process-inset en project-onboarding.css) — no un valor
-   inventado. Arranca en x=0 (full-bleed, como el resto del fondo) y
-   termina en el borde derecho real de la columna 7: margen + 7
-   columnas + 6 separadores entre ellas. Con los tokens actuales
-   (1440px máx, margen 70px, separador 20px → columna de 90px), eso da
-   70 + 7×90 + 6×20 = 820px — pero queda en calc(), no hardcodeado, así
-   seguiría el mismo margen/separador que ya cambian solos en tablet/
-   mobile (ver tokens.css) en vez de quedar pegado al valor de 1440px. */
+/* Fondo anaranjado — color CSS sólido (#cc6632, de Figma), NO una
+   imagen — es un <div> con background-color, nada que exportar ni
+   rasterizar. Ancho: a pedido de David, "debe llegar hasta la [sexta]
+   columna" del grid de 12 columnas del sitio (mismos tokens que
+   --process-inset en project-onboarding.css) — no un valor inventado.
+   Arranca en x=0 (full-bleed, como el resto del fondo) y termina en el
+   borde derecho real de la columna 6: margen + 6 columnas + 5
+   separadores entre ellas. Con los tokens actuales (1440px máx, margen
+   70px, separador 20px → columna de 90px), eso da 70 + 6×90 + 5×20 =
+   710px — pero queda en calc(), no hardcodeado, así seguiría el mismo
+   margen/separador que ya cambian solos en tablet/mobile (ver
+   tokens.css) en vez de quedar pegado al valor de 1440px. */
 .project-leo__hero-bg {
   --leo-content-width: calc(
     min(100vw, var(--grid-max-width)) - 2 * var(--grid-margin)
@@ -56,7 +57,7 @@
   left: 0;
   top: 0;
   width: calc(
-    var(--grid-margin) + 7 * var(--leo-col-width) + 6 * var(--grid-gutter)
+    var(--grid-margin) + 6 * var(--leo-col-width) + 5 * var(--grid-gutter)
   );
   height: 100%;
   background-color: #cc6632;
