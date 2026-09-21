@@ -468,6 +468,14 @@
           loop
           playsinline
         >
+          <!-- Orden importante: 1) HEVC+alpha para Safari / iOS (Chrome y
+               Firefox lo saltean porque no reconocen "hvc1" pelado),
+               2) WebM VP9 con alpha para Chrome/Firefox, 3) MP4 opaco
+               sobre #CC6633 como último recurso. Si el WebM fuera
+               primero, Safari lo elegiría (reproduce VP9) pero sin la
+               transparencia: esquinas negras. Ver el README de
+               assets/animations/leo-offer-create/. -->
+          <source src="../assets/animations/leo-offer-create/leo-offer-create-alpha.mp4" type='video/mp4; codecs="hvc1"'>
           <source src="../assets/animations/leo-offer-create/leo-offer-create.webm" type='video/webm; codecs="vp9"'>
           <source src="../assets/animations/leo-offer-create/leo-offer-create.mp4" type="video/mp4">
         </video>
