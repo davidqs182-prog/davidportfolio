@@ -52,3 +52,26 @@ ffmpeg -y -ss 3 -i leo-offer-create.mp4 -update 1 -frames:v 1 -q:v 2 leo-offer-c
 ```
 
 Resultado: 1484×1138. WebM 1.9MB, MP4 3.2MB.
+
+## Safari / iOS (HEVC + alpha)
+
+Safari no compone el alpha de un WebM VP9: con el WebM solo se ve un
+rectángulo negro en las esquinas. Para Safari hace falta un
+`leo-offer-create-alpha.mp4` (HEVC con alpha, `hvc1`), que se genera con
+el workflow de GitHub Actions "Encode HEVC+alpha MP4 (Safari)" (ver
+`.claude/skills/codificar-video-alpha-safari/SKILL.md`).
+
+Archivos que dejan listo el workflow:
+- `leo-offer-create-premul.webm`: el mismo video con el RGB
+  PREMULTIPLICADO por el alpha (Safari compone premultiplicado). Hecho
+  local, ~1.3 MB. Verificado: un píxel transparente pasa de (14,249,39)
+  —el verde del chroma— a (1,1,1); sin esto Safari mostraría verde.
+- `leo-offer-create-poster.png` (antes `.jpg`): el workflow trata como
+  OPACO cualquier video con `-poster.jpg` al lado y lo salta; la
+  convención es que un video transparente lleve poster `.png`.
+
+Orden de `<source>` en el HTML una vez generado el `-alpha.mp4`:
+1. `-alpha.mp4` con `type='video/mp4; codecs="hvc1"'` (Safari; Chrome y
+   Firefox lo saltean),
+2. `.webm` con alpha (Chrome/Firefox),
+3. `leo-offer-create.mp4` opaco sobre #CC6633 (último recurso).
