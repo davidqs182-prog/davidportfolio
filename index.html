@@ -34,7 +34,7 @@
   <link rel="canonical" href="https://pixel-personas.com/">
   <link rel="icon" type="image/png" href="assets/Logo/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&family=Noto+Sans:wght@900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components.css">
@@ -258,6 +258,13 @@
         </div>
       </article>
 
+      <!-- OCULTAS por el momento, a pedido de David — las dos tarjetas de
+           Leo con la foto de los banners (la de "Coming soon" con
+           work-leo-cover.jpg y la de "Go to project" con
+           work-leo-cover-v3.jpg). Comentadas en vez de borradas para
+           volver a mostrarlas: basta con quitar este comentario (las
+           imágenes siguen en assets/images/). Queda visible la tarjeta
+           nueva de portada 50/50 de más abajo.
       <article class="project-card">
         <img
           class="project-card__image"
@@ -282,8 +289,8 @@
       <article class="project-card">
         <img
           class="project-card__image"
-          src="assets/images/work-leo-cover-v2.jpg"
-          alt="Mockup de iPhone con el ícono de Leo en el dock, junto a los banners colgando del techo de una feria promocionando el software Leo"
+          src="assets/images/work-leo-cover-v3.jpg"
+          alt="Mockup de iPhone con la foto de unas manos sujetando un listón de madera y el ícono de Leo en el dock, junto a los banners colgando del techo de una feria promocionando el software Leo"
           width="1300"
           height="671"
           loading="lazy"
@@ -300,6 +307,50 @@
             Go to project
             <span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span>
           </a>
+        </div>
+      </article>
+      -->
+
+      <!-- Tarjeta nueva de Leo: misma portada que la de arriba (Mockup 4,
+           naranja + celular a la izquierda) pero en vez de la foto de los
+           banners a la derecha, un fondo liso #FFFEFD. Mitad y mitad
+           exactas (650px + 650px de 1300). Mismo texto/enlace que la
+           tarjeta anterior por ahora. -->
+      <article class="project-card">
+        <!-- Texto de la mitad blanca, como en el Figma (frame "CV Resume",
+             node 555:68034): 4 líneas centradas, con los saltos de línea
+             exactos; el punto final va en naranja. Texto real (no
+             horneado en la imagen) posicionado sobre la mitad derecha —
+             ver .project-card__cover-text en css/styles.css. -->
+        <div class="project-card__cover-split">
+          <img
+            class="project-card__image"
+            src="assets/images/work-leo-cover-v5.png"
+            alt="Mockup de iPhone con la foto de unas manos sujetando un listón de madera y el ícono de Leo en el dock, sobre fondo anaranjado, junto a un panel de fondo claro"
+            width="1300"
+            height="671"
+            loading="lazy"
+          >
+          <p class="project-card__cover-text">With Leo app,<br>the construction<br>site fits in your<br>pocket<span class="project-card__cover-text-dot">.</span></p>
+        </div>
+        <h3 class="project-card__title">Leo, native and web app</h3>
+        <p class="project-card__description">
+          Leo is an app for managing construction and housing renovation projects
+          that digitizes the entire project lifecycle — preparation, planning,
+          execution, and closeout — connecting clients, contractors, and subcontractors
+          in real time, from team management to invoicing.
+        </p>
+        <!-- Dos botones, uno por rango de pantalla (a pedido de David):
+             en móvil (<768px) "Coming soon…" (la página de Leo todavía
+             no está lista para móvil); en tablet y desktop (≥768px)
+             "Go to project". Se alternan con CSS, ver
+             .project-card__cta-desktop/-mobile en css/styles.css. -->
+        <div class="project-card__cta">
+          <a href="/project-leo/" class="btn btn--dark btn--md project-card__cta-desktop">
+            Go to project
+            <span class="material-symbols-rounded icon-forward" aria-hidden="true">arrow_forward</span>
+          </a>
+          <a href="#" class="btn btn--dark btn--md project-card__cta-mobile">Coming soon…</a>
         </div>
       </article>
     </section>

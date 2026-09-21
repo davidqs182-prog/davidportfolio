@@ -1349,3 +1349,76 @@ body {
     padding-block: 0;
   }
 }
+
+/* Tarjeta de Leo con la portada 50/50 (naranja + celular | fondo
+   #FFFEFD): texto sobre la mitad blanca, como en el Figma ("CV Resume",
+   node 555:68034) — a pedido de David: "las letras exactamente como
+   están en el Figma en la parte blanca, con sus saltos de palabras".
+
+   Del Figma: Noto Sans Black (900), 73.64px sobre un frame de 1440px de
+   ancho, interlineado 82px (1.1135), centrado, color #140A05 (rgb
+   20,10,5) y el punto final en #CC6633. 4 líneas: "With Leo app," /
+   "the construction" / "site fits in your" / "pocket." — los saltos son
+   <br> en el HTML + white-space:nowrap, no dependen del ancho.
+
+   Tamaño responsivo: 73.64 / 1440 = 5.114% del ANCHO de la portada. Se
+   expresa con cqw (unidad de container query: 1cqw = 1% del ancho del
+   contenedor con container-type:inline-size, acá .project-card__cover-
+   split), así el texto escala con la tarjeta igual que la imagen y
+   conserva las proporciones del Figma (línea más larga ≈ 87% de la
+   mitad blanca) en cualquier ancho. cqw: Chrome/Edge 105+, Safari 16+,
+   Firefox 110+.
+
+   Posición: mitad derecha (left:50%), centrado en horizontal y
+   vertical dentro de ella — en el Figma la caja de texto (x 761-1395 de
+   una mitad blanca de 710-1440) queda centrada en la mitad, y a media
+   altura del frame (y 136-464 de 600). */
+.project-card__cover-split {
+  position: relative;
+  container-type: inline-size;
+}
+
+/* Centrado vertical con top:50% + translateY(-50%) y NO display:flex:
+   el <p> lleva <br> y un <span> (el punto naranja) como hijos, y en un
+   contenedor flex cada uno se volvería un ítem aparte y los saltos de
+   línea dejarían de funcionar. */
+.project-card__cover-text {
+  position: absolute;
+  top: 50%;
+  right: 0;
+  left: 50%;
+  transform: translateY(-50%);
+  margin: 0;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 900;
+  font-size: 5.114cqw;
+  line-height: 1.1135;
+  color: #140a05;
+  text-align: center;
+  white-space: nowrap;
+}
+
+.project-card__cover-text-dot {
+  color: #cc6633;
+}
+
+/* Botón de la tarjeta de Leo por rango de pantalla — a pedido de David:
+   "en la versión móvil el botón debe decir Coming soon…, pero en tablet
+   y desktop como está ahorita ('Go to project')". Móvil = <768px, el
+   mismo corte que usan el resto de los @media de esta hoja y del grid
+   (Mobile <768, Tablet 768-1023, Desktop ≥1024). Dos <a> en el HTML y
+   se muestra uno u otro; el de móvil arranca oculto (display:none) y el
+   @media lo enciende con el display normal de .btn (inline-flex). */
+.project-card__cta-mobile {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .project-card__cta-desktop {
+    display: none;
+  }
+
+  .project-card__cta-mobile {
+    display: inline-flex;
+  }
+}

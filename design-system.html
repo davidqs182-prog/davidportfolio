@@ -26,7 +26,7 @@
   <title>Design System — David Quirós</title>
   <link rel="icon" type="image/png" href="assets/Logo/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&family=Noto+Sans:wght@400;600;700;900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
   <link rel="stylesheet" href="css/tokens.css">
   <link rel="stylesheet" href="css/components.css">
@@ -180,6 +180,27 @@
         800, no 900: esa fuente no tiene ese peso, y pedirlo haría que el navegador sintetice un bold
         encima de ExtraBold en vez de usar el peso real diseñado para esto.
       </p>
+
+      <h3>Noto Sans <span class="ds-tag">extra</span></h3>
+      <p class="ds-section-desc">
+        Fuente pedida por David con un link de Figma como referencia (node 397:2901, archivo
+        <code>OVgrVEImmxMRdjjPfK0YWa</code> — la escala Material Design 3 del proyecto Leo, Display/
+        Headline/Title/Body/Label en Noto Sans). <strong>No se adoptó esa escala M3</strong> — David pidió
+        explícitamente "las mismas escalas que venimos trabajando" — solo la fuente: los tamaños de esa
+        pieza ya coinciden con los tokens de siempre (--text-h1 45/52 = su "Display Medium", --text-h3
+        28/36 = su "Headline Medium", --text-body-lg 16/24 = su "Body Large") porque <code>tokens.css</code>
+        viene de una pieza de Figma emparentada. Cargada vía Google Fonts (pesos 400/600/700) en el
+        <code>&lt;head&gt;</code> de <code>project-leo.html</code> únicamente, y acotada ahí a la sección
+        "About Leo" (<code>.project-leo__about</code> redefine <strong>los dos</strong>
+        <code>--font-display</code>/<code>--font-body</code> al mismo valor — ver ese bloque en
+        <code>css/project-leo.css</code>), no a toda la página: el header ("Back to home"/"About"/"Get in
+        Touch") sigue en Work Sans/Inter como el resto del sitio — a diferencia de DIN Next/YouTubeDisplay
+        arriba, acá una sola familia cubre títulos y cuerpo de texto, Noto Sans no distingue entre las dos. El peso Black (900) se usa sólo en Home, en el texto sobre la portada de la tarjeta de Leo (<code>.project-card__cover-text</code> en <code>css/styles.css</code>).
+      </p>
+      <div class="ds-type-row"><span class="ds-type-label">Regular · 400</span><p class="ds-type-sample" style="font-family:'Noto Sans', sans-serif; font-weight:400; font-size:16px; line-height:1.4;">Leo is a web app for managing construction projects.</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Medium · 600 <span class="ds-tag">extra</span></span><p class="ds-type-sample" style="font-family:'Noto Sans', sans-serif; font-weight:600; font-size:16px; line-height:1.4;">From the ground up</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Bold · 700</span><p class="ds-type-sample" style="font-family:'Noto Sans', sans-serif; font-weight:700; font-size:32px; line-height:1.12;">About Leo</p></div>
+      <div class="ds-type-row"><span class="ds-type-label">Black · 900 <span class="ds-tag">extra</span></span><p class="ds-type-sample" style="font-family:'Noto Sans', sans-serif; font-weight:900; font-size:32px; line-height:1.12;">With Leo app, the construction site fits in your pocket.</p></div>
     </section>
 
     <!-- ===== Espaciado ===== -->
