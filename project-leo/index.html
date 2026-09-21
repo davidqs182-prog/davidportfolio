@@ -24,7 +24,7 @@
   <link rel="canonical" href="https://pixel-personas.com/project-leo/">
   <link rel="icon" type="image/png" href="../assets/Logo/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/components.css">
@@ -68,13 +68,32 @@
            que reemplaza tanto el screenshot recortado de la primera
            versión como el compuesto armado a mano con assets sueltos
            de la segunda. Un solo <img>, transparente alrededor del
-           teléfono. -->
+           teléfono.
+
+           650×1181 (no 700×1214, el export original) — recortado al
+           bounding box real de todo lo que tiene algo de opacidad
+           (bisel del teléfono + la sombra difuminada que lo rodea),
+           con ffmpeg. Dos vueltas de recorte hasta llegar acá:
+           1) primero se recortó al bounding box del bisel+sombra con
+           un umbral de alpha>10 (577×1107) porque David marcó que el
+           <img> medía 4 columnas pero el TELÉFONO visible no — el
+           archivo original traía de más aire transparente alrededor.
+           2) ese recorte, sin querer, cortó la sombra A MITAD DE SU
+           degradado (la sombra es un halo negro difuminado que recién
+           llega a alpha:0 real bastante más lejos del bisel de lo que
+           alcanzaba ese primer recorte) — David lo marcó como "borde
+           pronunciado" en la sombra. Este recorte final usa alpha>0
+           (el límite real donde el degradado ya llegó a cero) para
+           que la sombra se difumine completa, sin corte — ver
+           css/project-leo.css para cómo se compensa el ancho/posición
+           para que el BISEL (no el archivo con la sombra) siga
+           midiendo justo 4 columnas. -->
       <img
         class="project-leo__hero-mockup"
         src="../assets/images/project-leo-mockup.png"
         alt=""
-        width="700"
-        height="1214"
+        width="650"
+        height="1181"
         loading="lazy"
       >
     </div>
@@ -100,9 +119,427 @@
   </div>
 
   <main>
-    <!-- TODO: el resto del hero (título, copy, contenido debajo del
-         header) todavía no está diseñado en Figma — se agrega en un
-         próximo paso. -->
+    <!-- TODO: el resto del hero (título, copy dentro de .project-hero)
+         todavía no está diseñado en Figma — se agrega en un próximo
+         paso. Esta sección "About Leo" es la primera pieza de
+         contenido real de la página, ya con copy final de David. -->
+    <section class="project-leo__about">
+      <div class="project-leo__about-inner container">
+        <div class="project-leo__about-grid grid-12">
+          <div class="project-leo__about-content">
+            <p class="eyebrow reveal-title">From the ground up</p>
+            <h2 class="project-leo__about-headline reveal-title">About Leo</h2>
+            <p class="project-leo__about-body reveal-body">Leo is a web app for managing construction and housing renovation projects that digitizes the entire project lifecycle — preparation, planning, execution, and closeout — connecting clients, contractors, and subcontractors in real time, from team management to invoicing.</p>
+          </div>
+          <dl class="project-leo__about-meta reveal-body">
+            <div class="project-leo__about-meta-item">
+              <dt class="eyebrow">Role</dt>
+              <dd>Product Designer</dd>
+            </div>
+            <div class="project-leo__about-meta-item">
+              <dt class="eyebrow">Team</dt>
+              <dd>2 fullstack developers, Leo's CEO, marketing manager.</dd>
+            </div>
+            <div class="project-leo__about-meta-item">
+              <dt class="eyebrow">Timeline</dt>
+              <dd>2022 – Present</dd>
+            </div>
+          </dl>
+        </div>
+      </div>
+    </section>
+
+    <!-- Video de LinkedIn de Leo Software — David pidió ocultarlo
+         ("no me gusta"), comentado en vez de borrado: la compresión
+         (assets/animations/leo-linkedin-video/, ver README.md ahí) y
+         las reglas CSS (.project-leo__section-video en project-leo.css)
+         quedan listas por si se retoma. Mientras tanto la sección vuelve
+         a ser el bloque naranja vacío de antes.
+    <section class="project-leo__section-orange">
+      <video
+        class="project-leo__section-video"
+        poster="../assets/animations/leo-linkedin-video/leo-linkedin-video-poster.jpg"
+        width="1280"
+        height="720"
+        controls
+        preload="metadata"
+      >
+        <source src="../assets/animations/leo-linkedin-video/leo-linkedin-video.webm" type="video/webm">
+        <source src="../assets/animations/leo-linkedin-video/leo-linkedin-video.mp4" type="video/mp4">
+      </video>
+    </section>
+    -->
+    <!-- Referencia del sistema de diseño de Leo — captura real de
+         Figma ("Design System.png", carpeta Desktop/Figma Test/ de
+         David) con los componentes de documentos, escala de color,
+         íconos y comentarios del producto. Reemplaza a la animación
+         de carga (David pidió eliminarla, no ocultarla — a diferencia
+         del video de LinkedIn más arriba, acá no se dejó el código
+         comentado: ver git history si hace falta recuperarla). -->
+    <!-- "The problem" — copy final de David, primera pieza de
+         narrativa del caso de estudio después de "About Leo". Va en la
+         misma fila que la imagen del sistema de diseño (5 columnas,
+         empuja a la imagen y al caption hacia la derecha) — ver
+         .project-leo__section-inner en css/project-leo.css para el
+         scroll horizontal que esto necesita.
+
+         Oculto por el momento a pedido de David ("oculta por el
+         momento the problem") — mismo patrón que el video de LinkedIn
+         más arriba: el código queda COMENTADO, no borrado, para poder
+         retomarlo. "My role" (ver más abajo) ocupa su lugar en la fila
+         mientras tanto, mismas clases (.project-leo__problem/-title),
+         mismo estilo — a pedido explícito de David ("agrega en el
+         mismo estilo esto").
+    <div class="project-leo__problem">
+      <h2 class="project-leo__problem-title reveal-title">The problem</h2>
+      <p class="project-leo__problem-body reveal-body">Auftraggeber, site manager, and worker — three roles, three different urgencies, stuck in the same rigid interface.</p>
+      <p class="project-leo__problem-body reveal-body">One needs the building ready to rent out. Another needs every task completed on time. The third just wants clear instructions, no delays, so they can invoice fast.</p>
+      <p class="project-leo__problem-body reveal-body">The old app treated them all the same: fixed states, static, zero clear real-time communication from planning to invoicing.</p>
+      <p class="project-leo__problem-body reveal-body">The challenge wasn't showing more data — it was showing the right data, to the right person, at the right time.</p>
+    </div>
+    -->
+    <section class="project-leo__section-orange">
+      <div class="project-leo__section-inner">
+        <div class="project-leo__problem">
+          <h2 class="project-leo__problem-title reveal-title">My role</h2>
+          <ul class="project-leo__role-list reveal-body">
+            <li class="project-leo__problem-body">Redesigned the user interface for the existing web app</li>
+            <li class="project-leo__problem-body">Designed Leo's native app from scratch</li>
+            <li class="project-leo__problem-body">Developed Leo's design system and brand language</li>
+            <li class="project-leo__problem-body">Interviewed users across different roles to identify pain points and translate them into interface solutions</li>
+          </ul>
+        </div>
+        <div class="project-leo__testimonial-caption">
+          <p class="project-leo__section-caption-body">Alexander Rüsseler, GWG Wuppertal</p>
+        </div>
+        <!-- controlsList/disablePictureInPicture — a pedido de David:
+             "el boton de los tres puntos verticales no los pudiste
+             quitar o apagar?". El primer intento (CSS
+             ::-webkit-media-controls-overflow-button, ver
+             css/project-leo.css) no funcionó — Chrome rediseñó sus
+             controles nativos y ese botón específico ya no responde a
+             ese truco. controlsList SÍ funciona: es una API real de
+             Chrome/Edge (HTMLMediaElement.controlsList), no un hack de
+             CSS — le dice al navegador que ni GENERE esos botones
+             (descarga, reproducción remota/cast, velocidad de
+             reproducción), a diferencia de ocultarlos después con
+             CSS. Con todo lo que alimentaba al menú de "más opciones"
+             deshabilitado, Chrome ya no arma el menú — confirmado en
+             vivo, el botón de 3 puntos desaparece del todo.
+             disablePictureInPicture (atributo booleano propio del
+             elemento, no parte de controlsList) saca el picture-in-
+             picture por el mismo motivo. nofullscreen en controlsList
+             ya cubre Chrome/Edge; el ::-webkit-media-controls-
+             fullscreen-button en CSS queda como respaldo para Safari,
+             que no soporta controlsList. Firefox no soporta ninguna de
+             las dos cosas — ahí seguirían apareciendo estos botones,
+             sin forma de ocultarlos. -->
+        <video
+          class="project-leo__testimonial-vertical"
+          poster="../assets/animations/leo-testimonial-vertical/leo-testimonial-vertical-poster.jpg"
+          width="1080"
+          height="1920"
+          controls
+          controlsList="nofullscreen nodownload noremoteplayback noplaybackrate"
+          disablePictureInPicture
+          autoplay
+          muted
+          loop
+          playsinline
+        >
+          <source src="../assets/animations/leo-testimonial-vertical/leo-testimonial-vertical.webm" type="video/webm">
+          <source src="../assets/animations/leo-testimonial-vertical/leo-testimonial-vertical.mp4" type="video/mp4">
+        </video>
+        <video
+          class="project-leo__macbook-demo"
+          poster="../assets/animations/leo-macbook-demo/leo-macbook-demo-poster.jpg"
+          width="1788"
+          height="1080"
+          autoplay
+          muted
+          loop
+          playsinline
+        >
+          <source src="../assets/animations/leo-macbook-demo/leo-macbook-demo.webm" type="video/webm">
+          <source src="../assets/animations/leo-macbook-demo/leo-macbook-demo.mp4" type="video/mp4">
+        </video>
+        <div class="project-leo__macbook-caption">
+          <p class="project-leo__section-caption-body">All communication, centralized in one view — nothing lost between clients, contractors, and subcontractors.</p>
+        </div>
+        <div class="project-leo__section-image-anim">
+          <img
+            class="project-leo__section-image-frame project-leo__section-image-frame--1"
+            src="../assets/images/leo/design-system-reference.png"
+            alt="Sistema de diseño de Leo: botón de carga de documentos, tarjetas de archivo con estados de carga/online/offline, escala de colores primaria y secundaria, set de íconos y componente de comentarios"
+            width="2200"
+            height="1124"
+            loading="lazy"
+          >
+          <img
+            class="project-leo__section-image-frame project-leo__section-image-frame--2"
+            src="../assets/images/leo/design-system-reference-2.png"
+            alt=""
+            aria-hidden="true"
+            width="2200"
+            height="1124"
+            loading="lazy"
+          >
+        </div>
+        <div class="project-leo__section-caption">
+          <div class="project-leo__section-caption-top">
+            <img
+              class="project-leo__section-caption-avatar"
+              src="../assets/images/leo/avatar.png"
+              alt=""
+              aria-hidden="true"
+              width="420"
+              height="452"
+              loading="lazy"
+            >
+            <blockquote class="project-leo__section-caption-quote">
+              <p class="project-leo__section-caption-quote-text">“Awesome! The new interface is consistent, clear, and easy to use.”</p>
+              <cite class="project-leo__section-caption-quote-author">Khalid Aouraghe</cite>
+            </blockquote>
+          </div>
+          <div class="project-leo__section-caption-text">
+            <p class="project-leo__section-caption-title">Design system:</p>
+            <p class="project-leo__section-caption-body">This is part of the design system, built to create harmony across the app every time new user flows are created.</p>
+          </div>
+        </div>
+        <!-- QUITADOS de la primera sección ("My role") a pedido de David:
+             la animación de la tablet, la del celular y su texto "Chat,
+             redesigned to flow seamlessly across every platform." Esos
+             tres viven ahora sólo en la última sección ("Chat
+             Interaction"). Comentados en vez de borrados. Sin ellos el
+             último hijo de la fila es .project-leo__section-caption (ver
+             su :last-child en css/project-leo.css, que lleva el margen
+             de fin de scroll).
+        <div class="project-leo__ipad-anim">
+          <img
+            class="project-leo__ipad-anim-frame project-leo__ipad-anim-frame--1"
+            src="../assets/images/leo/ipad-1.png"
+            alt="Vista de iPad de los chats de proyecto de Leo: hilo de mensajes de DachMeister Krause con el teclado abriéndose al escribir una respuesta"
+            width="1100"
+            height="1434"
+            loading="lazy"
+          >
+          <img
+            class="project-leo__ipad-anim-frame project-leo__ipad-anim-frame--2"
+            src="../assets/images/leo/ipad-2.png"
+            alt=""
+            aria-hidden="true"
+            width="1100"
+            height="1434"
+            loading="lazy"
+          >
+        </div>
+        <div class="project-leo__screen-anim">
+          <img
+            class="project-leo__screen-anim-frame project-leo__screen-anim-frame--1"
+            src="../assets/images/leo/screen-1.png"
+            alt="Vista de celular de los chats de proyecto de Leo: lista de chats, hilo de mensajes de DachMeister Krause y el teclado abriéndose al escribir una respuesta"
+            width="477"
+            height="984"
+            loading="lazy"
+          >
+          <img
+            class="project-leo__screen-anim-frame project-leo__screen-anim-frame--2"
+            src="../assets/images/leo/screen-2.png"
+            alt=""
+            aria-hidden="true"
+            width="477"
+            height="984"
+            loading="lazy"
+          >
+          <img
+            class="project-leo__screen-anim-frame project-leo__screen-anim-frame--3"
+            src="../assets/images/leo/screen-3.png"
+            alt=""
+            aria-hidden="true"
+            width="477"
+            height="984"
+            loading="lazy"
+          >
+        </div>
+        <div class="project-leo__screen-caption">
+          <p class="project-leo__section-caption-body">Chat, redesigned to flow seamlessly across every platform.</p>
+        </div>
+        -->
+      </div>
+    </section>
+    <!-- Sección intermedia, fondo blanco: mismo layout (fila scrolleable,
+         contenido desde la columna 1) con 4 capturas de celular de la
+         app, separadas por 1 columna de por medio, en este orden:
+         Positionen, Bauzeitplan, Dokumente, Dokumente offline. Los
+         datos ya vienen anonimizados desde Figma (nombres de mock). -->
+    <section class="project-leo__section-orange project-leo__section-orange--white">
+      <div class="project-leo__section-inner">
+        <!-- Título "Native Leo app:" en las columnas 1-2, arriba, justo
+             antes del primer celular (columna 3); mismo estilo que
+             "My role". Los 4 puntos ya no van acá: cada uno va DEBAJO de
+             su celular, a 24px (ver .project-leo__phone-item en
+             css/project-leo.css). -->
+        <div class="project-leo__phone-caption">
+          <h2 class="project-leo__problem-title reveal-title">Native Leo app</h2>
+        </div>
+        <figure class="project-leo__phone-item">
+          <img
+            class="project-leo__phone-shot"
+            src="../assets/images/leo/phone-positionen.png"
+            alt="Leo en celular, pestaña Positionen: filtros por oficio, un grupo de posiciones principales y un anexo con comentario"
+            width="1907"
+            height="3932"
+            loading="lazy"
+          >
+          <figcaption class="project-leo__phone-item-text project-leo__problem-body">Works without signal, syncs automatically once back online.</figcaption>
+        </figure>
+        <figure class="project-leo__phone-item">
+          <img
+            class="project-leo__phone-shot"
+            src="../assets/images/leo/phone-bauzeitplan.png"
+            alt="Leo en celular, pestaña Bauzeitplan: cronograma de obra por oficio (pintura, electricidad, limpieza, mobiliario, metalistería, carpintería, madera)"
+            width="1907"
+            height="3932"
+            loading="lazy"
+          >
+          <figcaption class="project-leo__phone-item-text project-leo__problem-body">Real-time push notifications.</figcaption>
+        </figure>
+        <figure class="project-leo__phone-item">
+          <img
+            class="project-leo__phone-shot"
+            src="../assets/images/leo/phone-dokumente.png"
+            alt="Leo en celular, pestaña Dokumente: botón para subir documentos y lista de archivos con miniatura, autor y fecha"
+            width="1907"
+            height="3932"
+            loading="lazy"
+          >
+          <figcaption class="project-leo__phone-item-text project-leo__problem-body">Installed on the home screen. No URLs, no browser.</figcaption>
+        </figure>
+        <figure class="project-leo__phone-item">
+          <img
+            class="project-leo__phone-shot"
+            src="../assets/images/leo/phone-dokumente-offline.png"
+            alt="Leo en celular sin conexión: aviso de modo offline y lista de documentos pendientes de subir"
+            width="1907"
+            height="3932"
+            loading="lazy"
+          >
+          <figcaption class="project-leo__phone-item-text project-leo__problem-body">Native camera: Snap and upload progress photos in seconds.</figcaption>
+        </figure>
+      </div>
+    </section>
+    <!-- Segunda sección: mismo layout que la de arriba, fondo #CC6633
+         (ver .project-leo__section-orange--accent en css/project-leo.css).
+         El contenido va a ir variando — por ahora: testimonio vertical de
+         Jaqueline Krott (mismo layout que el de Alexander Rüsseler) + una
+         columna de espacio + demo "Angebot anlegen". El contenido arranca
+         en la columna 1 (a pedido de David): caption en las columnas 1-2,
+         testimonio en la 3. Primera vuelta tenía un div vacío que
+         reservaba las 5 columnas de "My role" para alinear con la sección
+         de arriba — se quitó. -->
+    <section class="project-leo__section-orange project-leo__section-orange--accent">
+      <div class="project-leo__section-inner">
+        <div class="project-leo__testimonial-caption">
+          <p class="project-leo__section-caption-body">Jaqueline Krott, Strack GmbH</p>
+        </div>
+        <video
+          class="project-leo__testimonial-vertical"
+          poster="../assets/animations/leo-testimonial-vertical-2/leo-testimonial-vertical-2-poster.jpg"
+          width="1080"
+          height="1920"
+          controls
+          controlsList="nofullscreen nodownload noremoteplayback noplaybackrate"
+          disablePictureInPicture
+          autoplay
+          muted
+          loop
+          playsinline
+        >
+          <source src="../assets/animations/leo-testimonial-vertical-2/leo-testimonial-vertical-2.webm" type="video/webm">
+          <source src="../assets/animations/leo-testimonial-vertical-2/leo-testimonial-vertical-2.mp4" type="video/mp4">
+        </video>
+        <video
+          class="project-leo__offer-demo"
+          poster="../assets/animations/leo-offer-create/leo-offer-create-poster.jpg"
+          width="1484"
+          height="1138"
+          autoplay
+          muted
+          loop
+          playsinline
+        >
+          <source src="../assets/animations/leo-offer-create/leo-offer-create.webm" type="video/webm">
+          <source src="../assets/animations/leo-offer-create/leo-offer-create.mp4" type="video/mp4">
+        </video>
+        <div class="project-leo__offer-caption">
+          <p class="project-leo__section-caption-body">Cleaner forms with structured steps, making it effortless to create a quote or a new project.</p>
+        </div>
+      </div>
+    </section>
+    <!-- Sección final: duplicado de la primera (fondo gris) pero solo con
+         la animación de la tablet, la del celular y su texto, CENTRADOS
+         (ver .project-leo__section-orange--centered en
+         css/project-leo.css). -->
+    <section class="project-leo__section-orange project-leo__section-orange--centered">
+      <div class="project-leo__section-inner">
+        <!-- Título de la sección, mismo estilo y misma pieza que "Native
+             Leo app" de la sección blanca (.project-leo__phone-caption:
+             2 columnas, alineado arriba con la primera imagen). -->
+        <div class="project-leo__phone-caption">
+          <h2 class="project-leo__problem-title reveal-title">Chat Interaction</h2>
+        </div>
+        <div class="project-leo__ipad-anim">
+          <img
+            class="project-leo__ipad-anim-frame project-leo__ipad-anim-frame--1"
+            src="../assets/images/leo/ipad-1.png"
+            alt="Vista de iPad de los chats de proyecto de Leo: hilo de mensajes de DachMeister Krause con el teclado abriéndose al escribir una respuesta"
+            width="1100"
+            height="1434"
+            loading="lazy"
+          >
+          <img
+            class="project-leo__ipad-anim-frame project-leo__ipad-anim-frame--2"
+            src="../assets/images/leo/ipad-2.png"
+            alt=""
+            aria-hidden="true"
+            width="1100"
+            height="1434"
+            loading="lazy"
+          >
+        </div>
+        <div class="project-leo__screen-anim">
+          <img
+            class="project-leo__screen-anim-frame project-leo__screen-anim-frame--1"
+            src="../assets/images/leo/screen-1.png"
+            alt="Vista de celular de los chats de proyecto de Leo: lista de chats, hilo de mensajes de DachMeister Krause y el teclado abriéndose al escribir una respuesta"
+            width="477"
+            height="984"
+            loading="lazy"
+          >
+          <img
+            class="project-leo__screen-anim-frame project-leo__screen-anim-frame--2"
+            src="../assets/images/leo/screen-2.png"
+            alt=""
+            aria-hidden="true"
+            width="477"
+            height="984"
+            loading="lazy"
+          >
+          <img
+            class="project-leo__screen-anim-frame project-leo__screen-anim-frame--3"
+            src="../assets/images/leo/screen-3.png"
+            alt=""
+            aria-hidden="true"
+            width="477"
+            height="984"
+            loading="lazy"
+          >
+        </div>
+        <div class="project-leo__screen-caption">
+          <p class="project-leo__section-caption-body">Chat, redesigned to flow seamlessly across every platform.</p>
+        </div>
+      </div>
+    </section>
   </main>
 
   <!-- Herramienta de guía (no es parte del diseño del sitio, solo
@@ -132,6 +569,50 @@
     </button>
   </div>
 
+  <!-- Testimonio vertical: arranca solo, en silencio y en loop (vista
+       previa). Apenas el usuario interactúa — activa el audio o toca
+       el botón de reproducir/pausa (con el video ya corriendo, ese
+       botón dispara un "pause") — se sale del modo vista previa:
+       vuelve al segundo 0, con sonido, sin loop, y sigue de corrido. -->
+  <script>
+    (function () {
+      // Hay un testimonio por sección (ahora dos) — cada video lleva su
+      // propio estado (preview/touched) dentro de este forEach.
+      var videos = document.querySelectorAll(".project-leo__testimonial-vertical");
+      videos.forEach(function (v) {
+        var preview = true;
+        var touched = false;
+        // Solo cuenta si hubo una interacción real sobre el video: el
+        // navegador también dispara "pause"/"volumechange" por su cuenta
+        // (autoplay bloqueado, pestaña oculta, etc.) y eso no debe sacar
+        // al video de la vista previa.
+        ["pointerdown", "mousedown", "touchstart", "keydown"].forEach(function (evt) {
+          document.addEventListener(evt, function (e) {
+            if (e.target === v) touched = true;
+          }, true);
+        });
+        function startFromBeginning() {
+          if (!preview) return;
+          preview = false;
+          // Si el otro testimonio ya estaba sonando, se pausa: dos
+          // audios a la vez no se entienden.
+          videos.forEach(function (other) {
+            if (other !== v && !other.muted && !other.paused) other.pause();
+          });
+          v.loop = false;
+          v.muted = false;
+          v.currentTime = 0;
+          v.play();
+        }
+        v.addEventListener("volumechange", function () {
+          if (!v.muted) startFromBeginning();
+        });
+        v.addEventListener("pause", function () {
+          if (touched && !v.ended) startFromBeginning();
+        });
+      });
+    })();
+  </script>
   <script src="../js/main.js"></script>
 </body>
 </html>
