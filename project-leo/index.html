@@ -24,7 +24,7 @@
   <link rel="canonical" href="https://pixel-personas.com/project-leo/">
   <link rel="icon" type="image/png" href="../assets/Logo/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&family=Noto+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&family=Noto+Sans:wght@100..900&display=swap" rel="stylesheet">
   <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
   <link rel="stylesheet" href="../css/tokens.css">
   <link rel="stylesheet" href="../css/components.css">
@@ -55,14 +55,22 @@
   <div class="project-leo__hero-wrap">
     <div class="project-leo__hero-visual" aria-hidden="true">
       <div class="project-leo__hero-bg"></div>
-      <img
-        class="project-leo__hero-banner"
-        src="../assets/images/project-leo-banner.jpg"
-        alt=""
-        width="1044"
-        height="600"
-        loading="lazy"
-      >
+      <!-- Panel blanco + logo — a pedido de David: "en lugar de la
+           imagen a la derecha, fondo blanco que ya está en la portada
+           en Home, pero con el logo y la frase como está en este
+           Figma" (node 608:49243). Reemplaza la foto de los banners de
+           la feria que vivía acá. Ver css/project-leo.css
+           .project-leo__hero-panel/.project-leo__hero-logo. -->
+      <div class="project-leo__hero-panel">
+        <img
+          class="project-leo__hero-logo"
+          src="../assets/Logo/leo-lean-engineering-logo.svg"
+          alt=""
+          width="420"
+          height="154"
+          loading="lazy"
+        >
+      </div>
       <!-- Mockup del iPhone — David re-exportó el PNG completo y
            correcto (mockup entero, incluida la barra de estado real),
            que reemplaza tanto el screenshot recortado de la primera
@@ -106,7 +114,7 @@
         </a>
         <nav class="navbar__links">
           <a href="/about/" class="btn btn--outline btn--md">About</a>
-          <a href="/#contact" class="btn btn--dark btn--md">Get in Touch</a>
+          <a href="#contact" class="btn btn--dark btn--md">Get in Touch</a>
         </nav>
       </div>
     </header>
@@ -266,54 +274,27 @@
         <div class="project-leo__macbook-caption">
           <p class="project-leo__section-caption-body">All communication, centralized in one view — nothing lost between clients, contractors, and subcontractors.</p>
         </div>
-        <div class="project-leo__section-image-anim">
-          <img
-            class="project-leo__section-image-frame project-leo__section-image-frame--1"
-            src="../assets/images/leo/design-system-reference.png"
-            alt="Sistema de diseño de Leo: botón de carga de documentos, tarjetas de archivo con estados de carga/online/offline, escala de colores primaria y secundaria, set de íconos y componente de comentarios"
-            width="2200"
-            height="1124"
-            loading="lazy"
-          >
-          <img
-            class="project-leo__section-image-frame project-leo__section-image-frame--2"
-            src="../assets/images/leo/design-system-reference-2.png"
-            alt=""
-            aria-hidden="true"
-            width="2200"
-            height="1124"
-            loading="lazy"
-          >
-        </div>
-        <div class="project-leo__section-caption">
-          <div class="project-leo__section-caption-top">
-            <img
-              class="project-leo__section-caption-avatar"
-              src="../assets/images/leo/avatar.png"
-              alt=""
-              aria-hidden="true"
-              width="420"
-              height="452"
-              loading="lazy"
-            >
-            <blockquote class="project-leo__section-caption-quote">
-              <p class="project-leo__section-caption-quote-text">“Awesome! The new interface is consistent, clear, and easy to use.”</p>
-              <cite class="project-leo__section-caption-quote-author">Khalid Aouraghe</cite>
-            </blockquote>
-          </div>
-          <div class="project-leo__section-caption-text">
-            <p class="project-leo__section-caption-title">Design system:</p>
-            <p class="project-leo__section-caption-body">This is part of the design system, built to create harmony across the app every time new user flows are created.</p>
-          </div>
-        </div>
+        <!-- .project-leo__section-image-anim (screenshot del sistema de
+             diseño) y .project-leo__section-caption (avatar+quote+
+             "Design system:") SE MOVIERON de acá a la última sección,
+             al final de todo — a pedido de David: "mueve este contenido
+             al final de la última sección dejando una columna de
+             espacio" y, en un segundo pedido, "te faltó mover también
+             esta animación" (la imagen se había quedado atrás la
+             primera vez). Ver css/project-leo.css .project-leo__section-image-anim
+             / .project-leo__section-caption y el HTML antes de "Get in
+             touch". .project-leo__macbook-caption (arriba) pasó a ser
+             el último hijo real de esta fila, así que hereda el
+             margin-right de fin de scroll (ver ese comentario en el
+             CSS). -->
         <!-- QUITADOS de la primera sección ("My role") a pedido de David:
              la animación de la tablet, la del celular y su texto "Chat,
              redesigned to flow seamlessly across every platform." Esos
              tres viven ahora sólo en la última sección ("Chat
-             Interaction"). Comentados en vez de borrados. Sin ellos el
-             último hijo de la fila es .project-leo__section-caption (ver
-             su :last-child en css/project-leo.css, que lleva el margen
-             de fin de scroll).
+             Interaction"). Comentados en vez de borrados. (El último
+             hijo real de esta fila ya NO es .project-leo__section-caption
+             — se movió a la última sección, ver el comentario arriba —
+             ahora es .project-leo__section-image-anim.)
         <div class="project-leo__ipad-anim">
           <img
             class="project-leo__ipad-anim-frame project-leo__ipad-anim-frame--1"
@@ -485,10 +466,11 @@
       </div>
     </section>
     <!-- Sección final: duplicado de la primera (fondo gris) pero solo con
-         la animación de la tablet, la del celular y su texto, CENTRADOS
-         (ver .project-leo__section-orange--centered en
+         el título "Chat Interaction", la animación de la tablet, la del
+         celular y su texto, alineados desde la columna 1 (antes CENTRADOS,
+         ver el historial en .project-leo__section-orange--chat en
          css/project-leo.css). -->
-    <section class="project-leo__section-orange project-leo__section-orange--centered">
+    <section class="project-leo__section-orange project-leo__section-orange--chat">
       <div class="project-leo__section-inner">
         <!-- Título de la sección, mismo estilo y misma pieza que "Native
              Leo app" de la sección blanca (.project-leo__phone-caption:
@@ -545,6 +527,230 @@
         </div>
         <div class="project-leo__screen-caption">
           <p class="project-leo__section-caption-body">Chat, redesigned to flow seamlessly across every platform.</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- Sección nueva, fondo anaranjado #CC6633
+         (.project-leo__section-orange--accent, misma que la sección de
+         Jaqueline Krott/"Angebot anlegen" más arriba). A pedido de
+         David: primero "de este color" [gris, por el elemento que tenía
+         seleccionado], corregido a "que el fondo sea anaranjado".
+
+         Contenido: specimen tipográfico de Noto Sans (Figma node
+         585:60670, "Main Typeface" — mismo patrón que el specimen
+         "Second Typeface" armado antes en el archivo Leo), 10 columnas
+         de ancho.
+
+         SEGUNDA VUELTA — a pedido de David, "quiero modificar el
+         efecto, casi no me gusta", con un efecto nuevo que él mismo
+         especificó (JSON de config + JS con IntersectionObserver +
+         Web Animations API): entrada disparada por scroll (una sola
+         vez, no autoplay), cada línea aparece con máscara "desliza
+         desde abajo" con stagger entre líneas; el loop, ya iniciado,
+         alterna Medium/Bold/Regular (David dio la config con solo
+         Medium/Bold; después preguntó "¿dónde está el Regular?" — se
+         agregó de vuelta como 3er estado) interpolando de VERDAD el
+         grosor vía font-variation-settings de la fuente variable
+         (no crossfade de copias duplicadas como antes). Ver el <script>
+         "type-anim-config" más abajo, antes de js/main.js, y
+         .project-leo__typeface-alphabet/[data-type-anim] en
+         css/project-leo.css. Fuente: Noto Sans en vez del Instrument
+         Sans del snippet original de David — es la tipografía real de
+         Leo, cargada acá como variable de verdad (wght@100..900, ver
+         el <link> de Google Fonts en el <head>) para que
+         font-variation-settings pueda interpolar. -->
+    <section class="project-leo__section-orange project-leo__section-orange--accent">
+      <div class="project-leo__section-inner">
+        <div class="project-leo__typeface-specimen">
+          <div class="project-leo__typeface-pill"><span>Main Typeface</span></div>
+          <div class="project-leo__typeface-alphabet" data-type-anim>
+            <p>ABCDEFGHIJKLM</p>
+            <p>NOPQRSTUVWXYZ</p>
+            <p>abcdefghijklm</p>
+            <p>nopqrstuvwxyz</p>
+            <p>1234567890$@!</p>
+          </div>
+          <p class="project-leo__typeface-family">Noto Sans</p>
+          <div class="project-leo__typeface-label">
+            <span data-type-anim-label>Medium</span>
+          </div>
+        </div>
+        <!-- Texto a pedido de David: "agrega este texto en las siguientes
+             dos columnas de la animación seleccionada [el specimen
+             tipográfico]". Reusa .project-leo__section-caption-body tal
+             cual (mismo mecanismo que .project-leo__screen-caption) para
+             el color blanco automático dentro de esta sección naranja —
+             ver el override en .project-leo__section-orange--accent
+             .project-leo__section-caption-body. Sin margin-left extra:
+             va pegado al specimen, separado solo por el gap normal del
+             flex (1 gutter) — el espacio de "una columna de por medio"
+             que pidió David es el que ya tiene .project-leo__color-positions
+             con su margin-left, y sigue funcionando igual sin importar
+             qué venga inmediatamente antes. -->
+        <div class="project-leo__type-caption">
+          <p class="project-leo__section-caption-body">Noto Sans covers virtually every writing system, giving Leo the flexibility to support more languages later without switching typefaces.</p>
+        </div>
+        <!-- "Color Positions" (Figma node 586:60775, mismo archivo Test):
+             specimen de la paleta de colores por oficio que usa el
+             Gantt de Leo (Maler, Klempner, Tischler, etc.) — pill +
+             8 cápsulas en zigzag, cada una con su ícono real (exportado
+             de Figma, ver assets/images/leo/color-icon-*.png — son
+             ilustraciones estilo emoji 3D, no viables de recrear en
+             CSS/SVG a mano) y su color sólido. A pedido de David: "deja
+             una columna de por medio y coloca este frame" — 1 columna
+             de espacio respecto al specimen tipográfico (margin-left,
+             ver .project-leo__color-positions). "Primero hazlo y luego
+             agregamos animaciones" — por ahora estático, sin animar. -->
+        <div class="project-leo__color-positions">
+          <div class="project-leo__color-positions-pill"><span>Color Positions</span></div>
+          <div class="project-leo__color-row project-leo__color-row--1">
+            <img src="../assets/images/leo/color-icon-maler.png" alt="" width="80" height="80" loading="lazy">
+            <span>Maler</span>
+          </div>
+          <div class="project-leo__color-row project-leo__color-row--2">
+            <img src="../assets/images/leo/color-icon-klempner-1.png" alt="" width="80" height="80" loading="lazy">
+            <span>Sanitär</span>
+          </div>
+          <div class="project-leo__color-row project-leo__color-row--3">
+            <img src="../assets/images/leo/color-icon-klempner-2.png" alt="" width="80" height="80" loading="lazy">
+            <span>Klempner</span>
+          </div>
+          <div class="project-leo__color-row project-leo__color-row--4">
+            <img src="../assets/images/leo/color-icon-tischler.png" alt="" width="80" height="80" loading="lazy">
+            <span>Tischler</span>
+          </div>
+          <div class="project-leo__color-row project-leo__color-row--5">
+            <img src="../assets/images/leo/color-icon-sonstige.png" alt="" width="80" height="80" loading="lazy">
+            <span>Sonstige</span>
+          </div>
+          <div class="project-leo__color-row project-leo__color-row--6">
+            <img src="../assets/images/leo/color-icon-beton.png" alt="" width="80" height="80" loading="lazy">
+            <span>Beton</span>
+          </div>
+          <div class="project-leo__color-row project-leo__color-row--7">
+            <img src="../assets/images/leo/color-icon-heizung-1.png" alt="" width="80" height="80" loading="lazy">
+            <span>Heizung</span>
+          </div>
+          <div class="project-leo__color-row project-leo__color-row--8">
+            <img src="../assets/images/leo/color-icon-heizung-2.png" alt="" width="80" height="80" loading="lazy">
+            <span>Elektro</span>
+          </div>
+        </div>
+        <!-- Texto a pedido de David: "agrega en las siguientes dos
+             columnas esta frase alineado a la parte inferior". Mismo
+             mecanismo que .project-leo__type-caption/.project-leo__screen-caption
+             (ver css/project-leo.css .project-leo__color-caption). -->
+        <div class="project-leo__color-caption">
+          <p class="project-leo__section-caption-body">Clear construction timeline.</p>
+        </div>
+        <!-- Foto a pedido de David: "deja una columna de por medio y
+             coloca esta imagen" (Figma node 606:49202, archivo Test) —
+             ver css/project-leo.css .project-leo__banner-photo. La capa
+             de imagen dentro de ese frame se llama "Leo Event" en
+             Figma — David lo marcó después de que preguntara por la
+             franja oscura en el borde inferior (ver ese comentario en
+             el CSS): resultó ser la fuente original en alta resolución
+             (4095×2113, casi 4x más grande que el export inicial de
+             1042×671 que se había usado primero). Se re-exportó desde
+             esa capa en vez del export chico — misma composición/recorte
+             exacto (Figma la escaló 4x internamente, ratio idéntico),
+             solo que ahora se ve nítida en pantallas retina. width/height
+             actualizados a las dimensiones reales del archivo nuevo
+             (2084×1341, la fuente reescalada a 2x para no subir 4MB+ de
+             PNG sin necesidad).
+
+             David reemplazó después el archivo fuente en su carpeta
+             local (C:\...\Desktop\Figma Test\Leo Event.png, mismo
+             nombre) por un nuevo export de esa misma capa — se volvió a
+             re-escalar a 2x y pisar assets/images/leo-banner-baumesse.jpg;
+             el ratio real cambió una fracción (4160×2676 en vez de
+             4168×2684), de ahí el height:1341 en vez de 1342. -->
+        <img
+          class="project-leo__banner-photo"
+          src="../assets/images/leo-banner-baumesse.jpg"
+          alt="Leo banner at the Baumesse Bad Dürkheim 2022 trade fair, reading &quot;Finde mich, mein Name ist Leo&quot; next to the Lean Engineering Organization logo."
+          width="2084"
+          height="1341"
+          loading="lazy"
+        >
+        <!-- Texto a pedido de David: "agrega en las siguientes 2
+             columnas alineado en la parte superior esta frase" — ver
+             css/project-leo.css .project-leo__banner-caption. -->
+        <div class="project-leo__banner-caption">
+          <p class="project-leo__section-caption-body">Hanging banners: Marketing event</p>
+        </div>
+        <!-- Movidos acá desde la primera sección ("My role") a pedido de
+             David: "mueve este contenido al final de la última sección
+             dejando una columna de espacio" y, después, "te faltó mover
+             también esta animación" — ver ese comentario en su ubicación
+             anterior. Se movieron JUNTOS, en el mismo orden relativo que
+             tenían antes (imagen primero, caption después, pegados entre
+             sí sin espacio extra — así estaban en la primera sección).
+             margin-left nuevo (1 columna, ver css/project-leo.css
+             .project-leo__section-image-anim) en la imagen, que es ahora
+             la que abre el par — la columna de espacio pedida por David
+             vive ahí, no en el caption. .project-leo__section-caption:last-child
+             ya se encarga del margin-right de fin de scroll (misma
+             regla de siempre, ahora aplica acá porque es el último hijo
+             real de ESTA fila). -->
+        <div class="project-leo__section-image-anim">
+          <img
+            class="project-leo__section-image-frame project-leo__section-image-frame--1"
+            src="../assets/images/leo/design-system-reference.png"
+            alt="Sistema de diseño de Leo: botón de carga de documentos, tarjetas de archivo con estados de carga/online/offline, escala de colores primaria y secundaria, set de íconos y componente de comentarios"
+            width="2200"
+            height="1124"
+            loading="lazy"
+          >
+          <img
+            class="project-leo__section-image-frame project-leo__section-image-frame--2"
+            src="../assets/images/leo/design-system-reference-2.png"
+            alt=""
+            aria-hidden="true"
+            width="2200"
+            height="1124"
+            loading="lazy"
+          >
+        </div>
+        <div class="project-leo__section-caption">
+          <div class="project-leo__section-caption-top">
+            <img
+              class="project-leo__section-caption-avatar"
+              src="../assets/images/leo/avatar.png"
+              alt=""
+              aria-hidden="true"
+              width="420"
+              height="452"
+              loading="lazy"
+            >
+            <blockquote class="project-leo__section-caption-quote">
+              <p class="project-leo__section-caption-quote-text">“Awesome! The new interface is consistent, clear, and easy to use.”</p>
+              <cite class="project-leo__section-caption-quote-author">Khalid Aouraghe</cite>
+            </blockquote>
+          </div>
+          <div class="project-leo__section-caption-text">
+            <p class="project-leo__section-caption-title">Design system:</p>
+            <p class="project-leo__section-caption-body">This is part of the design system, built to create harmony across the app every time new user flows are created.</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- ===== "Get in touch" =====
+         Mismo bloque que project-onboarding/project-youtube-discovery
+         (ver css/styles.css .contact) — sin la columna de fotos, esas son
+         del contexto de Home. El botón "Get in Touch" del header de esta
+         página apuntaba a "/#contact" (la sección de Home); ahora que
+         esta página tiene la suya propia, pasa a "#contact" (ver el
+         header más arriba). -->
+    <section class="contact container" id="contact">
+      <div class="contact__grid grid-12">
+        <div class="contact__info">
+          <p class="contact__label">(Say hello)</p>
+          <p class="contact__name">David Quirós</p>
+          <p class="contact__role">Product Designer</p>
+          <a href="mailto:davidqs182@gmail.com" class="contact__email">davidqs182@gmail.com</a>
         </div>
       </div>
     </section>
@@ -618,6 +824,136 @@
         v.addEventListener("pause", function () {
           if (touched && !v.ended) startFromBeginning();
         });
+      });
+    })();
+  </script>
+
+  <!-- Specimen tipográfico ("Main Typeface"): entrada por scroll +
+       loop Medium/Bold/Regular con interpolación real de fuente
+       variable — ver el comentario junto al HTML del specimen más
+       arriba para el porqué. Script y config tal como los especificó
+       David, adaptados en la fuente (Noto Sans en vez de Instrument
+       Sans, ver el <link> de Google Fonts en el <head>) y en los
+       estados del loop: su config traía solo Medium/Bold; "Regular" se
+       agregó de vuelta como 3er estado a pedido de David ("¿dónde está
+       la tipografía Regular? no sale"). -->
+  <script type="application/json" id="type-anim-config">
+    {
+      "trigger": { "threshold": 0.35, "once": true },
+      "entry": { "fromY": "110%", "duration": 900, "stagger": 80, "easing": "cubic-bezier(0.22, 1, 0.36, 1)" },
+      "loop": {
+        "startDelay": 400,
+        "easing": "cubic-bezier(0.65, 0, 0.35, 1)",
+        "transition": 600,
+        "states": [
+          { "label": "Bold",    "wght": 700, "wdth": 100, "hold": 1200 },
+          { "label": "Medium",  "wght": 500, "wdth": 100, "hold": 1200 },
+          { "label": "Regular", "wght": 400, "wdth": 100, "hold": 1200 }
+        ]
+      }
+    }
+  </script>
+  <script>
+    (function () {
+      var cfg = JSON.parse(document.getElementById("type-anim-config").textContent);
+      var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      function fvs(s) {
+        return "'wght' " + s.wght + ", 'wdth' " + (s.wdth || 100);
+      }
+      document.querySelectorAll("[data-type-anim]").forEach(function (block) {
+        var scope = block.closest("section") || block.parentElement;
+        var label = scope.querySelector("[data-type-anim-label]");
+        var lines = [].slice.call(block.children).map(function (c) {
+          var m = document.createElement("span");
+          m.className = "ta-mask";
+          c.classList.add("ta-line");
+          block.insertBefore(m, c);
+          m.appendChild(c);
+          return c;
+        });
+        var st = cfg.loop.states;
+        block.style.fontVariationSettings = fvs(st[0]);
+        if (label) label.textContent = st[0].label;
+        if (reduce) return;
+        lines.forEach(function (l) {
+          l.style.transform = "translateY(" + cfg.entry.fromY + ")";
+        });
+        function entry() {
+          var a = lines.map(function (l, i) {
+            return l.animate(
+              [{ transform: "translateY(" + cfg.entry.fromY + ")" }, { transform: "translateY(0)" }],
+              { duration: cfg.entry.duration, delay: i * cfg.entry.stagger, easing: cfg.entry.easing, fill: "forwards" }
+            );
+          });
+          return a[a.length - 1].finished.then(function () {
+            lines.forEach(function (l) {
+              l.style.transform = "none";
+            });
+          });
+        }
+        function loop(i) {
+          var cur = st[i], next = st[(i + 1) % st.length];
+          setTimeout(function () {
+            var a = block.animate(
+              [{ fontVariationSettings: fvs(cur) }, { fontVariationSettings: fvs(next) }],
+              { duration: cfg.loop.transition, easing: cfg.loop.easing, fill: "forwards" }
+            );
+            setTimeout(function () {
+              if (label) label.textContent = next.label;
+            }, cfg.loop.transition / 2);
+            a.finished.then(function () {
+              block.style.fontVariationSettings = fvs(next);
+              a.cancel();
+              loop((i + 1) % st.length);
+            });
+          }, cur.hold);
+        }
+        var io = new IntersectionObserver(function (e) {
+          if (!e[0].isIntersecting) return;
+          if (cfg.trigger.once) io.disconnect();
+          entry().then(function () {
+            setTimeout(function () {
+              loop(0);
+            }, cfg.loop.startDelay);
+          });
+        }, { threshold: cfg.trigger.threshold });
+        io.observe(block);
+      });
+    })();
+  </script>
+  <!-- "Color Positions" — entrada de las 8 cápsulas por scroll (a pedido
+       de David: "esta animación sucede en viewport"; antes era
+       animation:CSS que arrancaba sola al cargar la página, sin importar
+       si la sección se veía o no). Mismo patrón que el bloque de arriba
+       (IntersectionObserver, una sola vez): translateX desde la derecha
+       con un pasón (-4%) antes de asentarse (keyframes que antes vivían
+       en CSS, ver el comentario en .project-leo__color-row), delay por
+       fila leído de --leo-row-delay (ver css/project-leo.css). -->
+  <script>
+    (function () {
+      var reduce = matchMedia("(prefers-reduced-motion: reduce)").matches;
+      if (reduce) return;
+      document.querySelectorAll(".project-leo__color-positions").forEach(function (container) {
+        var rows = [].slice.call(container.querySelectorAll(".project-leo__color-row"));
+        rows.forEach(function (row) {
+          row.style.transform = "translateX(140%)";
+        });
+        var io = new IntersectionObserver(function (e) {
+          if (!e[0].isIntersecting) return;
+          io.disconnect();
+          rows.forEach(function (row) {
+            var delay = parseFloat(getComputedStyle(row).getPropertyValue("--leo-row-delay")) || 0;
+            row.animate(
+              [
+                { transform: "translateX(140%)", offset: 0 },
+                { transform: "translateX(-4%)", offset: 0.7 },
+                { transform: "translateX(0)", offset: 1 }
+              ],
+              { duration: 900, delay: delay, easing: "cubic-bezier(0.22, 1, 0.36, 1)", fill: "forwards" }
+            );
+          });
+        }, { threshold: 0.35 });
+        io.observe(container);
       });
     })();
   </script>

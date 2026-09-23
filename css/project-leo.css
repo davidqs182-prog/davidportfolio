@@ -125,42 +125,63 @@
   background-color: #cc6632;
 }
 
-/* Foto de los banners de la feria — asset real exportado de Figma
-   (node 385:42663, "Brand Identity V1 3"), sin ningún botón horneado
-   (es un nodo hoja, no incluye los botones del header, que son nodos
-   hermanos aparte). left:var(--leo-bg-right) en vez de un ancho fijo:
-   arranca EXACTO donde termina el fondo naranja (mismo valor
-   compartido, ver .project-leo__hero-visual) y right:0 la ancla al
-   borde real de la página — el ancho queda para que el navegador lo
-   calcule solo a partir de esos dos bordes, así nunca hay hueco ni
-   superposición entre los dos, sin importar el viewport.
-   object-fit:cover ya se encargaba de recortar el sobrante cuando el
-   ancho no coincidía con el de la imagen real — sigue haciendo lo
-   mismo acá. */
-.project-leo__hero-banner {
+/* Panel + logo — a pedido de David: "en lugar de la imagen a la
+   derecha, [el] fondo blanco que ya está en la portada en Home, pero
+   con el logo y la frase como está en este Figma". Reemplaza la foto
+   de los banners de la feria que vivía acá antes (era un <img>, ver el
+   historial en git si hace falta).
+
+   Color: primero se probó #fffefd (el mismo que usa la tarjeta de Leo
+   en Home, .project-card__cover-split, y que también usan
+   .project-leo__typeface-specimen/.project-leo__color-positions más
+   abajo en esta hoja) — David lo marcó en vivo señalando
+   .project-leo__section-orange ("My role", el gris que sigue después
+   del hero) y pidió ESE color acá en vez del blanco puro: #f7f7f8, ver
+   ese bloque más abajo. Así el hero queda tonalmente igual a la
+   sección que sigue, en vez de un blanco ligeramente distinto.
+
+   left:var(--leo-bg-right) en vez de un ancho fijo: arranca EXACTO
+   donde termina el fondo naranja (mismo valor compartido, ver
+   .project-leo__hero-visual) y right:0 la ancla al borde real de la
+   página — así nunca hay hueco ni superposición entre los dos, sin
+   importar el viewport. Ya no es <img> (era necesario forzar
+   width:calc(100% - ...) porque un elemento reemplazado con left+right
+   sin width explícito no se estira — ver el historial de ese bug); acá
+   es un <div>, que sí se estira solo entre los dos bordes.
+
+   display:flex + centrado: el logo (Figma node 608:49204, archivo
+   Test) mide 223–377 de alto sobre un frame de 0–600 — verticalmente
+   centrado casi exacto (300 = mitad de 600) — y quedó razonablemente
+   centrado también en horizontal dentro de esta franja blanca en el
+   diseño; flexbox centrado en los dos ejes reproduce eso sin tener que
+   copiar un offset en px atado a un ancho de Figma que no coincide con
+   el ancho real (fluido) de este panel. */
+.project-leo__hero-panel {
   position: absolute;
   left: var(--leo-bg-right);
   right: 0;
   top: 0;
-  /* <img> es un elemento reemplazado — left+right SIN width explícito
-     no lo estira entre los dos bordes como haría un <div> (el spec de
-     CSS le hace usar el tamaño intrínseco del HTML width="1044" en vez
-     de calcularlo), bug real encontrado en vivo (el borde derecho daba
-     left + 1044, no el borde real de la página). width:calc(100% - ...)
-     fuerza el cálculo real. */
   width: calc(100% - var(--leo-bg-right));
   height: 600px;
-  object-fit: cover;
-  /* object-position default (50% 50%, centrado) recortaba parejo de
-     los dos lados — a este contenedor, más angosto que la imagen
-     nativa (1044px) desde que el fondo naranja pasó a llegar hasta la
-     columna 6, eso cortaba el letrero blanco de la derecha ("Lean
-     Engineering Organization"), que David pidió ver completo. Ambos
-     letreros están recostados hacia la mitad derecha de la foto (hay
-     bastante techo/estructura vacía a la izquierda) — anclar el
-     recorte a la derecha (100% en vez de 50%) descarta ese sobrante de
-     la izquierda primero y deja los dos letreros enteros. */
-  object-position: 100% center;
+  background-color: #f7f7f8;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Logo "Lean Engineering Organization" — exportado como SVG desde
+   Figma (node 608:49204, mismo archivo Test) a
+   assets/Logo/leo-lean-engineering-logo.svg, siguiendo el mismo
+   criterio que assets/Logo/fischbach-logo.svg (logo de cliente real,
+   no un ícono del sitio — por eso NO es Material Symbols, esa
+   convención es solo para íconos de UI, ver design-system.html).
+   420×154 nativos, tamaño fijo en px — mismo criterio que el resto de
+   esta sección del hero (medidas fijas por ahora, ver el comentario al
+   principio de este archivo: se vuelven fluidas en un próximo paso). */
+.project-leo__hero-logo {
+  display: block;
+  width: 420px;
+  height: auto;
 }
 
 /* Mockup del iPhone — David re-exportó el PNG completo (mockup entero,
@@ -398,9 +419,16 @@
   color: #fff;
 }
 
-/* .project-leo__section-caption-body fija su propio color (no lo
-   hereda), así que hay que pisarlo acá para que el texto sea blanco. */
-.project-leo__section-orange--accent .project-leo__section-caption-body {
+/* .project-leo__section-caption-body/-title/-quote-text/-quote-author
+   fijan su propio color (no lo heredan), así que hay que pisarlos acá
+   para que el texto sea blanco. -title/-quote-text/-quote-author se
+   sumaron cuando .project-leo__section-caption (avatar+quote+"Design
+   system:") se movió a esta sección — antes solo hacía falta -body acá
+   porque era el único de los cuatro que vivía en esta sección. */
+.project-leo__section-orange--accent .project-leo__section-caption-body,
+.project-leo__section-orange--accent .project-leo__section-caption-title,
+.project-leo__section-orange--accent .project-leo__section-caption-quote-text,
+.project-leo__section-orange--accent .project-leo__section-caption-quote-author {
   color: #fff;
 }
 
@@ -471,34 +499,20 @@
    para las dos <img> internas absolutas — un <img> no puede
    contener otras <img> encima suyo.
 
-   margin-left — a pedido de David: "mueve el video y la computadora
-   juntos... al inicio, despues de [My role]... manteniendo la
-   distribucion en columnas de todo". .project-leo__testimonial-vertical
-   y .project-leo__macbook-demo se corrieron a vivir justo después de
-   .project-leo__problem (ver el HTML) — esta imagen dejó de ser el
-   segundo hijo de la fila y pasó a seguir al video de MacBook. Antes
-   no necesitaba margin-left propio (el gap de 1 columna con
-   .project-leo__problem lo daba el margin-right DE PROBLEM, ver ese
-   comentario, que sigue igual — ahora empuja al video en vez de a esta
-   imagen). Acá sí hace falta uno nuevo — primera vuelta a 1 columna;
-   David pidió "dos columnas de espacio exactas" entre el MacBook y
-   esta imagen, generalizado a 2 columnas: 2 col-width + 2 gutter
-   sumados al gap normal de 1 gutter que ya pone
-   .project-leo__section-inner, mismo patrón de 2 columnas que ya usan
-   .project-leo__ipad-anim (desde el caption) y
-   .project-leo__testimonial-vertical (desde el screen-caption, en su
-   posición anterior). Segunda vuelta: David pidió 2 columnas MÁS
-   "extra a las actuales" — no reemplazan las 2 ya puestas, se suman,
-   así que quedaron 4 columnas en total de por medio entre el MacBook y
-   esta imagen. Tercera vuelta: se agregó .project-leo__macbook-caption
-   justo antes de esta imagen (ver ese comentario) — ese hueco de 4
-   columnas ya no está vacío, una parte la ocupa el caption. Bajado a 1
-   columna acá (el valor original, de la primera vuelta) — el caption
-   nuevo ya aporta su propia separación visual (2 columnas de ancho +
-   su propio gutter), no hace falta sumar más aire después. Cuarta
-   vuelta: David pidió "3 columnas extra de espacio" entre el caption
-   del MacBook y esta imagen — se suman a la 1 columna ya puesta,
-   quedan 4 en total. */
+   margin-left — historial largo de ajustes cuando este bloque vivía en
+   la primera sección, después de .project-leo__macbook-demo/-caption
+   (pasó de 1 a 2 a 4 columnas de espacio ahí, a pedido de David en
+   varias vueltas). Ya NO aplica: David pidió después "mueve este
+   contenido al final de la última sección" (primero el caption, luego
+   "te faltó mover también esta animación") — este bloque se movió
+   JUNTO con .project-leo__section-caption al final de
+   .project-leo__section-orange--accent, después de
+   .project-leo__banner-caption, en el mismo orden relativo que tenían
+   antes (imagen, caption, pegados entre sí). El margin-left ahora es
+   la "columna de espacio" que pidió David respecto a lo que ya había
+   en esa fila (mismo mecanismo de siempre: 1 columna + 1 gutter, que
+   SE SUMA al gutter del flex `gap`) — .project-leo__section-caption ya
+   NO tiene margin-left propio, esta imagen es la que abre el par. */
 .project-leo__section-image-anim {
   --leo-image-col-width: calc(
     (min(100vw, var(--grid-max-width)) - 2 * var(--grid-margin) - 11 * var(--grid-gutter)) / 12
@@ -507,7 +521,7 @@
   flex-shrink: 0;
   width: calc(10 * var(--leo-image-col-width) + 9 * var(--grid-gutter));
   aspect-ratio: 2200 / 1124;
-  margin-left: calc(4 * var(--leo-image-col-width) + 4 * var(--grid-gutter));
+  margin-left: calc(var(--leo-image-col-width) + var(--grid-gutter));
 }
 
 .project-leo__section-image-frame {
@@ -842,6 +856,14 @@
   flex-shrink: 0;
   width: calc(2 * var(--leo-caption-col-width) + 1 * var(--grid-gutter));
   min-width: 0;
+  /* margin-left: SE FUE de acá — David pidió "dejando una columna de
+     espacio" cuando este bloque se movió a la última sección, pero
+     después agregó .project-leo__section-image-anim justo ANTES de
+     este caption ("te faltó mover también esta animación", mismo
+     orden que tenían en la primera sección) — esa columna de espacio
+     ahora vive en el margin-left de la imagen, no acá; este caption
+     vuelve a ir pegado a su vecino, sin margin propio, igual que antes
+     del primer movimiento. */
   /* margin-right (NO padding-right en .project-leo__section-inner) —
      a pedido de David, "el scroll no se debe cortar en los bordes":
      el padding-right de un contenedor flex con overflow NO se respeta
@@ -885,6 +907,28 @@
   flex-direction: column;
   justify-content: space-between;
   align-self: stretch;
+}
+
+/* Móvil — a pedido de David (revisó esto con el overlay de grilla del
+   sitio, "muévelo... a la última columna"): medido en vivo, el BORDE
+   DERECHO de este bloque ya cae exacto en el margen real de la página
+   en cualquier ancho (69.9px de 70 esperados en desktop, mismo
+   mecanismo en mobile) — no era un problema de posición. El problema
+   real, ya visible con el overlay puesto: el ANCHO (2 columnas de la
+   fórmula de 12 columnas de este layout) se vuelve absurdo en pantallas
+   angostas — a 375px de viewport da ~44px, el texto de "Design system"
+   queda partido en una palabra por línea. --grid-columns nunca baja de
+   12 en todo el sitio a propósito (ver el comentario en
+   css/components.css: así no se rompen los grid-column:X/Y ya
+   ubicados) — por eso achicar el problema ahí no es una opción; se le
+   da a ESTE bloque puntual un ancho propio, cómodo para leer, en vez
+   de la fórmula de columnas que lo aprieta. min(260px, ...) para que
+   nunca sea más ancho que el contenido disponible (100vw menos los dos
+   márgenes) en una pantalla más angosta que 260+2*margen. */
+@media (max-width: 767px) {
+  .project-leo__section-caption {
+    width: min(260px, calc(100vw - 2 * var(--grid-margin)));
+  }
 }
 
 /* Margen de fin de scroll cuando .project-leo__section-caption es el
@@ -1477,9 +1521,10 @@
    tamaño/color/fuente que el resto de captions de esta fila).
 
    Nuevo hijo entre .project-leo__macbook-demo y
-   .project-leo__section-image-anim — esa imagen bajó su margin-left de
-   4 columnas a 1 (ver ese comentario), porque ahora el hueco entre el
-   MacBook y la imagen lo ocupa en parte este caption, no un vacío. */
+   .project-leo__section-image-anim (esta última ya no vive en esta
+   fila, ver el comentario en ese bloque) — este caption pasó a ser el
+   último hijo REAL de la fila, así que ahora lleva el margin-right de
+   fin de scroll. */
 .project-leo__macbook-caption {
   --leo-macbook-caption-col-width: calc(
     (min(100vw, var(--grid-max-width)) - 2 * var(--grid-margin) - 11 * var(--grid-gutter)) / 12
@@ -1488,6 +1533,7 @@
   align-self: flex-end;
   width: calc(2 * var(--leo-macbook-caption-col-width) + 1 * var(--grid-gutter));
   min-width: 0;
+  margin-right: var(--leo-section-edge-offset);
 }
 
 /* Demo de "Angebot anlegen" — último hijo de la segunda sección
@@ -1684,63 +1730,520 @@
   min-width: 0;
 }
 
-/* Sección final — duplicado de la primera (fondo gris #f7f7f8, mismo
-   .project-leo__section-orange) pero SOLO con la animación de la
-   tablet, la del celular y su texto, CENTRADOS — a pedido de David:
-   "duplica esta sección al final pero solo deja en el centro la
-   animación de la tablet y el teléfono con el texto".
+/* Sección final ("Chat Interaction") — duplicado de la primera (fondo
+   gris #f7f7f8, mismo .project-leo__section-orange) pero SOLO con el
+   título, la animación de la tablet, la del celular y su texto.
 
-   Centrado: margen `auto` en el primer hijo (tablet, margin-left) y en
-   el último (texto, margin-right) — reparte el espacio sobrante a los
-   dos lados y, a diferencia de justify-content:center, es seguro con
-   overflow: si el contenido es más ancho que el viewport el auto vale 0
-   y el scroll horizontal sigue llegando al principio (justify-content:
-   center corta el lado izquierdo del scroll, que no se puede alcanzar).
-   `safe center` habría sido lo ideal pero es reciente en Safari.
+   Historia: la primera vuelta la pedía CENTRADA ("duplica esta sección
+   al final pero solo deja en el centro la animación de la tablet y el
+   teléfono con el texto") — se resolvía con margin `auto` en el primer
+   y el último hijo, más un ::after como espaciador de fin de scroll
+   (el margin-right de siempre no podía vivir en el último hijo porque
+   ahí iba el auto). Luego se agregó el título "Chat Interaction" como
+   nuevo primer hijo y el centrado pasó a él.
 
-   Como el margin-right de fin de scroll (--leo-section-edge-offset) ya
-   no puede ir en el último hijo (ahí va el auto), lo hace el ::after:
-   un espaciador vacío al final de la fila. Le resta un gutter porque el
-   `gap` del flex ya pone uno entre el último hijo y él. El padding-left
-   de .project-leo__section-inner (mismo offset) equilibra el lado
-   izquierdo → centrado simétrico.
+   AHORA — "alinea el contenido a la izquierda desde la primera columna
+   y no centrado": se quitan los `auto` y el ::after (ya no hacen
+   falta). Sin esas reglas, cada elemento vuelve a su comportamiento de
+   siempre: .project-leo__phone-caption arranca en la columna 1 (mismo
+   padding-left de .project-leo__section-inner que en la sección
+   blanca), y .project-leo__screen-caption recupera su
+   margin-right:var(--leo-section-edge-offset) normal (ver esa regla
+   más arriba) — vuelve a ser el margen de fin de scroll porque sigue
+   siendo el último hijo real.
 
-   Se conservan los espacios internos del original: la tablet dejaba
-   2 columnas antes (por la imagen del sistema de diseño, que acá no
-   está) — se anula; 1 columna tablet→celular (margin-left del celular,
-   sin tocar) y el texto pegado al celular (gap). */
-/* OJO con el porcentaje: dentro de flex-basis el 100% es el ancho del
-   CONTENIDO del contenedor (Wc = W − padding-left), NO el de la sección
-   (W) como en el padding-left. Usar --leo-section-edge-offset tal cual
-   acá daba un espaciador de 50px en vez de 101.6px a 1503 de ancho (más
-   corto que el padding-left por (W−1440)/2) y descentraba el contenido
-   ~31px a la izquierda — medido en vivo. Como padding-left = offset =
-   max(0, (W−1440)/2) + 70 y Wc = W − offset, despejando: offset =
-   max(70, Wc − 1300). En tokens: max(margen, 100% − ancho-max + 2
-   márgenes). Verificado: W=1503 → 101.4px (= padding-left 101.6). */
-.project-leo__section-orange--centered .project-leo__section-inner::after {
-  content: "";
-  flex: 0 0 calc(
-    max(var(--grid-margin), 100% - var(--grid-max-width) + 2 * var(--grid-margin)) - var(--grid-gutter)
-  );
-}
-
-/* ACTUALIZACIÓN — título "Chat Interaction": ahora el PRIMER hijo de la
-   fila es .project-leo__phone-caption (mismo bloque de título que "Native
-   Leo app" en la sección blanca, 2 columnas, alineado arriba), así que el
-   margin-left:auto del centrado pasó de la tablet al título, y la tablet
-   queda pegada a él (margin-left:0: sólo el gap de 1 gutter, igual que
-   el primer celular tras "Native Leo app"). El grupo título + tablet +
-   celular + texto se centra ENTERO; los espacios entre tablet, celular y
-   texto no cambian. */
-.project-leo__section-orange--centered .project-leo__phone-caption {
-  margin-left: auto;
-}
-
-.project-leo__section-orange--centered .project-leo__ipad-anim {
+   El único override que SÍ sigue haciendo falta es el de
+   .project-leo__ipad-anim: su regla base trae margin-left de 2 columnas
+   (pensada para cuando seguía a la imagen del sistema de diseño, que
+   acá no existe) — se anula a 0 para que quede pegada al título con
+   sólo el gap normal de 1 gutter, igual que el primer celular pegado a
+   "Native Leo app" en la sección blanca. */
+.project-leo__section-orange--chat .project-leo__ipad-anim {
   margin-left: 0;
 }
 
-.project-leo__section-orange--centered .project-leo__screen-caption {
-  margin-right: auto;
+/* Specimen tipográfico de Noto Sans ("Main Typeface", Figma node
+   585:60670 en el archivo Test — mismo patrón que el specimen "Second
+   Typeface" armado antes en el archivo Leo). A pedido de David: "haz
+   este frame en tamaño de 10 columnas. alterna cada cuatro segundos
+   entre Bold, medium y regular, en la esquina inferior derecha cambia
+   el texto indicando que grosor es al mismo tiempo".
+
+   10 columnas de ancho (misma fórmula de siempre). Alto: aspect-ratio
+   2160/1080 (= 2/1, la proporción real del frame de Figma) — un <div>
+   plano no tiene tamaño intrínseco propio (a diferencia de <video>/
+   <img> con width/height en el HTML), así que aspect-ratio sí funciona
+   bien acá sin el workaround de calc() explícito que hace falta en
+   esos otros casos (ver comentarios de .project-leo__testimonial-vertical
+   etc.).
+
+   Todas las medidas internas (posición del pill, tamaño de letra,
+   offsets de las etiquetas) están en cqw — 1cqw = 1% del ancho del
+   PROPIO contenedor (container-type:inline-size acá) — calculadas
+   directo de las coordenadas del frame de Figma (2160px de ancho):
+   valor_cqw = valor_px / 2160 * 100. Como el alto es SIEMPRE la mitad
+   del ancho (aspect-ratio 2/1 fijo), usar cqw (basado en el ancho) para
+   offsets verticales también reproduce las proporciones exactas del
+   diseño a cualquier tamaño real — no hace falta una unidad aparte
+   para alto. */
+.project-leo__typeface-specimen {
+  --leo-specimen-col-width: calc(
+    (min(100vw, var(--grid-max-width)) - 2 * var(--grid-margin) - 11 * var(--grid-gutter)) / 12
+  );
+  container-type: inline-size;
+  position: relative;
+  flex-shrink: 0;
+  width: calc(10 * var(--leo-specimen-col-width) + 9 * var(--grid-gutter));
+  aspect-ratio: 2160 / 1080;
+  background-color: #fffefd;
+  overflow: hidden;
+}
+
+/* Pill "Main Typeface" — fijo, no cicla. */
+.project-leo__typeface-pill {
+  position: absolute;
+  top: 1.759cqw;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 3.981cqw;
+  padding-inline: 2.546cqw;
+  border: 0.231cqw solid #140a05;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.project-leo__typeface-pill span {
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 600;
+  font-size: 1.413cqw;
+  color: #140a05;
+}
+
+/* Alfabeto: 3 bloques apilados (Bold/Medium/Regular), mismo texto,
+   solo cambia font-weight — ciclan con el mismo mecanismo de "corte
+   duro" ya establecido en esta página (ver leo-screen-crossfade en
+   .project-leo__screen-anim-frame: mismo keyframes, step-end,
+   fill-mode backwards, z-index ascendente, animation-delay escalonado
+   — acá 3 fases de 4s en vez de 3 de 3s, mismo motivo: "no quiero que
+   exista parpadeos de milisegundos", step-end en vez de ease evita la
+   interpolación de opacity en el instante del corte). */
+/* SEGUNDA VUELTA — a pedido de David: "quiero modificar el efecto,
+   casi no me gusta", con un efecto que él mismo especificó (ver el
+   <script id="type-anim-config"> en el HTML). Reemplaza por completo
+   el mecanismo anterior (3 copias del texto apiladas, crossfade de
+   opacity por CSS puro) — ahora hay UN solo bloque de texto real
+   (data-type-anim) cuyo PESO se interpola de verdad vía
+   font-variation-settings (fuente variable, ver el <link> de Google
+   Fonts con wght@100..900), animado por JS con la Web Animations API,
+   no CSS @keyframes. Las reglas de acá son solo la parte visual que
+   necesita el script: posición del bloque, tipografía base, y la
+   máscara de cada línea para la animación de entrada.
+
+   [data-type-anim]: font-variation-settings arranca en 'wght' 500
+   (Medium, el primer estado del loop) — el script pisa este valor
+   inline apenas corre, esto es solo el fallback si JS no corre.
+   .ta-mask/.ta-line: nombres tal cual los genera el script (crea un
+   <span class="ta-mask"> por cada <p> hijo y le mete la clase
+   "ta-line" al propio <p>) — overflow:hidden en la máscara es lo que
+   recorta el texto mientras "entra" deslizándose desde abajo
+   (translateY(110%) -> 0, ver el script). */
+.project-leo__typeface-alphabet {
+  position: absolute;
+  top: 6.898cqw;
+  left: 0;
+  right: 0;
+  text-align: center;
+  font-family: "Noto Sans", sans-serif;
+  font-size: 5.926cqw;
+  line-height: 1.1875;
+  color: #140a05;
+  font-variation-settings: "wght" 500, "wdth" 100;
+}
+
+.project-leo__typeface-alphabet p {
+  margin: 0;
+}
+
+/* padding-bottom + margin-bottom negativo del mismo valor: le da a la
+   máscara un poco más de alto ABAJO (donde overflow:hidden estaba
+   recortando los descendentes de "g"/"j" — line-height:1.1875 es más
+   angosto que el alto real que pinta Noto Sans para esas letras) sin
+   mover a la línea siguiente — el margin negativo cancela el padding
+   para el flujo del resto del bloque, así el espaciado entre líneas
+   (calibrado contra Figma) no cambia. David lo marcó en vivo: "la g y
+   la j están cortadas... en la parte de abajo". */
+.project-leo__typeface-alphabet .ta-mask {
+  display: block;
+  overflow: hidden;
+  padding-bottom: 0.2em;
+  margin-bottom: -0.2em;
+}
+
+.project-leo__typeface-alphabet .ta-line {
+  display: block;
+  will-change: transform, font-variation-settings;
+}
+
+/* "Noto Sans" — fijo, no cicla (la familia no cambia, solo el peso). */
+.project-leo__typeface-family {
+  position: absolute;
+  left: 3.704cqw;
+  bottom: 2.546cqw;
+  margin: 0;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 500;
+  font-size: 1.413cqw;
+  color: #140a05;
+}
+
+/* Rótulo de peso, esquina inferior derecha — UN solo <span>
+   ([data-type-anim-label]), el script le cambia el textContent
+   ("Medium"/"Bold") a mitad de cada transición del loop. */
+.project-leo__typeface-label {
+  position: absolute;
+  right: 2.546cqw;
+  bottom: 2.546cqw;
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 500;
+  font-size: 1.413cqw;
+  color: #140a05;
+  white-space: nowrap;
+}
+
+/* Sin movimiento: el propio script detecta prefers-reduced-motion y
+   corta ahí mismo (ni entrada ni loop, líneas nunca se desplazan) —
+   deja el bloque quieto en Medium (el primer estado), mismo criterio
+   que el resto de animaciones en loop de esta página. Nada que hacer
+   acá en CSS; documentado para que quede claro que no es un olvido. */
+
+/* Texto "I chose Noto Sans because..." — 2 columnas, mismo patrón que
+   .project-leo__screen-caption (fórmula de ancho idéntica, el texto en
+   sí reusa .project-leo__section-caption-body sin declarar nada nuevo).
+   Sin align-self ni margin-right: no es el último hijo de la fila
+   (.project-leo__color-positions sigue después), y el align-items:
+   flex-start del padre ya lo deja arriba, a la misma altura que arranca
+   el specimen vecino — no hace falta pisarlo. */
+.project-leo__type-caption {
+  --leo-type-caption-col-width: calc(
+    (min(100vw, var(--grid-max-width)) - 2 * var(--grid-margin) - 11 * var(--grid-gutter)) / 12
+  );
+  flex-shrink: 0;
+  width: calc(2 * var(--leo-type-caption-col-width) + 1 * var(--grid-gutter));
+  min-width: 0;
+}
+
+/* .project-leo__section-caption-body trae margin-top:var(--space-8) de
+   fábrica — pensado para cuando hay un título arriba (ver
+   .project-leo__section-caption-title) y necesita ese aire. Acá el
+   párrafo es el único hijo, sin título, así que ese margen solo
+   empujaba el texto hacia abajo del top real del bloque — a pedido de
+   David, se saca sin tocar la clase compartida (no afecta a
+   .project-leo__screen-caption ni a los demás usos). */
+.project-leo__type-caption .project-leo__section-caption-body {
+  margin-top: 0;
+}
+
+/* "Color Positions" — specimen de la paleta de colores por oficio
+   (Figma node 586:60775, archivo Test), 1080×1080 en el original: pill
+   + 8 cápsulas en zigzag, cada una con su ícono (imagen real, ver el
+   comentario junto al HTML) y su color sólido. A pedido de David: "deja
+   una columna de por medio y coloca este frame" — 1 columna extra de
+   margin-left, que SE SUMA al gutter del flex `gap` (mismo mecanismo de
+   siempre en esta página, ver .project-leo__problem).
+
+   Cuadrado (aspect-ratio 1/1) del mismo ALTO que
+   .project-leo__typeface-specimen — David no dio un ancho en columnas
+   para este frame (a diferencia del specimen tipográfico, que sí pidió
+   "10 columnas"), así que se igualó el alto al de su vecino para que la
+   fila quede prolija; el ancho sale solo del aspect-ratio 1:1. Misma
+   fórmula de --leo-*-col-width que el specimen tipográfico (repetida
+   acá porque solo depende de tokens globales, da el mismo resultado
+   sin necesitar referenciar la otra regla).
+
+   cqw: mismo criterio que el specimen tipográfico — 1cqw = 1% del
+   ancho de ESTE contenedor — pero con otra escala (px/1080 en vez de
+   px/2160, porque el frame de Figma de referencia acá es 1080 de
+   ancho, no 2160). */
+.project-leo__color-positions {
+  --leo-cp-col-width: calc(
+    (min(100vw, var(--grid-max-width)) - 2 * var(--grid-margin) - 11 * var(--grid-gutter)) / 12
+  );
+  container-type: inline-size;
+  position: relative;
+  flex-shrink: 0;
+  height: calc((10 * var(--leo-cp-col-width) + 9 * var(--grid-gutter)) / 2);
+  aspect-ratio: 1 / 1;
+  background-color: #fffefd;
+  overflow: hidden;
+  margin-left: calc(var(--leo-cp-col-width) + var(--grid-gutter));
+  /* margin-right: var(--leo-section-edge-offset) — SE FUE de acá. Este
+     bloque dejó de ser el último hijo real de la fila cuando se agregó
+     .project-leo__color-caption después ("Clear construction
+     timeline."); el margen de fin de scroll viaja con quien sea el
+     último hijo en cada momento (mismo mecanismo de siempre, ver el
+     comentario en .project-leo__screen-caption) — ahora vive en ese
+     bloque nuevo. */
+}
+
+/* Pill "Color Positions" — mismo look que .project-leo__typeface-pill
+   (contorno negro, sin relleno) pero con sus propios valores en cqw:
+   no se puede reusar esa clase tal cual porque está calibrada contra
+   un frame de referencia de 2160px de ancho, y este es de 1080px — el
+   mismo offset en px da un % de ancho (cqw) distinto en cada uno. */
+.project-leo__color-positions-pill {
+  position: absolute;
+  top: 3.519cqw;
+  left: 50%;
+  transform: translateX(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 7.963cqw;
+  padding-inline: 4.769cqw;
+  border: 0.463cqw solid #140a05;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.project-leo__color-positions-pill span {
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 600;
+  font-size: 2.826cqw;
+  color: #140a05;
+}
+
+/* Las 8 cápsulas — tamaño y forma iguales en todas, solo cambia la
+   posición (zigzag, tal cual las coordenadas x/y de cada una en Figma —
+   no es una alternancia estricta izquierda/derecha cada fila, quedó
+   como el diseño original) y el color de fondo. El padding-left interno
+   es UN valor único para las 8, aunque en Figma el ícono de cada fila
+   arranca a un x ligeramente distinto (125–153px de 1080) — la
+   diferencia es mínima y no se nota a simple vista; se prefirió un
+   valor parejo antes que complicar cada fila con su propio padding.
+   overflow: hidden por las dudas (el padding ya alcanza para no pisar
+   el borde redondeado, pero como red de seguridad).
+
+   A pedido de David: "haz todas las barras proporcionalmente más
+   grandes". Tamaño base de Figma era 43.611 × 8.148cqw — se escaló
+   TODO (ancho, alto, ícono, texto, gap, padding-left) ×1.15 en vez de
+   subir un valor suelto, para que la proporción entre elementos se
+   mantenga igual a la de Figma. Las posiciones left/top de cada fila
+   también se recalcularon: no alcanza con re-escalar left/top tal
+   cual (eso las corre todas hacia abajo-derecha, descentrando el
+   grupo) — se escaló cada fila respecto al centro geométrico del
+   grupo de 8 filas (mismo centroide, ~50/50cqw, que ya tenían antes),
+   así el conjunto crece parejo desde el centro y no se pisa con la
+   cápsula "Color Positions" de arriba ni se sale del contenedor. */
+.project-leo__color-row {
+  position: absolute;
+  display: flex;
+  align-items: center;
+  gap: 1.38cqw;
+  width: 50.153cqw;
+  height: 9.37cqw;
+  padding-left: 14.479cqw;
+  border-radius: 999px;
+  overflow: hidden;
+  /* Entrada desde la derecha (traducida de un preset Lottie que pasó
+     David: "Helper – Barras", 10 cápsulas entrando escalonadas con un
+     pasón/rebote suave antes de asentarse) — a pedido de David: "esta
+     animación sucede en viewport", pasó de animation:CSS autoplay-en-
+     carga a disparada por scroll, igual que .project-leo__typeface-alphabet
+     (ver el script con IntersectionObserver antes de js/main.js). El
+     transform/keyframes ya no viven acá: el JS los arma con Web
+     Animations API recién cuando este bloque entra en el viewport,
+     mismo mecanismo que el specimen tipográfico. --leo-row-delay es SOLO
+     el dato (en ms, sin unidad) que el JS lee por fila — el Lottie
+     escalona las 10 barras de ABAJO hacia ARRIBA (Bar01/abajo arranca
+     primero), mismo criterio con las 8 filas reales (fila 8, la de más
+     abajo, entra primera, delay 0). Sin fallback de
+     prefers-reduced-motion acá: el propio script lo detecta y no mueve
+     nada (mismo criterio que el specimen tipográfico). */
+}
+
+.project-leo__color-row img {
+  display: block;
+  flex-shrink: 0;
+  width: 8.518cqw;
+  height: 8.518cqw;
+  border-radius: 50%;
+}
+
+.project-leo__color-row span {
+  font-family: "Noto Sans", sans-serif;
+  font-weight: 700;
+  font-size: 3.099cqw;
+  color: #fff;
+  white-space: nowrap;
+}
+
+/* A pedido de David: la fila de arriba (--1) tiene que alinear su borde
+   superior con la línea donde arranca el texto del specimen tipográfico
+   vecino ("ABCDEFGHIJKLM..."). Primer intento (+0.618cqw) usaba el top
+   de la CAJA de línea del texto (incluye el espacio extra de
+   line-height:1.1875 arriba de la letra) — David marcó en vivo que
+   todavía no coincidía, faltaba bajar más. La caja de línea no es lo
+   mismo que el trazo visible: se remidió con canvas.measureText() sobre
+   una "M" (mayúscula, sin descendente) para obtener el tope REAL de la
+   tinta (cap-height), ubicando antes la línea de base con un span
+   auxiliar de altura 0 y vertical-align:baseline. Esa tinta arranca a
+   75.49px del techo del specimen (16.666cqw en este contenedor de
+   453px), bastante más abajo que el top de la caja de línea (62.49px /
+   13.796cqw) — de ahí el ajuste adicional de +2.868cqw sobre las 8
+   filas, mismo criterio de antes (delta parejo para las 8, mantiene el
+   zigzag y el tamaño). */
+.project-leo__color-row--1 {
+  left: 31.471cqw;
+  top: 16.664cqw;
+  background-color: #33bbcc;
+  --leo-row-delay: 700;
+}
+
+.project-leo__color-row--2 {
+  left: 18.48cqw;
+  top: 26.034cqw;
+  background-color: #9d33cc;
+  --leo-row-delay: 600;
+}
+
+.project-leo__color-row--3 {
+  left: 31.471cqw;
+  top: 35.404cqw;
+  background-color: #198070;
+  --leo-row-delay: 500;
+}
+
+.project-leo__color-row--4 {
+  left: 18.373cqw;
+  top: 44.667cqw;
+  background-color: #cacc33;
+  --leo-row-delay: 400;
+}
+
+.project-leo__color-row--5 {
+  left: 31.471cqw;
+  top: 54.039cqw;
+  background-color: #cc9433;
+  --leo-row-delay: 300;
+}
+
+.project-leo__color-row--6 {
+  left: 31.471cqw;
+  top: 63.409cqw;
+  background-color: #6633cc;
+  --leo-row-delay: 200;
+}
+
+.project-leo__color-row--7 {
+  left: 18.373cqw;
+  top: 72.779cqw;
+  background-color: #852100;
+  --leo-row-delay: 100;
+}
+
+.project-leo__color-row--8 {
+  left: 18.373cqw;
+  top: 82.042cqw;
+  background-color: #338019;
+  --leo-row-delay: 0;
+}
+
+/* Texto "Clear construction timeline." — a pedido de David: "agrega en
+   las siguientes dos columnas esta frase alineado a la parte inferior".
+   Mismo patrón que .project-leo__screen-caption y .project-leo__type-caption
+   (misma fórmula de ancho de 2 columnas, texto reusando
+   .project-leo__section-caption-body). align-self:flex-end para la
+   alineación inferior pedida (a diferencia de .project-leo__type-caption,
+   que quedó arriba). Sin margin-left extra: pegado a .project-leo__color-positions,
+   separado solo por el gap normal del flex (1 gutter) — David no pidió
+   una columna de por medio esta vez. Es AHORA el último hijo real de la
+   fila, así que hereda el margin-right de fin de scroll (ver el
+   comentario que se sacó de .project-leo__color-positions). */
+.project-leo__color-caption {
+  --leo-color-caption-col-width: calc(
+    (min(100vw, var(--grid-max-width)) - 2 * var(--grid-margin) - 11 * var(--grid-gutter)) / 12
+  );
+  flex-shrink: 0;
+  align-self: flex-end;
+  width: calc(2 * var(--leo-color-caption-col-width) + 1 * var(--grid-gutter));
+  min-width: 0;
+  /* margin-right: var(--leo-section-edge-offset) — SE FUE de acá, ver el
+     mismo motivo en .project-leo__color-positions más arriba: dejó de
+     ser el último hijo cuando se agregó .project-leo__banner-photo
+     después. */
+}
+
+/* Mismo motivo que .project-leo__type-caption: un solo párrafo, sin
+   título arriba, no necesita el margin-top:var(--space-8) de fábrica de
+   .project-leo__section-caption-body. */
+.project-leo__color-caption .project-leo__section-caption-body {
+  margin-top: 0;
+}
+
+/* Foto del banner de Leo en la Baumesse Bad Dürkheim 2022 (Figma node
+   606:49202, archivo Test, capa de imagen "Leo Event") — a pedido de
+   David: "deja una columna de por medio y coloca esta imagen", con la
+   altura "igual de alto proporcionalmente a este contenido" (el resto
+   de la fila: specimen tipográfico / Color Positions, ambos 453px de
+   alto en este viewport). Mismo mecanismo que .project-leo__color-positions
+   para igualar el alto a su vecino (misma fórmula de --leo-*-col-width,
+   repetida acá porque solo depende de tokens globales) — pero acá el
+   ancho NO sale de aspect-ratio 1:1 sino del aspect-ratio real de la
+   foto (2084×1342 — ver el comentario junto al <img> en el HTML sobre
+   por qué se re-exportó en alta resolución), así no se deforma.
+   object-fit:cover + width:100% como red de seguridad si el archivo
+   real difiere un poco del ratio declarado.
+
+   La franja oscura fina que se ve en el borde inferior de la foto:
+   David preguntó si era un artefacto — se verificó a nivel de píxel
+   (canvas.getImageData) contra el PNG original exportado de Figma y
+   contra la fuente en alta resolución (4095×2113): está presente en
+   ambas por igual, es contenido real de la foto (la estructura del
+   techo se oscurece hacia ese borde), no algo que haya introducido la
+   compresión a JPG. Queda tal cual, sin recortar.
+
+   /* margin-right: var(--leo-section-edge-offset) — SE FUE de acá, ver
+      el mismo motivo en .project-leo__color-positions: dejó de ser el
+      último hijo cuando se agregó .project-leo__banner-caption
+      después. */
+.project-leo__banner-photo {
+  --leo-banner-col-width: calc(
+    (min(100vw, var(--grid-max-width)) - 2 * var(--grid-margin) - 11 * var(--grid-gutter)) / 12
+  );
+  display: block;
+  flex-shrink: 0;
+  height: calc((10 * var(--leo-banner-col-width) + 9 * var(--grid-gutter)) / 2);
+  aspect-ratio: 2084 / 1341;
+  width: auto;
+  object-fit: cover;
+  margin-left: calc(var(--leo-banner-col-width) + var(--grid-gutter));
+}
+
+/* Texto "Hanging banners: Marketing event" — a pedido de David: "agrega
+   en las siguientes 2 columnas alineado en la parte superior esta
+   frase". Mismo patrón que .project-leo__type-caption (2 columnas,
+   arriba — sin align-self, el flex-start del padre ya lo deja ahí) en
+   vez de .project-leo__color-caption (que va abajo). Sin margin-left
+   extra: pegado a la foto, separado solo por el gap normal del flex (1
+   gutter) — David no pidió una columna de por medio esta vez.
+   margin-right: SE FUE de acá — dejó de ser el último hijo real cuando
+   .project-leo__section-caption se movió a esta fila después (ver el
+   comentario en ese bloque más abajo), mismo motivo de siempre. */
+.project-leo__banner-caption {
+  --leo-banner-caption-col-width: calc(
+    (min(100vw, var(--grid-max-width)) - 2 * var(--grid-margin) - 11 * var(--grid-gutter)) / 12
+  );
+  flex-shrink: 0;
+  width: calc(2 * var(--leo-banner-caption-col-width) + 1 * var(--grid-gutter));
+  min-width: 0;
+}
+
+/* Mismo motivo que .project-leo__type-caption: un solo párrafo, sin
+   título arriba, no necesita el margin-top:var(--space-8) de fábrica de
+   .project-leo__section-caption-body. */
+.project-leo__banner-caption .project-leo__section-caption-body {
+  margin-top: 0;
 }
