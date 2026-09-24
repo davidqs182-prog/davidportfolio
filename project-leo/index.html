@@ -242,6 +242,19 @@
              que no soporta controlsList. Firefox no soporta ninguna de
              las dos cosas — ahí seguirían apareciendo estos botones,
              sin forma de ocultarlos. -->
+        <!-- data-src (no src) en los <source> + preload="none" — a
+             pedido de David, mismo lazy-load que ya usa el resto del
+             sitio (ver "Lazy-load de videos de proyecto" en js/main.js):
+             sin esto, el navegador intentaba descargar y arrancar este
+             video apenas cargaba la página, sin importar si el usuario
+             había scrolleado hasta acá — compitiendo por ancho de banda
+             con los otros videos de la fila desde el segundo 0. El
+             script genérico ya lo agarra solo (busca CUALQUIER <video>
+             con source[data-src], sin necesitar tocar el JS), y recién
+             copia data-src → src + hace .play() cuando la fila entra en
+             pantalla. Sin autoplay acá (ese script llama .play() él
+             mismo una vez cargado; el atributo HTML quedaría inerte
+             sin src que reproducir de entrada). -->
         <video
           class="project-leo__testimonial-vertical"
           poster="../assets/animations/leo-testimonial-vertical/leo-testimonial-vertical-poster.jpg"
@@ -250,12 +263,12 @@
           controls
           controlsList="nofullscreen nodownload noremoteplayback noplaybackrate"
           disablePictureInPicture
-          autoplay
           muted
           loop
           playsinline
+          preload="none"
         >
-          <source src="../assets/animations/leo-testimonial-vertical/leo-testimonial-vertical.webm" type='video/webm; codecs="vp9, opus"'>
+          <source data-src="../assets/animations/leo-testimonial-vertical/leo-testimonial-vertical.webm" type='video/webm; codecs="vp9, opus"'>
           <!-- HEVC — a pedido de David: el MP4 de abajo (H.264, CRF10
                del preset V0.1 de este sitio, pensado para capturas de
                UI muy nítidas) pesaba 55MB; Safari/iOS no soporta WebM
@@ -266,21 +279,25 @@
                por hardware en iOS), acá sin alpha (video opaco, no
                hace falta premultiplicar). Re-encodado a 8.3MB (CRF20,
                libx265) — de tamaño similar al WebM, ya no al H.264. -->
-          <source src="../assets/animations/leo-testimonial-vertical/leo-testimonial-vertical-hevc.mp4" type='video/mp4; codecs="hvc1"'>
-          <source src="../assets/animations/leo-testimonial-vertical/leo-testimonial-vertical.mp4" type="video/mp4">
+          <source data-src="../assets/animations/leo-testimonial-vertical/leo-testimonial-vertical-hevc.mp4" type='video/mp4; codecs="hvc1"'>
+          <source data-src="../assets/animations/leo-testimonial-vertical/leo-testimonial-vertical.mp4" type="video/mp4">
         </video>
+        <!-- data-src + preload="none" — a pedido de David, mismo
+             lazy-load genérico que el resto del sitio (ver el
+             comentario completo en .project-leo__testimonial-vertical
+             más arriba). -->
         <video
           class="project-leo__macbook-demo"
           poster="../assets/animations/leo-macbook-demo/leo-macbook-demo-poster.jpg"
           width="1788"
           height="1080"
-          autoplay
           muted
           loop
           playsinline
+          preload="none"
         >
-          <source src="../assets/animations/leo-macbook-demo/leo-macbook-demo.webm" type='video/webm; codecs="vp9"'>
-          <source src="../assets/animations/leo-macbook-demo/leo-macbook-demo.mp4" type="video/mp4">
+          <source data-src="../assets/animations/leo-macbook-demo/leo-macbook-demo.webm" type='video/webm; codecs="vp9"'>
+          <source data-src="../assets/animations/leo-macbook-demo/leo-macbook-demo.mp4" type="video/mp4">
         </video>
         <div class="project-leo__macbook-caption">
           <p class="project-leo__section-caption-body">All communication, centralized in one view — nothing lost between clients, contractors, and subcontractors.</p>
@@ -434,6 +451,9 @@
         <div class="project-leo__testimonial-caption">
           <p class="project-leo__section-caption-body">Jaqueline Krott, Strack GmbH</p>
         </div>
+        <!-- data-src + preload="none" — mismo motivo que en
+             .project-leo__testimonial-vertical más arriba (ver ese
+             comentario). -->
         <video
           class="project-leo__testimonial-vertical"
           poster="../assets/animations/leo-testimonial-vertical-2/leo-testimonial-vertical-2-poster.jpg"
@@ -442,27 +462,31 @@
           controls
           controlsList="nofullscreen nodownload noremoteplayback noplaybackrate"
           disablePictureInPicture
-          autoplay
           muted
           loop
           playsinline
+          preload="none"
         >
-          <source src="../assets/animations/leo-testimonial-vertical-2/leo-testimonial-vertical-2.webm" type='video/webm; codecs="vp9, opus"'>
+          <source data-src="../assets/animations/leo-testimonial-vertical-2/leo-testimonial-vertical-2.webm" type='video/webm; codecs="vp9, opus"'>
           <!-- HEVC para Safari/iOS — mismo motivo que en
                .project-leo__testimonial-vertical más arriba (ver ese
                comentario). Re-encodado de 43MB a 4.3MB. -->
-          <source src="../assets/animations/leo-testimonial-vertical-2/leo-testimonial-vertical-2-hevc.mp4" type='video/mp4; codecs="hvc1"'>
-          <source src="../assets/animations/leo-testimonial-vertical-2/leo-testimonial-vertical-2.mp4" type="video/mp4">
+          <source data-src="../assets/animations/leo-testimonial-vertical-2/leo-testimonial-vertical-2-hevc.mp4" type='video/mp4; codecs="hvc1"'>
+          <source data-src="../assets/animations/leo-testimonial-vertical-2/leo-testimonial-vertical-2.mp4" type="video/mp4">
         </video>
+        <!-- data-src + preload="none" — a pedido de David, mismo
+             lazy-load genérico que el resto del sitio (ver el
+             comentario completo en .project-leo__testimonial-vertical
+             más arriba). -->
         <video
           class="project-leo__offer-demo"
           poster="../assets/animations/leo-offer-create/leo-offer-create-poster.png"
           width="1484"
           height="1138"
-          autoplay
           muted
           loop
           playsinline
+          preload="none"
         >
           <!-- Orden importante: 1) HEVC+alpha para Safari / iOS (Chrome y
                Firefox lo saltean porque no reconocen "hvc1" pelado),
@@ -471,9 +495,9 @@
                primero, Safari lo elegiría (reproduce VP9) pero sin la
                transparencia: esquinas negras. Ver el README de
                assets/animations/leo-offer-create/. -->
-          <source src="../assets/animations/leo-offer-create/leo-offer-create-alpha.mp4" type='video/mp4; codecs="hvc1"'>
-          <source src="../assets/animations/leo-offer-create/leo-offer-create.webm" type='video/webm; codecs="vp9"'>
-          <source src="../assets/animations/leo-offer-create/leo-offer-create.mp4" type="video/mp4">
+          <source data-src="../assets/animations/leo-offer-create/leo-offer-create-alpha.mp4" type='video/mp4; codecs="hvc1"'>
+          <source data-src="../assets/animations/leo-offer-create/leo-offer-create.webm" type='video/webm; codecs="vp9"'>
+          <source data-src="../assets/animations/leo-offer-create/leo-offer-create.mp4" type="video/mp4">
         </video>
         <div class="project-leo__offer-caption">
           <p class="project-leo__section-caption-body">Cleaner forms with structured steps, making it effortless to create a quote or a new project.</p>
