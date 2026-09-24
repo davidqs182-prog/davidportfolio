@@ -191,20 +191,39 @@
     (frameCbs[n] = frameCbs[n] || []).push(cb);
   }
 
-  // Precarga secuencial del resto (uno tras otro, sin 121 requests de
-  // golpe). El scroll-scrub puede pedir cualquier frame antes de que la
-  // cola llegue ahí — para eso está ensureFrame().
+  // Precarga del resto — a pedido de David: "en iOS la animación se pega
+  // un poco algunas veces". Causa real: esto era estrictamente secuencial
+  // (un frame a la vez, esperaba el onload del anterior antes de pedir el
+  // siguiente) — a 30fps hace falta un frame nuevo cada 33ms, pero cada
+  // request (sobre todo en datos móviles, con más latencia por el
+  // round-trip) tarda más que eso, así que la precarga se quedaba atrás
+  // del playback real. Cuando el scroll-scrub alcanzaba un frame que
+  // todavía no había terminado de bajar, tick() (ver más abajo) se queda
+  // esperando ese frame puntual — eso es el "se pega".
+  //
+  // Ahora son PRELOAD_CONCURRENCY "carriles" en paralelo (mismo patrón
+  // que un pool de workers): cada uno pide un frame, y apenas termina
+  // (cargó o falló) toma el siguiente número libre de la cola compartida
+  // (`next`), en vez de esperar a que TODOS los anteriores hayan
+  // terminado uno por uno. Con varios navegadores permitiendo bastantes
+  // conexiones concurrentes por dominio, esto llena el buffer de frames
+  // listos mucho más rápido, dándole más margen al playback antes de
+  // alcanzar un frame sin cargar.
+  var PRELOAD_CONCURRENCY = 6;
+
   function preloadRest(from) {
-    if (from >= FRAME_COUNT) return;
-    var im = loadFrame(from);
-    var next = function () {
-      preloadRest(from + 1);
-    };
-    if (im.complete) {
-      next();
-    } else {
-      (frameCbs[from] = frameCbs[from] || []).push(next);
+    var next = from;
+    function pump() {
+      if (next >= FRAME_COUNT) return;
+      var n = next++;
+      var im = loadFrame(n);
+      if (im.complete) {
+        pump();
+      } else {
+        (frameCbs[n] = frameCbs[n] || []).push(pump);
+      }
     }
+    for (var i = 0; i < PRELOAD_CONCURRENCY; i++) pump();
   }
 
   // readyState 4 = HAVE_ENOUGH_DATA — por si el navegador ya tenía el
