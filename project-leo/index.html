@@ -256,6 +256,17 @@
           playsinline
         >
           <source src="../assets/animations/leo-testimonial-vertical/leo-testimonial-vertical.webm" type='video/webm; codecs="vp9, opus"'>
+          <!-- HEVC — a pedido de David: el MP4 de abajo (H.264, CRF10
+               del preset V0.1 de este sitio, pensado para capturas de
+               UI muy nítidas) pesaba 55MB; Safari/iOS no soporta WebM
+               en absoluto así que TODO visitante de iPhone caía en ese
+               MP4 de 55MB tratando de autoplay — coincide con "el video
+               no arranca" que David reportó, solo en iOS. Mismo códec
+               que ya usa .project-leo__offer-demo (hvc1, decodificado
+               por hardware en iOS), acá sin alpha (video opaco, no
+               hace falta premultiplicar). Re-encodado a 8.3MB (CRF20,
+               libx265) — de tamaño similar al WebM, ya no al H.264. -->
+          <source src="../assets/animations/leo-testimonial-vertical/leo-testimonial-vertical-hevc.mp4" type='video/mp4; codecs="hvc1"'>
           <source src="../assets/animations/leo-testimonial-vertical/leo-testimonial-vertical.mp4" type="video/mp4">
         </video>
         <video
@@ -437,6 +448,10 @@
           playsinline
         >
           <source src="../assets/animations/leo-testimonial-vertical-2/leo-testimonial-vertical-2.webm" type='video/webm; codecs="vp9, opus"'>
+          <!-- HEVC para Safari/iOS — mismo motivo que en
+               .project-leo__testimonial-vertical más arriba (ver ese
+               comentario). Re-encodado de 43MB a 4.3MB. -->
+          <source src="../assets/animations/leo-testimonial-vertical-2/leo-testimonial-vertical-2-hevc.mp4" type='video/mp4; codecs="hvc1"'>
           <source src="../assets/animations/leo-testimonial-vertical-2/leo-testimonial-vertical-2.mp4" type="video/mp4">
         </video>
         <video

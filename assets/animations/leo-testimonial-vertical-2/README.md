@@ -29,3 +29,21 @@ el primer testimonio: CRF 10 infla metraje con mucho detalle fino);
 WebM 4.5MB, el que casi todos los navegadores usan. Si importa el peso
 del MP4 de respaldo, hay que subir el CRF a propósito (no se hizo sin
 preguntar).
+
+## HEVC para Safari/iOS (2026-09-24)
+
+Mismo problema y misma solución que `leo-testimonial-vertical` (ver ese
+README para el detalle completo): David reportó que el video no
+arrancaba en iOS — causa raíz, Safari/iOS cae en el MP4 de 43MB porque
+no soporta WebM, y esa descarga se corta en silencio. Se agregó un
+`<source>` HEVC (`hvc1`, `libx265`, sin `hevc_videotoolbox` porque este
+encode se hizo en Windows) entre el WebM y el H.264:
+
+```bash
+ffmpeg -i leo-testimonial-vertical-2.mp4 \
+  -c:v libx265 -tag:v hvc1 -crf 20 -preset slow -pix_fmt yuv420p \
+  -c:a aac -b:a 128k -movflags +faststart \
+  leo-testimonial-vertical-2-hevc.mp4
+```
+
+Resultado: **4.3MB** (vs. 43MB del H.264) — Main profile, level 4.0.

@@ -54,3 +54,32 @@ cuenta). `preload="metadata"` (no `"auto"`) ya evita que el archivo
 pesado se descargue completo apenas carga la página — recién se baja del
 todo cuando el usuario le da play, mismo criterio que el video de
 LinkedIn.
+
+## HEVC para Safari/iOS (2026-09-24)
+
+David reportó que este video "no arranca" en iOS, y funciona bien en
+Windows — el peso del MP4 de respaldo (53MB, ver arriba) era justo la
+causa que había quedado anotada sin resolver: Safari/iOS no soporta
+WebM en absoluto, así que todo visitante de iPhone caía directo en ese
+MP4 de 53-55MB intentando autoplay, y la carga se cortaba en silencio
+(sin error visible) antes de completarse.
+
+Solución: agregar un tercer `<source>` en HEVC (códec `hvc1`, mismo que
+ya usa `leo-offer-create` para su alpha — acá sin alpha, es video
+opaco), entre el WebM y el H.264, para que Safari/iOS lo tome a él en
+vez de caer en el H.264 pesado. Re-encodado con `libx265` (no
+`hevc_videotoolbox` — ese es exclusivo de macOS, este encode se hizo en
+Windows) a un CRF más razonable para metraje real (no UI):
+
+```bash
+ffmpeg -i leo-testimonial-vertical.mp4 \
+  -c:v libx265 -tag:v hvc1 -crf 20 -preset slow -pix_fmt yuv420p \
+  -c:a aac -b:a 128k -movflags +faststart \
+  leo-testimonial-vertical-hevc.mp4
+```
+
+Resultado: **8.3MB** (vs. 55MB del H.264) — Main profile, level 4.0,
+sin el problema de nivel que tuvo el H.264 en otros videos de este
+sitio. El WebM (7.3MB) sigue siendo el que ve la mayoría de
+navegadores; el H.264 de 55MB queda como último respaldo, ya no en la
+ruta de iOS.
