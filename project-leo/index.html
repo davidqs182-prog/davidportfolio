@@ -21,7 +21,22 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Leo — David Quirós</title>
+  <meta name="description" content="Leo — a web app for managing construction and renovation projects end to end, connecting clients, contractors, and subcontractors in real time. A case study by David Quirós.">
   <link rel="canonical" href="https://pixel-personas.com/project-leo/">
+  <!-- og:image sí lleva imagen acá (a diferencia de las otras páginas):
+       ya existe una portada real de Leo a 1300×671 (~1.94:1, cerca del
+       1.91:1 que pide el estándar de OG) — ver .project-card__image en
+       Home, mismo archivo. -->
+  <meta property="og:title" content="Leo — David Quirós">
+  <meta property="og:description" content="A web app for managing construction and renovation projects end to end, connecting clients, contractors, and subcontractors in real time.">
+  <meta property="og:url" content="https://pixel-personas.com/project-leo/">
+  <meta property="og:type" content="website">
+  <meta property="og:image" content="https://pixel-personas.com/assets/images/work-leo-cover-v5.png">
+  <meta property="og:site_name" content="David Quirós — Product Designer">
+  <meta name="twitter:card" content="summary_large_image">
+  <meta name="twitter:title" content="Leo — David Quirós">
+  <meta name="twitter:description" content="A web app for managing construction and renovation projects end to end, connecting clients, contractors, and subcontractors in real time.">
+  <meta name="twitter:image" content="https://pixel-personas.com/assets/images/work-leo-cover-v5.png">
   <link rel="icon" type="image/png" href="../assets/Logo/favicon.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&family=Noto+Sans:wght@100..900&display=swap" rel="stylesheet">
@@ -122,8 +137,15 @@
     <!-- Mismo alto que .project-hero en project-onboarding.css: 512px
        = 600px (header + hero combinados, mismo total que el resto de
        las páginas de proyecto) menos los 88px que ya mide el header.
-       Sin contenido todavía — ver el TODO de acá abajo. -->
-    <section class="project-hero"></section>
+       Sin contenido visual todavía — ver el TODO de acá abajo. El <h1>
+       sí se agrega ya (oculto visualmente, .sr-only): cada página
+       necesita exactamente uno para SEO/accesibilidad, sin depender de
+       que el diseño final del hero esté listo en Figma — cuando llegue
+       ese contenido, este texto puede quedar visible en vez de oculto,
+       o reemplazarse por el título real. -->
+    <section class="project-hero">
+      <h1 class="sr-only">Leo — construction and renovation project management app</h1>
+    </section>
   </div>
 
   <main>

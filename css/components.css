@@ -9,6 +9,30 @@
    pseudo-clases (:hover, :disabled) que el navegador aplica solo.
    ===================================================================== */
 
+/* ---------- Utilidades ----------
+   .sr-only — oculta visualmente un elemento sin sacarlo del árbol de
+   accesibilidad (lectores de pantalla y buscadores lo siguen leyendo).
+   Patrón estándar (no display:none/visibility:hidden, que sí lo sacan
+   del todo): clip a 1x1px + overflow hidden + position:absolute para
+   que no ocupe espacio ni afecte el layout visual.
+
+   Primer uso: texto descriptivo dentro de un <h1> que de otra forma
+   solo contendría una imagen (logo) o quedaría vacío — cada página
+   necesita exactamente un <h1> real para SEO/accesibilidad, aunque
+   visualmente el título todavía no esté diseñado. Ver
+   project-onboarding/index.html y project-leo/index.html. */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0, 0, 0, 0);
+  white-space: nowrap;
+  border: 0;
+}
+
 /* ---------- Fonts ----------
    Fuentes de Google (Work Sans, Inter, Material Symbols) se cargan
    vía <link> en el <head> de cada página. DIN Next LT Pro es una

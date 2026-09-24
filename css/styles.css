@@ -1422,3 +1422,34 @@ body {
     display: inline-flex;
   }
 }
+
+/* 404 propia (404.html, raíz del repo) — en vez de la genérica de
+   GitHub Pages. Mismo header/back-button que las páginas de proyecto
+   (.navbar--project), y un bloque centrado simple: no hace falta un
+   layout complejo para una página que casi nadie visita a propósito.
+   min-height calc(100vh - 88px) para que el bloque quede centrado en
+   el alto real de pantalla, descontando el header (88px, mismo valor
+   que .project-hero usa en otras páginas). */
+.not-found {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-16);
+  min-height: calc(100vh - 88px);
+  padding: var(--space-64) var(--grid-margin);
+  text-align: center;
+}
+
+.not-found__eyebrow {
+  color: var(--color-gray-550);
+}
+
+.not-found__title {
+  margin: 0;
+}
+
+.not-found__body {
+  max-width: 40ch;
+  color: var(--color-text-black);
+}

@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <!-- Google tag (gtag.js) -->
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-3EV32X3877"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+
+    gtag('config', 'G-3EV32X3877');
+  </script>
+  <!-- End Google tag (gtag.js) -->
+  <!-- Google Tag Manager -->
+  <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
+  new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
+  j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
+  'https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);
+  })(window,document,'script','dataLayer','GTM-TLW9D86D');</script>
+  <!-- End Google Tag Manager -->
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Page not found — David Quirós</title>
+  <!-- noindex + sin canonical/OG: es la 404, no una página real que
+       deba indexarse ni compartirse. GitHub Pages la sirve sola para
+       cualquier ruta que no exista (tiene que llamarse 404.html y
+       vivir en la raíz del repo). -->
+  <meta name="robots" content="noindex">
+  <link rel="icon" type="image/png" href="assets/Logo/favicon.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=Work+Sans:wght@400;500;600;900&family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Rounded:opsz,wght,FILL,GRAD@20..48,400,0,0" rel="stylesheet">
+  <link rel="stylesheet" href="css/tokens.css">
+  <link rel="stylesheet" href="css/components.css">
+  <link rel="stylesheet" href="css/styles.css">
+</head>
+<body>
+  <!-- Google Tag Manager (noscript) -->
+  <noscript><iframe src="https://www.googletagmanager.com/ns.html?id=GTM-TLW9D86D"
+  height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
+  <!-- End Google Tag Manager (noscript) -->
+
+  <!-- .navbar--project (fondo de color) vive en el CSS de cada
+       página de proyecto (project-onboarding.css, etc.), no en un
+       archivo compartido — esta página no carga ninguno de esos, así
+       que usa solo .navbar.container (compartido, en styles.css) sin
+       ese fondo. .btn--back/.icon-back sí son compartidos
+       (components.css). -->
+  <header class="navbar container">
+    <a href="/" class="btn btn--outline btn--md btn--back" aria-label="Back to home">
+      <span class="material-symbols-rounded icon-back" aria-hidden="true">arrow_back</span>
+      <span class="btn--back__label">Back to home</span>
+    </a>
+  </header>
+
+  <main class="not-found">
+    <p class="eyebrow not-found__eyebrow">404</p>
+    <h1 class="not-found__title">Page not found</h1>
+    <p class="not-found__body">The page you're looking for doesn't exist, or it moved.</p>
+    <a href="/" class="btn btn--dark btn--md">Back to home</a>
+  </main>
+</body>
+</html>
