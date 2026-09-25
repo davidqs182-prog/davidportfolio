@@ -983,9 +983,8 @@ body {
    horizontal el hero se ve distinto y no hay hueco a los lados de la
    cabeza).
 
-   Caja del ancho del stage (que está centrado en la pantalla, igual que
-   la cabeza), con las dos palabras centradas y separadas por el ancho de
-   la cabeza — así quedan pegadas a ella a cualquier ancho de pantalla. */
+   Caja de ancho de pantalla, centrada en el stage (que a su vez está
+   centrado en la pantalla, igual que la cabeza). */
 @media (max-width: 767px) and (orientation: portrait) {
   .hero__name {
     position: absolute;
@@ -994,18 +993,20 @@ body {
        (no px) porque el avatar —y su cabeza— escala con el ancho de
        pantalla, y el alto del stage escala con él (mismo aspect-ratio). */
     top: 11.6%;
-    left: 0;
+    left: 50%;
     z-index: 1;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-    width: 100%;
-    /* gap = ancho de la cabeza (~17.6% del ancho del stage, medido en
-       vivo con alpha del frame de reposo: 83px de 473px) + 12px de aire
-       a cada lado. Las dos palabras quedan pegadas a la cabeza y no en
-       los bordes de la grilla (primera vuelta, David: "acerca más a la
-       cabeza las palabras"). */
-    gap: calc(17.6% + 24px);
+    /* Dos contenedores iguales (grilla 1fr 1fr), uno por cada mitad de la
+       pantalla, con cada palabra centrada en el suyo — a pedido de David.
+       Como la cabeza está en el centro, quedan simétricas respecto a ella
+       sin medir su ancho (versión anterior: gap de 17.6% + 24px, atada a
+       una medida a mano del avatar). Ancho = 100vw centrado en el stage
+       (el stage es más ancho que la pantalla pero está centrado en ella). */
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    justify-items: center;
+    align-items: start;
+    width: 100vw;
+    transform: translateX(-50%);
     pointer-events: none;
     /* Mismo estilo que el nombre de la frase del hero (.hero__intro-name:
        Inter 600, tamaño/interlineado de .hero__intro) — David: "debe ser
