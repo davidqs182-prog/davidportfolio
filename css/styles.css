@@ -1072,16 +1072,17 @@ body {
     transform: translateY(0);
   }
 
-  /* 16px hacia afuera de cada mitad, a pedido de David: "David" 16px a la
-     izquierda, "Quirós" 16px a la derecha (más aire alrededor de la
-     cabeza). translate en los <span> y no en el contenedor: el transform
-     del contenedor lo usa el efecto de entrada. */
+  /* 24px hacia afuera de cada mitad (más aire alrededor de la cabeza):
+     "David" a la izquierda, "Quirós" a la derecha. A pedido de David en
+     dos pasos: primero 16px, después 8px más (16 + 8 = 24). translate en
+     los <span> y no en el contenedor: el transform del contenedor lo usa
+     el efecto de entrada. */
   .hero__name span:first-child {
-    transform: translateX(-16px);
+    transform: translateX(-24px);
   }
 
   .hero__name span:last-child {
-    transform: translateX(16px);
+    transform: translateX(24px);
   }
 }
 
