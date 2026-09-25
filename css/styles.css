@@ -844,6 +844,17 @@ body {
 
   .hero {
     padding-block: var(--space-32) var(--space-40);
+    /* overflow-x: clip — el avatar (.hero__stage/.hero__avatar, ×2.15
+       para que el personaje se vea grande) mide 473px de ancho a 375px
+       de pantalla: 49px de más se salían por la DERECHA y la página
+       ganaba scroll lateral (scrollWidth 424 vs clientWidth 375, medido
+       en vivo; en iOS Safari eso deja mover/achicar la página hacia los
+       costados). El PNG/video tiene aire transparente a cada lado — el
+       personaje real queda adentro de la pantalla — así que recortar al
+       borde del hero no tapa nada visible. "clip" y no "hidden": hidden
+       convertiría el eje Y en auto y rompería los márgenes negativos/
+       transforms verticales del hero; clip recorta solo el eje X. */
+    overflow-x: clip;
   }
 
   /* A pedido de David: en mobile "PRODUCT DESIGNER" tiene que llenar
