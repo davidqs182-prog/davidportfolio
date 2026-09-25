@@ -1071,6 +1071,18 @@ body {
     opacity: 1;
     transform: translateY(0);
   }
+
+  /* 16px hacia afuera de cada mitad, a pedido de David: "David" 16px a la
+     izquierda, "Quirós" 16px a la derecha (más aire alrededor de la
+     cabeza). translate en los <span> y no en el contenedor: el transform
+     del contenedor lo usa el efecto de entrada. */
+  .hero__name span:first-child {
+    transform: translateX(-16px);
+  }
+
+  .hero__name span:last-child {
+    transform: translateX(16px);
+  }
 }
 
 
