@@ -987,6 +987,25 @@ body {
   }
 }
 
+
+/* Header en pantallas muy angostas (<=359px, ej. iPhone SE de 1ª gen /
+   Android chicos, 320px) — a pedido de David. A 320px el logo (138px) +
+   los dos botones (192px) suman 331px y solo hay 288px (320 - 2 × 16 de
+   margen): el header se pasaba ~27px por la derecha y sumaba scroll
+   lateral. Se achica lo justo, sin tocar nada de >=360px: logo 18 → 15px
+   de alto (138 → 115px de ancho), padding lateral de los botones 16 →
+   10px y texto 14 → 13px. Medido en vivo que entra sin desbordar. */
+@media (max-width: 359px) {
+  .navbar__logo {
+    height: 15px;
+  }
+
+  .navbar__links .btn {
+    padding-inline: 10px;
+    font-size: 13px;
+  }
+}
+
 /* "David" / "Quirós" a los costados de la cabeza — a pedido de David:
    "en móvil y cuando el teléfono está vertical, David a la izquierda y
    Quirós a la derecha, con el estilo de letras de mi nombre". Bloque
