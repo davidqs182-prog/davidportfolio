@@ -983,12 +983,9 @@ body {
    horizontal el hero se ve distinto y no hay hueco a los lados de la
    cabeza).
 
-   Caja del ancho del contenido (100vw - 2 márgenes) centrada en el stage
-   con left:50% + translateX(-50%) — el stage mide ~473px (avatar ×2.15,
-   más ancho que la pantalla) y está centrado, así que anclar a sus
-   bordes NO daría los márgenes de la pantalla; centrada sí. space-between
-   manda una palabra a cada borde de la grilla y deja el medio libre para
-   la cabeza. */
+   Caja del ancho del stage (que está centrado en la pantalla, igual que
+   la cabeza), con las dos palabras centradas y separadas por el ancho de
+   la cabeza — así quedan pegadas a ella a cualquier ancho de pantalla. */
 @media (max-width: 767px) and (orientation: portrait) {
   .hero__name {
     position: absolute;
@@ -997,13 +994,18 @@ body {
        (no px) porque el avatar —y su cabeza— escala con el ancho de
        pantalla, y el alto del stage escala con él (mismo aspect-ratio). */
     top: 11.6%;
-    left: 50%;
+    left: 0;
     z-index: 1;
     display: flex;
-    justify-content: space-between;
+    justify-content: center;
     align-items: flex-start;
-    width: calc(100vw - 2 * var(--grid-mobile-margin));
-    transform: translateX(-50%);
+    width: 100%;
+    /* gap = ancho de la cabeza (~17.6% del ancho del stage, medido en
+       vivo con alpha del frame de reposo: 83px de 473px) + 12px de aire
+       a cada lado. Las dos palabras quedan pegadas a la cabeza y no en
+       los bordes de la grilla (primera vuelta, David: "acerca más a la
+       cabeza las palabras"). */
+    gap: calc(17.6% + 24px);
     pointer-events: none;
     /* Mismo estilo que el nombre de la frase del hero (.hero__intro-name:
        Inter 600, tamaño/interlineado de .hero__intro) — David: "debe ser
