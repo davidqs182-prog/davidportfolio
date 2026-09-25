@@ -503,7 +503,7 @@
 // scrollear a la vista.
 (function () {
   var revealEls = document.querySelectorAll(
-    ".hero__title, .hero__subtitle, .reveal-title, .reveal-body"
+    ".hero__title, .hero__subtitle, .hero__name, .reveal-title, .reveal-body"
   );
   if (!revealEls.length) return;
 

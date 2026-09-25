@@ -265,7 +265,8 @@ body {
 
 @media (prefers-reduced-motion: reduce) {
   .hero__title,
-  .hero__subtitle {
+  .hero__subtitle,
+  .hero__name {
     transition: none;
     opacity: 1;
     transform: none;
@@ -1023,8 +1024,19 @@ body {
        (no px) porque el avatar —y su cabeza— escala con el ancho de
        pantalla, y el alto del stage escala con él (mismo aspect-ratio). */
     top: 11.6%;
-    left: 50%;
-    z-index: 1;
+    /* left: calc(50% - 50vw) en vez de left:50% + translateX(-50%): el
+       transform queda libre para el efecto de entrada (translateY, ver
+       abajo) sin pisarse con el centrado. Mismo resultado: caja de 100vw
+       centrada en el stage. */
+    left: calc(50% - 50vw);
+    /* z-index:-1 — DETRÁS del avatar (a pedido de David: "deben estar
+       debajo del avatar"). Dentro del stacking context de .hero__stage
+       (z-index:2), un hijo con z-index negativo se pinta debajo del
+       contenido en flujo (el <video>) pero encima del fondo del stage, y
+       el stage entero sigue encima del título. Primera vuelta tenía
+       z-index:1 (encima): la cabeza, al balancearse, quedaba tapada por
+       las palabras. */
+    z-index: -1;
     /* Dos contenedores iguales (grilla 1fr 1fr), uno por cada mitad de la
        pantalla, con cada palabra centrada en el suyo — a pedido de David.
        Como la cabeza está en el centro, quedan simétricas respecto a ella
@@ -1036,8 +1048,14 @@ body {
     justify-items: center;
     align-items: start;
     width: 100vw;
-    transform: translateX(-50%);
     pointer-events: none;
+    /* Mismo efecto de entrada que .hero__title ("Product Designer"): fade
+       + slide-up de 30px, 0.8s ease-out con 0.3s de delay — a pedido de
+       David. .is-inview la agrega js/main.js (mismo observer de
+       .hero__title/.hero__subtitle/.reveal-*). */
+    opacity: 0;
+    transform: translateY(30px);
+    transition: opacity 0.8s ease-out 0.3s, transform 0.8s ease-out 0.3s;
     /* Mismo estilo que el nombre de la frase del hero (.hero__intro-name:
        Inter 600, tamaño/interlineado de .hero__intro) — David: "debe ser
        ese estilo". Primera vuelta usó Work Sans 900 en mayúsculas (el
@@ -1047,6 +1065,11 @@ body {
     font-size: var(--text-body-lg-size);
     line-height: var(--text-body-lg-line);
     color: var(--color-text-black);
+  }
+
+  .hero__name.is-inview {
+    opacity: 1;
+    transform: translateY(0);
   }
 }
 
