@@ -111,6 +111,16 @@
           <source src="assets/animations/hero-guitar-scroll/hero-guitar-scroll-v2-alpha.mp4" type='video/mp4; codecs="hvc1"'>
           <source src="assets/animations/hero-guitar-scroll/hero-guitar-scroll-v2.webm" type="video/webm">
         </video>
+        <!-- Nombre a los costados de la cabeza — SOLO celular en vertical
+             (ver .hero__name en css/styles.css): "David" a la izquierda,
+             "Quirós" a la derecha, en el hueco que queda debajo de
+             "DESIGNER". Decorativo (aria-hidden): el nombre ya se lee en
+             el aria-label del video, no hace falta que un lector de
+             pantalla lo diga dos veces. -->
+        <div class="hero__name" aria-hidden="true">
+          <span>David</span>
+          <span>Quirós</span>
+        </div>
       </div>
 
       <h2 class="hero__subtitle" id="work">Work</h2>

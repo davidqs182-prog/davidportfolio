@@ -195,6 +195,16 @@ body {
   text-align: center;
 }
 
+/* Nombre a los costados de la cabeza ("David" izquierda, "Quirós"
+   derecha) — a pedido de David, SOLO celular en vertical (ver el
+   @media (max-width:767px) and (orientation:portrait) más abajo, que lo
+   muestra y lo posiciona). Oculto en todo lo demás: en desktop/tablet ya
+   está .hero__intro con la frase completa. Mismo estilo de letra que el
+   nombre en la imagen de Open Graph: Work Sans 900, mayúsculas, negro. */
+.hero__name {
+  display: none;
+}
+
 /* Solo el nombre va en medium (600), como en el navbar — el resto de
    la frase queda en regular. */
 .hero__intro-name {
@@ -965,6 +975,48 @@ body {
     grid-column: 1 / -1;
   }
 }
+
+/* "David" / "Quirós" a los costados de la cabeza — a pedido de David:
+   "en móvil y cuando el teléfono está vertical, David a la izquierda y
+   Quirós a la derecha, con el estilo de letras de mi nombre". Bloque
+   aparte del @media de arriba porque suma orientation:portrait (en
+   horizontal el hero se ve distinto y no hay hueco a los lados de la
+   cabeza).
+
+   Caja del ancho del contenido (100vw - 2 márgenes) centrada en el stage
+   con left:50% + translateX(-50%) — el stage mide ~473px (avatar ×2.15,
+   más ancho que la pantalla) y está centrado, así que anclar a sus
+   bordes NO daría los márgenes de la pantalla; centrada sí. space-between
+   manda una palabra a cada borde de la grilla y deja el medio libre para
+   la cabeza. */
+@media (max-width: 767px) and (orientation: portrait) {
+  .hero__name {
+    position: absolute;
+    /* 11.6% del alto del stage: medido en vivo (375px), deja el nombre
+       ~7px debajo de "DESIGNER", a la altura de los ojos/cara. % del alto
+       (no px) porque el avatar —y su cabeza— escala con el ancho de
+       pantalla, y el alto del stage escala con él (mismo aspect-ratio). */
+    top: 11.6%;
+    left: 50%;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    width: calc(100vw - 2 * var(--grid-mobile-margin));
+    transform: translateX(-50%);
+    pointer-events: none;
+    /* Mismo estilo que el nombre de la frase del hero (.hero__intro-name:
+       Inter 600, tamaño/interlineado de .hero__intro) — David: "debe ser
+       ese estilo". Primera vuelta usó Work Sans 900 en mayúsculas (el
+       de la imagen de Open Graph), incorrecto. */
+    font-family: var(--font-body);
+    font-weight: 600;
+    font-size: var(--text-body-lg-size);
+    line-height: var(--text-body-lg-line);
+    color: var(--color-text-black);
+  }
+}
+
 
 /* ===== About — Experience (carrusel horizontal con avatar clavado) =====
    Ver comentario en about/index.html para el pedido original de David.
